@@ -6,24 +6,27 @@ import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.power.*;
+import in.mcxiv.thatlang.parser.power.CompoundParser;
+import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
+import in.mcxiv.thatlang.parser.power.OptionalParser;
+import in.mcxiv.thatlang.parser.power.WordParser;
+import in.mcxiv.thatlang.parser.tokens.NameToken;
+import in.mcxiv.thatlang.parser.tokens.NameToken.NameParser;
 import in.mcxiv.thatlang.parser.tree.Node;
-import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
-import in.mcxiv.thatlang.statements.VariableDefinitionToken.VariableDefinitionParser;
 
 import java.util.List;
 
-public class ForStatementToken extends StatementToken {
+public class ForEachToken extends StatementToken {
 
     VariableDefinitionToken initializer;
     ExpressionsToken condition;
     AssignmentToken incremental;
 
-    public ForStatementToken(VariableDefinitionToken initializer, ExpressionsToken condition, AssignmentToken incremental, StatementToken[] statements) {
+    public ForEachToken(VariableDefinitionToken initializer, ExpressionsToken condition, AssignmentToken incremental, StatementToken[] statements) {
         this(null, initializer, condition, incremental, statements);
     }
 
-    public ForStatementToken(Node parent, VariableDefinitionToken initializer, ExpressionsToken condition, AssignmentToken incremental, StatementToken[] statements) {
+    public ForEachToken(Node parent, VariableDefinitionToken initializer, ExpressionsToken condition, AssignmentToken incremental, StatementToken[] statements) {
         super(parent);
         this.initializer = initializer;
         this.condition = condition;
@@ -52,31 +55,27 @@ public class ForStatementToken extends StatementToken {
         return toExtendedString("initializer", initializer, "condition", condition, "incremental", incremental, "statements", getChildren());
     }
 
-    public static class ForStatementParser implements Parser<ForStatementToken> {
+    public static class ForEachParser implements Parser<ForEachToken> {
 
-        public static final ForStatementParser instance = new ForStatementParser();
+        public static final ForEachParser instance = new ForEachParser();
 
         private static final Parser<Node> parser = new CompoundParser(
-                new WordParser("for"),
-                new LooseSpaceBoundedParser("("),
-                new OptionalParser(new EitherParser(VariableDefinitionParser.instance, AssignmentParser.instance)),
-                new LooseSpaceBoundedParser(";"),
-                new OptionalParser(ExpressionsParser.instance),
-                new LooseSpaceBoundedParser(";"),
-                new OptionalParser(AssignmentParser.instance),
-                new LooseSpaceBoundedParser(")"),
+                new WordParser("foreach"),
+                new LooseSpaceBoundedParser(new OptionalParser(new CompoundParser(NameParser.instance, new WordParser("in")))),
+                new LooseSpaceBoundedParser(ExpressionsParser.instance),
                 IndentedBlockParser.instance
         );
 
         @Override
-        public ForStatementToken __parse__(ParsableString string, Node parent) {
+        public ForEachToken __parse__(ParsableString string, Node parent) {
             Node node = parser.parse(string);
             if (node == null) return null;
+            String elementName = node.get(1).noOfChildren() > 0 ? ((NameToken) node.get(1).get(0)).getValue() : "that";
             var ini = node.getExp(VariableDefinitionToken.class);
             var con = node.getExp(ExpressionsToken.class);
             var inc = node.getExp(AssignmentToken.class);
             var bdy = node.getExp(IndentedBlockToken.class);
-            return new ForStatementToken(parent, ini, con, inc, bdy.getStatements());
+            return new ForEachToken(parent, ini, con, inc, bdy.getStatements());
         }
     }
 

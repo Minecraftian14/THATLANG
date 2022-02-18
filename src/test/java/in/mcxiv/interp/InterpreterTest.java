@@ -3,10 +3,7 @@ package in.mcxiv.interp;
 import in.mcxiv.TestSuite;
 import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.tryCatchSuite.Try;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,11 +14,20 @@ class InterpreterTest {
     // if condition
     // operators
 
-    StringBuilder builder;
+    static StringBuilder builder;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         TestSuite.bindToOutput(builder = new StringBuilder());
+    }
+
+    @Test
+    @Disabled
+    void runAllTests() {
+        simpleTest();
+        testExpressions();
+        testVariablesAndInputs();
+        testingForLoops();
     }
 
     @Test
@@ -42,20 +48,22 @@ class InterpreterTest {
 
     @Test
     void simpleTest() {
+        TestSuite.redefineInput("simple Test");
         String program = """
-                main ->
-                    pln(HelloWorld)
+                main:
+                    pln(scan())
                 """;
         JustRunTheThing(program);
-        assertOutput("HelloWorld", builder);
+        assertOutput("simple Test", builder);
     }
 
     @Test
-    void let_s__Pray__Bhagvaan() {
-        TestSuite.redefineInput("97");
+    // let_s__Pray__Bhagvaan
+    void testVariablesAndInputs() {
+        TestSuite.redefineInput("TestVariablesAndInputs");
 
         String program = """
-                main ->
+                main:
                     var Value = Hello
                     pln(Value)
                     var Name = scan()
@@ -63,15 +71,16 @@ class InterpreterTest {
                 """;
 
         JustRunTheThing(program);
-        assertOutput("Hello\n97", builder);
+        assertOutput("Hello\nTestVariablesAndInputs", builder);
     }
 
     @Test
-    void thanks_A_Lot_Dear_Bhagvaan() {
+    // thanks_A_Lot_Dear_Bhagvaan
+    void testExpressions() {
         TestSuite.redefineInput("2\n3");
 
         String program = """
-                main ->
+                main:
                     var a = scani()
                     var b = scanf()
                     pln(a+b*(a ** b)-(a&&b)*(a xand b)+(a<<b)/a)
@@ -86,13 +95,13 @@ class InterpreterTest {
         TestSuite.redefineInput("10");
 
         String program = """
-                main ->
-                    for (var a = scanf(); a > 0; a = a - 1) ->
-                        pln(a)
+                main:
+                    for (var a = scanf(); a > 0; a = a - 1):
+                        prt(a)
                 """;
 
         JustRunTheThing(program);
-        assertOutput("3.0", builder);
+        assertOutput("1.0", builder);
     }
 
     private void assertOutput(String s, StringBuilder builder) {

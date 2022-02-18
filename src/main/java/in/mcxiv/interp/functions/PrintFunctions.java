@@ -55,18 +55,18 @@ public class PrintFunctions extends FunctionEvaluator {
                 list = fct.getArguments().getExpressions();
                 if (list.size() == 0) break;
 //              if (list.size() >= 2) break; 
-                System.out.print(environment.vm.eval(list.get(0)).v());
+                environment.out.print(environment.vm.eval(list.get(0)).v());
             }
             case PRINTLN, PRINTLN_S, PRINTLN_SS -> {
                 list = fct.getArguments().getExpressions();
                 if (list.size() == 0) break;
-                System.out.println(environment.vm.eval(list.get(0)).v());
+                environment.out.println(environment.vm.eval(list.get(0)).v());
             }
             case PRINTF, PRINTF_S, PRINTF_SS -> {
                 list = fct.getArguments().getExpressions();
                 if (list.size() == 0) break;
                 String str = environment.vm.eval(list.remove(0)).v();
-                System.out.printf(str, list.stream().map(environment.vm::eval).toArray());
+                environment.out.printf(str, list.stream().map(environment.vm::eval).toArray());
             }
         }
 

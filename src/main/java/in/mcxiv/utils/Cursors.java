@@ -30,4 +30,8 @@ public class Cursors {
     public static boolean bound(ParsableString string) {
         return string.getCursor() < string.length();
     }
+
+    public static boolean matches(ParsableString string, String match) {
+        return Strings.matches(string.getChars(), string.getCursor(), match.toCharArray());
+    }
 }

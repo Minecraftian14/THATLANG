@@ -2,7 +2,10 @@ package in.mcxiv;
 
 import com.mcxiv.logger.tools.LogLevel;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -19,7 +22,7 @@ public class TestSuite {
         return type;
     }
 
-    public static <Type> Type alsoPrtln(String  msg, Type type) {
+    public static <Type> Type alsoPrtln(String msg, Type type) {
         System.out.printf(">> %s >>", msg);
         System.out.println(type);
         return type;
@@ -62,8 +65,21 @@ public class TestSuite {
         System.out.println(b);
     }
 
+    private static StringBuilder atomicString = null;
+    private static int cursor = 0;
+
     public static void redefineInput(String s) {
-    System.setIn(new ByteArrayInputStream(s.getBytes()));
+        if (atomicString == null) {
+            atomicString = new StringBuilder();
+            System.setIn(new InputStream() {
+                @Override
+                public int read() {
+                    return cursor >= atomicString.length() ? -1 : atomicString.charAt(cursor++);
+                }
+            });
+        }
+        atomicString.append(s);
+        if (!s.endsWith("\n")) atomicString.append('\n');
     }
 
     public static void bindToOutput(StringBuilder builder) {

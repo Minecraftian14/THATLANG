@@ -4,6 +4,8 @@ import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.thatlang.ProgramToken;
 import in.mcxiv.thatlang.statements.StatementToken;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,6 +13,10 @@ public abstract class Environment {
 
     final String[] args;
     public final AbstractThatVM vm;
+
+    public PrintStream out = System.out;
+    public PrintStream err = System.err;
+    public InputStream in = System.in;
 
     protected Environment(String[] args, AbstractThatVM vm) {
         this.args = Objects.requireNonNull(args);

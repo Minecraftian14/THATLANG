@@ -99,6 +99,10 @@ public class ParsableString implements CharSequence, Comparable<ParsableString> 
         return cursor;
     }
 
+    public char[] getChars() {
+        return chars;
+    }
+
     @Override
     public String toString() {
         return toDescriptiveString();

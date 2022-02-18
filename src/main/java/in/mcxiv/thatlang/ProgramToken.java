@@ -4,7 +4,9 @@ import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.power.CompoundParser;
 import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
+import in.mcxiv.thatlang.parser.power.OptionalParser;
 import in.mcxiv.thatlang.parser.tokens.NameToken;
+import in.mcxiv.thatlang.parser.tokens.SpacesToken;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Pair;
@@ -63,7 +65,7 @@ public class ProgramToken extends Node {
 
         private static final CompoundParser parser = new CompoundParser(
                 NameToken.NameParser.instance,
-                new LooseSpaceBoundedParser("->"),
+                new LooseSpaceBoundedParser(""),
                 new IndentedBlockToken.IndentedBlockParser()
         );
 

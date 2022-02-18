@@ -51,4 +51,12 @@ public class Strings {
         while (sx-- > 0) if (input[sx] == delimiter) break;
         return Arrays.copyOf(input, sx);
     }
+
+    public static boolean matches(char[] source, int offset, char[] match) {
+        if (source.length - offset < match.length) return false;
+        for (int i = offset, j = 0; i < source.length && j < match.length; i++, j++)
+            if (source[i] != match[j])
+                return false;
+        return true;
+    }
 }

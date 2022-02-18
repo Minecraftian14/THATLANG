@@ -32,6 +32,12 @@ public class IndentedBlockToken extends Node {
 
         @Override
         public IndentedBlockToken __parse__(ParsableString string, Node parent) {
+            if (Cursors.getCharAndNext(string) != ':') return null;
+
+            while (Cursors.bound(string) && Cursors.isSpace(string)) string.moveCursor(1);
+
+            // Then add the one statement -> and block : thing, along with {}
+
             if (Cursors.getChar(string) != '\n') return null;
 
             // We only want to take a peek at the knd of spacing ahead, but using space parser will move the cursor ahead, so we need to reset it.

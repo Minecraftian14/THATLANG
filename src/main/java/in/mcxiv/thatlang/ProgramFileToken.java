@@ -70,8 +70,9 @@ public class ProgramFileToken extends Node {
 
         @Override
         public ProgramFileToken __parse__(ParsableString string, Node parent) {
-            ProgramToken[] programTokens = parser
-                    .parse(string)
+            Node parse = parser.parse(string);
+//            if (parse == null) return null;
+            ProgramToken[] programTokens = parse
                     .getChildren()
                     .stream()
                     .map(node -> node.get(0))
