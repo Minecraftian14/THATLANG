@@ -1,12 +1,12 @@
 package in.mcxiv.thatlang;
 
+import in.mcxiv.thatlang.blocks.BlockToken;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.power.CompoundParser;
 import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.OptionalParser;
+import in.mcxiv.thatlang.parser.power.WordParser;
 import in.mcxiv.thatlang.parser.tokens.NameToken;
-import in.mcxiv.thatlang.parser.tokens.SpacesToken;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Pair;
@@ -64,9 +64,9 @@ public class ProgramToken extends Node {
     public static class ProgramParser implements Parser<ProgramToken> {
 
         private static final CompoundParser parser = new CompoundParser(
-                NameToken.NameParser.instance,
-                new LooseSpaceBoundedParser(""),
-                new IndentedBlockToken.IndentedBlockParser()
+                new WordParser("program"),
+                new LooseSpaceBoundedParser(NameToken.NameParser.instance),
+                BlockToken.BlockParser.instance
         );
 
         @Override
@@ -75,7 +75,7 @@ public class ProgramToken extends Node {
             if (compound == null) return null;
 
             String programName = compound.getExp(NameToken.class).getValue();
-            StatementToken[] nodes = ((IndentedBlockToken) compound.get(2)).getStatements();
+            StatementToken[] nodes = ((BlockToken) compound.get(2)).getStatements();
 
             return new ProgramToken(parent, programName, nodes);
         }

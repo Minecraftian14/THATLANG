@@ -40,6 +40,7 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
         public static final QuantaExpressionParser instance = new QuantaExpressionParser();
 
         private static final Parser callStepParser = new EitherParser(
+                StringToken.StringParser.instance,
                 FunctionCallToken.FunctionCallParser.instance,
                 MemberCallToken.MemberCallParser.instance // Will also catch 1234 :cry:...
         );
@@ -88,6 +89,11 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
             return tokens[index++];
         }
 
+        public boolean isString() {
+            if (hasNext()) return tokens[index] instanceof StringToken;
+            return false;
+        }
+
         public boolean isMember() {
             if (hasNext()) return tokens[index] instanceof MemberCallToken;
             return false;
@@ -96,6 +102,10 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
         public boolean isFunction() {
             if (hasNext()) return tokens[index] instanceof FunctionCallToken;
             return false;
+        }
+
+        public StringToken nextString() {
+            return (StringToken) next();
         }
 
         public MemberCallToken nextMember() {

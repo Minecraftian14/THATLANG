@@ -3,7 +3,10 @@ package in.mcxiv.interp;
 import in.mcxiv.TestSuite;
 import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.tryCatchSuite.Try;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,24 +53,25 @@ class InterpreterTest {
     void simpleTest() {
         TestSuite.redefineInput("simple Test");
         String program = """
-                main:
-                    pln(scan())
+                program main->
+                    pln(scan())    
                 """;
         JustRunTheThing(program);
         assertOutput("simple Test", builder);
     }
 
     @Test
-    // let_s__Pray__Bhagvaan
+        // let_s__Pray__Bhagvaan
     void testVariablesAndInputs() {
         TestSuite.redefineInput("TestVariablesAndInputs");
 
         String program = """
-                main:
+                program main {
                     var Value = Hello
                     pln(Value)
                     var Name = scan()
                     pln(Name)
+                }
                 """;
 
         JustRunTheThing(program);
@@ -75,12 +79,12 @@ class InterpreterTest {
     }
 
     @Test
-    // thanks_A_Lot_Dear_Bhagvaan
+        // thanks_A_Lot_Dear_Bhagvaan
     void testExpressions() {
         TestSuite.redefineInput("2\n3");
 
         String program = """
-                main:
+                program main:
                     var a = scani()
                     var b = scanf()
                     pln(a+b*(a ** b)-(a&&b)*(a xand b)+(a<<b)/a)
@@ -95,13 +99,45 @@ class InterpreterTest {
         TestSuite.redefineInput("10");
 
         String program = """
-                main:
-                    for (var a = scanf(); a > 0; a = a - 1):
-                        prt(a)
+                program main:
+                    for (var a = scanf(); a > 0; a = a - 1)->pln(a)
                 """;
 
         JustRunTheThing(program);
         assertOutput("1.0", builder);
+    }
+
+    @Test
+    void calculator() {
+        TestSuite.redefineInput("10\n20\n*");
+
+        String program = """
+                program main:
+                    var a = scani()
+                    var b = scani()
+                    var o = scan()
+                    prt("The value of operand A received is ")
+                    pln(a)
+                    prt("The value of operand B received is ")
+                    pln(b)
+                    prt("The operation on A and B requested is ")
+                    pln(o)
+                    prt("The result of this operation is ")
+                    if(o=="*"):
+                        pln(a*b)
+                                """;
+//        String program = """
+//                program main:
+//                    var a = scani()
+//                    var b = scani()
+//                    var op = "scan"
+//                    pln(a)
+//                    pln(b)
+//                    pln(op)
+//                """;
+
+        JustRunTheThing(program);
+//        assertOutput("1.0", builder);
     }
 
     private void assertOutput(String s, StringBuilder builder) {

@@ -1,7 +1,7 @@
 package in.mcxiv.thatlang.parser.power;
 
-import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.ParsableString;
+import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.tree.Node;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public class CompoundParser implements Parser<Node> {
 
     private final List<Parser<?>> parsers;
 
-    public CompoundParser(Parser<?>...parsers) {
+    public CompoundParser(Parser<?>... parsers) {
         this(List.of(parsers));
     }
 
@@ -23,7 +23,7 @@ public class CompoundParser implements Parser<Node> {
         parent = new Node(parent);
         for (Parser<?> parser : parsers) {
             Node node = parser.parse(string, parent);
-                if (node == null) {
+            if (node == null) {
                 parent.delete();
                 return null;
             }

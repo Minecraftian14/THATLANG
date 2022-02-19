@@ -62,10 +62,10 @@ public abstract class AbstractThatVM {
 
         if (node instanceof VariableDefinitionToken vdt)
             executionStack.peek().getB().newVariable(vdt.getType(), vdt.getName(), eval(vdt.getExpression()).v());
-
+//
         else if (node instanceof AssignmentToken at)
             executionStack.peek().getB().variables.stream().filter(variable -> at.getName().equals(variable.name)).findFirst().ifPresent(variable -> variable.value = eval(at.getExpression()).value);
-
+//
         else if (node instanceof ForStatementToken fst)
             for (
                     runStatement(fst.getInitializer());
@@ -73,7 +73,12 @@ public abstract class AbstractThatVM {
                     runStatement(fst.getIncremental())
             )
                 fst.getStatements().forEach(this::runStatement);
-
+//
+        else if (node instanceof IfStatementToken ist) {
+            if (PrimitiveParser.BOOLEAN.parse(eval(ist.getCondition()).v()))
+                ist.getStatements().forEach(this::runStatement);
+        }
+//
         else if (node instanceof QuantaStatement qs)
             evalQuanta(qs.getToken());
 
@@ -95,7 +100,12 @@ public abstract class AbstractThatVM {
 
         while (iterator.hasNext()) {
 
-            if (iterator.isMember()) {
+            if (iterator.isString()) {
+                String value = iterator.nextString().getValue();
+                assert variable == null: "Cant access a string as if it's a member of some variable...";
+                variable = Variable.of(value);
+
+            } else if (iterator.isMember()) {
                 String value = iterator.nextMember().getValue();
                 if (variable == null) {
                     variable = executionStack.peek().getB().seek(value);

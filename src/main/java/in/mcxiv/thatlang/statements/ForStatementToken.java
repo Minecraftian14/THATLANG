@@ -1,7 +1,6 @@
 package in.mcxiv.thatlang.statements;
 
-import in.mcxiv.thatlang.IndentedBlockToken;
-import in.mcxiv.thatlang.IndentedBlockToken.IndentedBlockParser;
+import in.mcxiv.thatlang.blocks.BlockToken;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
@@ -65,7 +64,7 @@ public class ForStatementToken extends StatementToken {
                 new LooseSpaceBoundedParser(";"),
                 new OptionalParser(AssignmentParser.instance),
                 new LooseSpaceBoundedParser(")"),
-                IndentedBlockParser.instance
+                BlockToken.BlockParser.instance
         );
 
         @Override
@@ -75,7 +74,7 @@ public class ForStatementToken extends StatementToken {
             var ini = node.getExp(VariableDefinitionToken.class);
             var con = node.getExp(ExpressionsToken.class);
             var inc = node.getExp(AssignmentToken.class);
-            var bdy = node.getExp(IndentedBlockToken.class);
+            var bdy = node.getExp(BlockToken.class);
             return new ForStatementToken(parent, ini, con, inc, bdy.getStatements());
         }
     }

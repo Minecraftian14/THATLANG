@@ -1,7 +1,6 @@
 package in.mcxiv.thatlang.statements;
 
-import in.mcxiv.thatlang.IndentedBlockToken;
-import in.mcxiv.thatlang.IndentedBlockToken.IndentedBlockParser;
+import in.mcxiv.thatlang.blocks.BlockToken;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
@@ -63,7 +62,7 @@ public class ForEachToken extends StatementToken {
                 new WordParser("foreach"),
                 new LooseSpaceBoundedParser(new OptionalParser(new CompoundParser(NameParser.instance, new WordParser("in")))),
                 new LooseSpaceBoundedParser(ExpressionsParser.instance),
-                IndentedBlockParser.instance
+                BlockToken.BlockParser.instance
         );
 
         @Override
@@ -74,7 +73,7 @@ public class ForEachToken extends StatementToken {
             var ini = node.getExp(VariableDefinitionToken.class);
             var con = node.getExp(ExpressionsToken.class);
             var inc = node.getExp(AssignmentToken.class);
-            var bdy = node.getExp(IndentedBlockToken.class);
+            var bdy = node.getExp(BlockToken.class);
             return new ForEachToken(parent, ini, con, inc, bdy.getStatements());
         }
     }

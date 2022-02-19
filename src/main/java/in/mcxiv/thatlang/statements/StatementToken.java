@@ -6,6 +6,7 @@ import in.mcxiv.thatlang.parser.power.EitherParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
 import in.mcxiv.thatlang.statements.ForStatementToken.ForStatementParser;
+import in.mcxiv.thatlang.statements.IfStatementToken.IfStatementParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class StatementToken extends Node {
             VariableDefinitionParser.instance,
             AssignmentParser.instance,
             ForStatementParser.instance,
+            IfStatementParser.instance,
             QuantaStatementParser.instance
     ));
 
@@ -26,6 +28,7 @@ public class StatementToken extends Node {
             VariableDefinitionToken.class,
             AssignmentToken.class,
             ForStatementToken.class,
+            IfStatementToken.class,
             QuantaStatement.class
     ));
 
