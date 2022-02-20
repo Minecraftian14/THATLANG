@@ -1,15 +1,15 @@
 package in.mcxiv.thatlang.universe;
 
 import com.mcxiv.logger.decorations.Format;
-import in.mcxiv.interp.VariableScope.Variable;
 import in.mcxiv.utils.LinkedList;
 import in.mcxiv.utils.PrimitiveParser;
+import thatlang.core.THATObject;
 
 import java.util.HashMap;
 import java.util.Objects;
 
 import static in.mcxiv.CentralRepository.*;
-import static in.mcxiv.interp.VariableScope.Variable.of;
+import static thatlang.core.THOSEObjects.createValue;
 
 public class Operators {
 
@@ -53,8 +53,8 @@ public class Operators {
 //        map.put("instance of", (l, r) -> s(n(l) * n(r))); // TODO: obj instance of Rectangle strictly checks if obj is an instance made from a Rectangle constructor, and not of Quadrilateral
 //        map.put("descendant of", (l, r) -> s(n(l) * n(r))); // TODO: an obj made from Rect cons may also return tru if checked against Quad
 //        operators.put("from family of", (l, r) -> s(n(l) * n(r))); // an obj made from Rect cons may also return tru if checked against Kite (this is a tertiary operator because we also need to prvide an upper limit lie quad)
-        map.put("==", (l, r) -> s(n(l) == n(r)));
-        map.put("!=", (l, r) -> s(n(l) != n(r)));
+        map.put("==", (l, r) -> s(l.equals(r)));
+        map.put("!=", (l, r) -> s(!l.equals(r)));
         map.put("&&", (l, r) -> s(b(l) && b(r)));
         map.put("^^", (l, r) -> s(XOR(b(l), b(r))));
         map.put("||", (l, r) -> s(b(l) || b(r)));
@@ -80,19 +80,19 @@ public class Operators {
         return (a || b) && (!(a && b));
     }
 
-    private static Variable s(Object o) {
-        return of(Objects.toString(o));
+    private static THATObject s(Object o) {
+        return createValue(Objects.toString(o));
     }
 
-    private static long i(Variable r) {
+    private static long i(THATObject r) {
         return PrimitiveParser.LONG.parse(r.v());
     }
 
-    private static boolean b(Variable r) {
+    private static boolean b(THATObject r) {
         return PrimitiveParser.BOOLEAN.parse(r.v());
     }
 
-    private static double n(Variable r) {
+    private static double n(THATObject r) {
         return PrimitiveParser.DOUBLE.parse(r.v());
     }
 
@@ -101,12 +101,12 @@ public class Operators {
         log.prt(type, msg);
     }
 
-    public static Variable operate(Variable left, String op, Variable right) {
-        return map.getOrDefault(op, (l, r) -> of(l.v() + r.v())).act(left, right);
+    public static THATObject operate(THATObject left, String op, THATObject right) {
+        return map.getOrDefault(op, (l, r) -> createValue(l.v() + r.v())).act(left, right);
     }
 
     public interface BinaryOperatorOperation {
-        Variable act(Variable l, Variable r);
+        THATObject act(THATObject l, THATObject r);
     }
 
 }

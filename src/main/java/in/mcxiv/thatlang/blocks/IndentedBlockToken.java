@@ -2,8 +2,7 @@ package in.mcxiv.thatlang.blocks;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.RepeatableParser;
-import in.mcxiv.thatlang.parser.power.WordParser;
+import in.mcxiv.thatlang.parser.power.*;
 import in.mcxiv.thatlang.parser.tokens.SpacesToken;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
@@ -31,26 +30,38 @@ class IndentedBlockToken extends BlockToken {
             int fallBack = string.getCursor();
             string.moveCursor(1); // skip the \n
 
+            int lastOccurrenceOfNewLine = fallBack;
 
+            while (Cursors.bound(string)) {
+                char c = Cursors.getCharAndNext(string);
+                if (c == ' ' || c == '\t') continue;
+                if (c == '\n' || c == '\r')
+                    lastOccurrenceOfNewLine = string.getCursor() - 1;
+                else /* if c is some code */
+                    break;
+            }
 
-            // TODO: allow empty lines
+            String spaces = string.subSequencePS(lastOccurrenceOfNewLine+1, string.getCursor()-1).toStringValue();
 
-            SpacesToken spacesToken = SpacesToken.SpacesParser.instance.parse(string);
-            if (spacesToken == null) return null;
             string.setCursor(fallBack);
-            String spaces = spacesToken.getValue();
-            if (spaces.length() == 0)
-                return null; // FIXME: 11-02-2022 I think this thing is not even possible... There will always be at least one space :thinking:
 
-            RepeatableParser parser = new RepeatableParser(
-                    new WordParser("\n" + spaces),
-                    new StatementToken.StatementParser()
-            );
+            RepeatableParser parser = new RepeatableParser(new EitherParser(
+                    new CompoundParser(
+                            new WordParser("\n" + spaces),
+                            new StatementToken.StatementParser()
+                    ),
+                    new CompoundParser(
+                            new WordParser("\n"),
+                            new OptionalParser(SpacesToken.SpacesParser.instance)
+                    )
+            ));
             Node node = parser.parse(string);
             if (node == null) return null;
 
             IndentedBlockToken token = new IndentedBlockToken();
-            node.getChildren().stream().map(ch -> ch.get(1))
+            node.getChildren().stream() // for all repeat nodes which are compound nodes
+                    .map(ch -> ch.get(0)) // map them to their first arguments which are also compound nodes
+                    .map(ch -> ch.get(1)) // now, map those to their second arguments which can either be StatementToken or an empty node by optional
                     .forEach(token::addChild);
 
 //            IntStream.range(0, node.noOfChildren() / 2)

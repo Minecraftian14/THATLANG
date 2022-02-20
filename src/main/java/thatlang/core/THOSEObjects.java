@@ -1,9 +1,10 @@
 package thatlang.core;
 
-import thatlang.core.THATObject;
 import thatlang.core.util.Types;
 
 public final class THOSEObjects {
+
+    public static final THATObject NULL = create("val", "null", "null");
 
     public static final String DATA_KEY_CONSTRUCTION_TYPE = "construction type";
     public static final String DATA_VALUE_CONSTRUCTION_TYPE_VALUE = "ct value";
@@ -26,16 +27,18 @@ public final class THOSEObjects {
         return object;
     }
 
-    public static THATObject createValue(Object value) {
+    public static THATObject create(String type, String name, Object value) {
         THATObject object = create(value);
-        object.objectData.put(DATA_KEY_CONSTRUCTION_TYPE, DATA_VALUE_CONSTRUCTION_TYPE_VALUE);
+        object.name = name;
+        object.objectData.put(DATA_KEY_CONSTRUCTION_TYPE, type);
         return object;
+    }
+
+    public static THATObject createValue(Object value) {
+        return create(DATA_VALUE_CONSTRUCTION_TYPE_VALUE, null, value);
     }
 
     public static THATObject createVariable(Object value) {
-        THATObject object = create(value);
-        object.objectData.put(DATA_KEY_CONSTRUCTION_TYPE, DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE);
-        return object;
+        return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, null, value);
     }
-
 }

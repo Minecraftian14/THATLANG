@@ -1,6 +1,5 @@
 package in.mcxiv.thatlang.parser.expression;
 
-import in.mcxiv.thatlang.ProgramToken;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.power.CompoundParser;
@@ -24,8 +23,6 @@ public class ArgumentsToken extends Node {
         for (ExpressionsToken expression : expressions)
             addChild(expression);
     }
-
-
 
     @Override
     public String toString() {
@@ -55,11 +52,15 @@ public class ArgumentsToken extends Node {
             ArrayList<ExpressionsToken> expressions = new ArrayList<>();
             expressions.add(node.getExp(ExpressionsToken.class));
             if (node.noOfChildren() > 1)
-                IntStream.range(0, node.get(1).noOfChildren() / 2)
-                        .map(i -> 2 * i)
-                        .mapToObj(i -> node.get(1).get(1))
+                node.get(1).getChildren().stream()
+                        .map(ch -> ch.get(1))
                         .map(ExpressionsToken.class::cast)
                         .forEach(expressions::add);
+//            IntStream.range(0, node.get(1).noOfChildren())
+//                    .map(i -> 2 * i)
+//                    .mapToObj(i -> node.get(1).get(1))
+//                    .map(ExpressionsToken.class::cast)
+//                    .forEach(expressions::add);
             return new ArgumentsToken(parent, expressions.toArray(new ExpressionsToken[0]));
         }
     }

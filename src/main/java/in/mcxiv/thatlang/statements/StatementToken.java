@@ -5,6 +5,7 @@ import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.power.EitherParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
+import in.mcxiv.thatlang.statements.ForEachToken.ForEachParser;
 import in.mcxiv.thatlang.statements.ForStatementToken.ForStatementParser;
 import in.mcxiv.thatlang.statements.IfStatementToken.IfStatementParser;
 
@@ -20,6 +21,7 @@ public class StatementToken extends Node {
             VariableDefinitionParser.instance,
             AssignmentParser.instance,
             ForStatementParser.instance,
+            ForEachParser.instance,
             IfStatementParser.instance,
             QuantaStatementParser.instance
     ));

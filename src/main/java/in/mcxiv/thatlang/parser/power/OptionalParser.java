@@ -16,14 +16,14 @@ public class OptionalParser implements Parser<Node> {
 
     @Override
     public Node parse(ParsableString string, Node parent) {
-        if(!Cursors.bound(string)) return new Node();
+        if(!Cursors.bound(string)) return new Node(parent);
         return Parser.super.parse(string, parent);
     }
 
     @Override
     public Node __parse__(ParsableString string, Node parent) {
         Node element = parser.parse(string, parent);
-        if(element == null) return new Node();
+        if(element == null) return new Node(parent);
         return element;
     }
 }

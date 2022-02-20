@@ -2,10 +2,11 @@ package in.mcxiv.interp.functions;
 
 import in.mcxiv.interp.Environment;
 import in.mcxiv.interp.FunctionEvaluator;
-import in.mcxiv.interp.VariableScope.Variable;
 import in.mcxiv.thatlang.parser.expression.FunctionCallToken;
 import in.mcxiv.tryCatchSuite.Try;
 import in.mcxiv.utils.PrimitiveParser;
+import thatlang.core.THATObject;
+import thatlang.core.THOSEObjects;
 
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -34,9 +35,9 @@ public class InputFunctions extends FunctionEvaluator {
     }
 
     @Override
-    public Variable apply(FunctionCallToken fct) {
+    public THATObject apply(FunctionCallToken fct) {
         String s = Try.If(scanner::hasNextLine).Then(scanner::nextLine).Else(() -> "").toString();
-        Variable variable = new Variable("val", "null", switch (fct.getValue()) {
+        THATObject variable = THOSEObjects.createValue(switch (fct.getValue()) {
             case SCAN_LINE -> s;
             case SCAN_INT -> PrimitiveParser.LONG.parse(s).toString();
             case SCAN_FLOAT -> PrimitiveParser.DOUBLE.parse(s).toString();

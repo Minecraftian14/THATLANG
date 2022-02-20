@@ -52,6 +52,7 @@ public class BinaryOperatorToken extends ExpressionsToken {
         public BinaryOperatorParser(String operator) {
             this.operator = operator;
             parser = new CompoundParser(
+                    
                     QuantaExpressionToken.QuantaExpressionParser.instance,
                     new LooseSpaceBoundedParser(this.operator),
                     ExpressionsParser.instance

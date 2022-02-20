@@ -54,10 +54,25 @@ class InterpreterTest {
         TestSuite.redefineInput("simple Test");
         String program = """
                 program main->
-                    pln(scan())    
+                    pln(scan())
                 """;
         JustRunTheThing(program);
         assertOutput("simple Test", builder);
+    }
+
+    @Test
+    void testTheNewIndentTypeBlck() {
+        TestSuite.redefineInput("simple Test");
+        String program = """
+                program main:
+                                
+                    pln(scan())
+                    
+                    prtf("%s", "lmao")
+                    
+                """;
+        JustRunTheThing(program);
+        assertOutput("simple Test\nlmao", builder);
     }
 
     @Test
@@ -87,7 +102,7 @@ class InterpreterTest {
                 program main:
                     var a = scani()
                     var b = scanf()
-                    pln(a+b*(a ** b)-(a&&b)*(a xand b)+(a<<b)/a)
+                    pln ( a + b * (a ** b) - (a&&b) * (a xand b) +( a<<b)/a)
                 """;
 
         JustRunTheThing(program);
@@ -101,6 +116,7 @@ class InterpreterTest {
         String program = """
                 program main:
                     for (var a = scanf(); a > 0; a = a - 1)->pln(a)
+                   
                 """;
 
         JustRunTheThing(program);
@@ -112,32 +128,26 @@ class InterpreterTest {
         TestSuite.redefineInput("10\n20\n*");
 
         String program = """
-                program main:
-                    var a = scani()
-                    var b = scani()
-                    var o = scan()
-                    prt("The value of operand A received is ")
-                    pln(a)
-                    prt("The value of operand B received is ")
-                    pln(b)
-                    prt("The operation on A and B requested is ")
-                    pln(o)
-                    prt("The result of this operation is ")
-                    if(o=="*"):
-                        pln(a*b)
+program main {
+    var a = scani()
+    var b = scani()
+    var o = scan()
+    prt("The value of operand A received is ")
+    pln(a)
+    prt("The value of operand B received is ")
+    pln(b)
+    prt("The operation on A and B requested is ")
+    pln(o)
+    prt("The result of this operation is ")
+    if(o=="*")->pln(a*b)
+    if(o=="/")->pln(a/b)
+    if(o=="+")->pln(a+b)
+    if(o=="-")->pln(a-b)
+    if(o=="%")->pln(a%b)
+                }
                                 """;
-//        String program = """
-//                program main:
-//                    var a = scani()
-//                    var b = scani()
-//                    var op = "scan"
-//                    pln(a)
-//                    pln(b)
-//                    pln(op)
-//                """;
-
         JustRunTheThing(program);
-//        assertOutput("1.0", builder);
+        assertOutput("200.0", builder);
     }
 
     private void assertOutput(String s, StringBuilder builder) {

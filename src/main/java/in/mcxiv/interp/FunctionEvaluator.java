@@ -1,11 +1,11 @@
 package in.mcxiv.interp;
 
-import in.mcxiv.interp.VariableScope.Variable;
 import in.mcxiv.thatlang.parser.expression.FunctionCallToken;
+import thatlang.core.THATObject;
 
 import java.util.function.Function;
 
-public abstract class FunctionEvaluator implements Function<FunctionCallToken, Variable> {
+public abstract class FunctionEvaluator implements Function<FunctionCallToken, THATObject> {
 
     final protected Environment environment;
 

@@ -2,11 +2,12 @@ package in.mcxiv.interp.functions;
 
 import in.mcxiv.interp.Environment;
 import in.mcxiv.interp.FunctionEvaluator;
-import in.mcxiv.interp.VariableScope;
-import in.mcxiv.interp.VariableScope.Variable;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
 import in.mcxiv.thatlang.parser.expression.FunctionCallToken;
+import thatlang.core.THATObject;
+import thatlang.core.THOSEObjects;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class PrintFunctions extends FunctionEvaluator {
     }
 
     @Override
-    public Variable apply(FunctionCallToken fct) {
+    public THATObject apply(FunctionCallToken fct) {
 
         List<ExpressionsToken> list;
 
@@ -63,13 +64,13 @@ public class PrintFunctions extends FunctionEvaluator {
                 environment.out.println(environment.vm.eval(list.get(0)).v());
             }
             case PRINTF, PRINTF_S, PRINTF_SS -> {
-                list = fct.getArguments().getExpressions();
+                list = new ArrayList<>(fct.getArguments().getExpressions());
                 if (list.size() == 0) break;
                 String str = environment.vm.eval(list.remove(0)).v();
-                environment.out.printf(str, list.stream().map(environment.vm::eval).toArray());
+                environment.out.printf(str, list.stream().map(environment.vm::eval).map(THATObject::v).toArray());
             }
         }
 
-        return Variable.NULL;
+        return THOSEObjects.NULL;
     }
 }
