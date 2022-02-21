@@ -6,6 +6,7 @@ import in.mcxiv.thatlang.parser.expression.BinaryOperatorToken;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
 import in.mcxiv.thatlang.parser.expression.FunctionCallToken;
 import in.mcxiv.thatlang.parser.expression.QuantaExpressionToken;
+import in.mcxiv.thatlang.parser.natives.StringToken;
 import in.mcxiv.thatlang.statements.*;
 import in.mcxiv.thatlang.universe.Operators;
 import in.mcxiv.utils.Pair;
@@ -90,6 +91,9 @@ public abstract class AbstractThatVM {
             return evalQuanta(qet);
         else if (expression instanceof BinaryOperatorToken bot)
             return evalBinary(bot);
+        else if (expression instanceof StringToken st)
+            return THOSEObjects.createValue(st.getValue());
+
         return null;
     }
 

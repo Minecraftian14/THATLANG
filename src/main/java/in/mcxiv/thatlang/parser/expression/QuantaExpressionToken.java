@@ -2,6 +2,7 @@ package in.mcxiv.thatlang.parser.expression;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
+import in.mcxiv.thatlang.parser.natives.StringToken;
 import in.mcxiv.thatlang.parser.power.*;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.tryCatchSuite.Try;
@@ -40,7 +41,6 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
         public static final QuantaExpressionParser instance = new QuantaExpressionParser();
 
         private static final Parser callStepParser = new EitherParser(
-                StringToken.StringParser.instance,
                 FunctionCallToken.FunctionCallParser.instance,
                 MemberCallToken.MemberCallParser.instance // Will also catch 1234 :cry:... // TODO: Not a good thing either, because it's catching every possible Name afterwards
         );

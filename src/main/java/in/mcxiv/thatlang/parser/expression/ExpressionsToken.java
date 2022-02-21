@@ -2,6 +2,7 @@ package in.mcxiv.thatlang.parser.expression;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
+import in.mcxiv.thatlang.parser.SimpleSafeNonRecursiveExpressionParser;
 import in.mcxiv.thatlang.parser.power.EitherParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 
@@ -19,8 +20,7 @@ public class ExpressionsToken extends Node {
 
         private static final Parser parser = new EitherParser(
                 MultiOperandParser.instance,
-                ParenthesisParser.instance,
-                QuantaExpressionToken.QuantaExpressionParser.instance
+                SimpleSafeNonRecursiveExpressionParser.instance
                 );
 
         private ExpressionsParser() {

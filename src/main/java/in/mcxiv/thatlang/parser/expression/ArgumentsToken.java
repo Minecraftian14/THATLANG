@@ -47,7 +47,7 @@ public class ArgumentsToken extends Node {
 
         @Override
         public ArgumentsToken __parse__(ParsableString string, Node parent) {
-            Node node = parser.parse(string, parent);
+            Node node = parser.parse(string);
             if (node == null) return null;
             ArrayList<ExpressionsToken> expressions = new ArrayList<>();
             expressions.add(node.getExp(ExpressionsToken.class));

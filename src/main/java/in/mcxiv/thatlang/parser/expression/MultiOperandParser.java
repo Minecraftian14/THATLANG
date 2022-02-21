@@ -2,7 +2,11 @@ package in.mcxiv.thatlang.parser.expression;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.*;
+import in.mcxiv.thatlang.parser.SimpleSafeNonRecursiveExpressionParser;
+import in.mcxiv.thatlang.parser.power.CompoundParser;
+import in.mcxiv.thatlang.parser.power.EitherParser;
+import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
+import in.mcxiv.thatlang.parser.power.RepeatableParser;
 import in.mcxiv.thatlang.parser.tokens.generic.StringValueNode;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.universe.Operators;
@@ -18,10 +22,10 @@ class MultiOperandParser implements Parser<BinaryOperatorToken> {
     public static final MultiOperandParser instance = new MultiOperandParser();
 
     private static final Parser parser = new CompoundParser(
-            new EitherParser(ParenthesisParser.instance,QuantaExpressionToken.QuantaExpressionParser.instance),
+            SimpleSafeNonRecursiveExpressionParser.instance,
             new RepeatableParser(
                     new EitherParser(new LinkedList<>(Operators.list, LooseSpaceBoundedParser::new)),
-                    new EitherParser(ParenthesisParser.instance,QuantaExpressionToken.QuantaExpressionParser.instance)
+                    SimpleSafeNonRecursiveExpressionParser.instance
             )
     );
 

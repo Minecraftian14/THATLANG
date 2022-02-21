@@ -12,11 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InterpreterTest {
 
-    // AIM: calculator
-    // readLine
-    // if condition
-    // operators
-
     static StringBuilder builder;
 
     @BeforeAll

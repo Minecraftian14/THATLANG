@@ -2,6 +2,7 @@ package in.mcxiv.thatlang.parser.expression;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
+import in.mcxiv.thatlang.parser.SimpleSafeNonRecursiveExpressionParser;
 import in.mcxiv.thatlang.parser.power.CompoundParser;
 import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
 import in.mcxiv.thatlang.parser.tree.Node;
@@ -52,8 +53,7 @@ public class BinaryOperatorToken extends ExpressionsToken {
         public BinaryOperatorParser(String operator) {
             this.operator = operator;
             parser = new CompoundParser(
-                    
-                    QuantaExpressionToken.QuantaExpressionParser.instance,
+                    SimpleSafeNonRecursiveExpressionParser.instance,
                     new LooseSpaceBoundedParser(this.operator),
                     ExpressionsParser.instance
             );
