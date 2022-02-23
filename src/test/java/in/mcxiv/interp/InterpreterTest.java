@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InterpreterTest {
 
+
     static StringBuilder builder;
 
     @BeforeAll
