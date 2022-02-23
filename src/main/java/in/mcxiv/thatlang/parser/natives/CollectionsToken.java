@@ -3,18 +3,19 @@ package in.mcxiv.thatlang.parser.natives;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.WordParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.compound;
+import static in.mcxiv.thatlang.parser.power.PowerUtils.word;
 
 public class CollectionsToken extends Node {
 
     enum CollectionType {
-        ARRAY_LIST("[", "]", ExpressionsParser.instance),
-        LINKED_LIST("l[", "]", ExpressionsParser.instance),
-        HASH_MAP("{", "}", AssignmentParser.instance),
-        HASH_SET("{", "}", ExpressionsParser.instance);
+        ARRAY_LIST("[", "]", ExpressionsParser.expression),
+        LINKED_LIST("l[", "]", ExpressionsParser.expression),
+        HASH_MAP("{", "}", AssignmentParser.assignment),
+        HASH_SET("{", "}", ExpressionsParser.expression);
 
         public final String starter;
         public final String ender;
@@ -47,11 +48,11 @@ public class CollectionsToken extends Node {
 
         private CollectionsParser(CollectionType type) {
             this.type = type;
-            parser = new CompoundParser(
-                    new WordParser(type.starter),
+            parser = compound(
+                    word(type.starter),
                     // impl `type.parser,type.parser,type.parser` pasrer
 
-                    new WordParser(type.ender)
+                    word(type.ender)
             );
         }
 

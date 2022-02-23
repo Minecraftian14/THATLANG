@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MinimumRepeatableParserTest {
     @Test
     void testMinimum() {
-        RepeatableParser repeatable = new MinimumRepeatableParser(3, PowerUtils.compound(NameToken.NameParser.instance, SpacesToken.SpacesParser.instance));
+        RepeatableParser repeatable = new MinimumRepeatableParser(3, PowerUtils.compound(NameToken.NameParser.name, SpacesToken.SpacesParser.spaces));
         assertNull(pj(repeatable.parse("-neubue   ")));
         assertNull(pj(repeatable.parse("")));
         assertNull(pj(repeatable.parse("aname")));

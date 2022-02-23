@@ -3,13 +3,14 @@ package in.mcxiv.thatlang.statements;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
 import in.mcxiv.thatlang.parser.power.EitherParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
+import in.mcxiv.thatlang.parser.power.LooseInlineParser;
 import in.mcxiv.thatlang.parser.power.WordParser;
 import in.mcxiv.thatlang.parser.tokens.NameToken;
 import in.mcxiv.thatlang.parser.tokens.generic.StringValueNode;
 import in.mcxiv.thatlang.parser.tree.Node;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class VariableDefinitionToken extends StatementToken {
 
@@ -42,13 +43,13 @@ public class VariableDefinitionToken extends StatementToken {
 
     public static class VariableDefinitionParser implements Parser<VariableDefinitionToken> {
 
-        private static final Parser<?> parser = new CompoundParser(
-                new EitherParser(new WordParser("var"), new WordParser("val")),
-                new LooseSpaceBoundedParser(NameToken.NameParser.instance),
-                new LooseSpaceBoundedParser(new EitherParser(new WordParser("="), new WordParser("<<"))),
-                ExpressionsToken.ExpressionsParser.instance
+        private static final Parser<?> parser = compound(
+                either(word("var"), new WordParser("val")),
+                new LooseInlineParser(NameToken.NameParser.name),
+                new LooseInlineParser(new EitherParser(new WordParser("="), new WordParser("<<"))),
+                ExpressionsToken.ExpressionsParser.expression
         );
-        public static VariableDefinitionParser instance = new VariableDefinitionParser();
+        public static VariableDefinitionParser variableDef = new VariableDefinitionParser();
 
         @Override
         public VariableDefinitionToken __parse__(ParsableString string, Node parent) {

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.IntStream;
 
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+
 public class QuantaExpressionToken extends ExpressionsToken implements Iterable<Node> {
 
     public QuantaExpressionToken(Node[] tokens) {
@@ -38,16 +40,16 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
 
     public static class QuantaExpressionParser implements Parser<QuantaExpressionToken> {
 
-        public static final QuantaExpressionParser instance = new QuantaExpressionParser();
+        public static final QuantaExpressionParser quantaExpression = new QuantaExpressionParser();
 
         private static final Parser callStepParser = new EitherParser(
-                FunctionCallToken.FunctionCallParser.instance,
-                MemberCallToken.MemberCallParser.instance // Will also catch 1234 :cry:... // TODO: Not a good thing either, because it's catching every possible Name afterwards
+                FunctionCallToken.FunctionCallParser.function,
+                MemberCallToken.MemberCallParser.member // Will also catch 1234 :cry:... // TODO: Not a good thing either, because it's catching every possible Name afterwards
         );
 
-        private static final Parser parser = new CompoundParser(
+        private static final Parser parser = compound(
                 callStepParser,
-                new OptionalParser(new RepeatableParser(new WordParser("."), callStepParser))
+                optional(repeatable(compound(new WordParser("."), callStepParser)))
         );
 
         private QuantaExpressionParser() {

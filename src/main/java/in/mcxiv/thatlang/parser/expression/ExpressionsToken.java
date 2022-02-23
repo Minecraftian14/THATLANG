@@ -16,11 +16,11 @@ public class ExpressionsToken extends Node {
     }
 
     public static class ExpressionsParser implements Parser<ExpressionsToken> {
-        public static final ExpressionsParser instance = new ExpressionsParser();
+        public static final ExpressionsParser expression = new ExpressionsParser();
 
         private static final Parser parser = new EitherParser(
-                MultiOperandParser.instance,
-                SimpleSafeNonRecursiveExpressionParser.instance
+                MultiOperandParser.multiOperand,
+                SimpleSafeNonRecursiveExpressionParser.safeExpression
                 );
 
         private ExpressionsParser() {

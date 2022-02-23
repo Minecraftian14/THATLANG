@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FunctionCallTokenTest {
     @Test
     void test() {
-        FunctionCallToken.FunctionCallParser parser = FunctionCallToken.FunctionCallParser.instance;
+        FunctionCallToken.FunctionCallParser parser = FunctionCallToken.FunctionCallParser.function;
         assertNotNull(TestSuite.pj(parser.parse("mamam()")));
         assertNotNull(TestSuite.pj(parser.parse("mamam ()")));
         assertNotNull(TestSuite.pj(parser.parse("mamam (fyadyf)")));

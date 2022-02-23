@@ -10,10 +10,10 @@ class ProgramFileTokenTest {
         ProgramFileToken.ProgramFileParser parser = new ProgramFileToken.ProgramFileParser();
         Assertions.assertNotNull(TestSuite.pj(parser.parse("""
                 
-                aProgramName ->
+                program aProgramName:
                     aStatement.aMember
                     
-                anotherProgramName ->
+                program anotherProgramName:
                     aStatement.aMember
                     aStatement.aMember.anotherMember
                     

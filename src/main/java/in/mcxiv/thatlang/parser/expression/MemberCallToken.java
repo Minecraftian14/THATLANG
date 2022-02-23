@@ -23,9 +23,9 @@ public class MemberCallToken extends StringValueNode {
 
     public static class MemberCallParser implements Parser<MemberCallToken> {
 
-        public static final MemberCallParser instance = new MemberCallParser();
+        public static final MemberCallParser member = new MemberCallParser();
 
-        private static final NameToken.NameParser parser = NameToken.NameParser.instance;
+        private static final NameToken.NameParser parser = NameToken.NameParser.name;
 
         private MemberCallParser() {
         }

@@ -2,12 +2,11 @@ package in.mcxiv.thatlang.parser.expression;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.OptionalParser;
 import in.mcxiv.thatlang.parser.tokens.NameToken;
 import in.mcxiv.thatlang.parser.tokens.generic.StringValueNode;
 import in.mcxiv.thatlang.parser.tree.Node;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class FunctionCallToken extends StringValueNode {
 
@@ -34,13 +33,13 @@ public class FunctionCallToken extends StringValueNode {
 
     public static class FunctionCallParser implements Parser<FunctionCallToken> {
 
-        public static final FunctionCallParser instance = new FunctionCallParser();
+        public static final FunctionCallParser function = new FunctionCallParser();
 
-        private static final Parser parser = new CompoundParser(
-                NameToken.NameParser.instance,
-                new LooseSpaceBoundedParser("("),
-                new OptionalParser(new LooseSpaceBoundedParser(ArgumentsToken.ArgumentsParser.instance)),
-                new LooseSpaceBoundedParser(")")
+        private static final Parser parser = compound(
+                NameToken.NameParser.name,
+                inline("("),
+                optional(inline(ArgumentsToken.ArgumentsParser.arguments)),
+                inline(")")
         );
 
         private FunctionCallParser() {

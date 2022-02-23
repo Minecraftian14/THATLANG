@@ -4,8 +4,7 @@ import in.mcxiv.thatlang.blocks.BlockToken;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.WordParser;
+import in.mcxiv.thatlang.parser.power.LooseInlineParser;
 import in.mcxiv.thatlang.parser.tokens.NameToken;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
@@ -15,6 +14,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.compound;
+import static in.mcxiv.thatlang.parser.power.PowerUtils.word;
 
 public class ProgramToken extends Node {
 
@@ -63,10 +65,10 @@ public class ProgramToken extends Node {
 
     public static class ProgramParser implements Parser<ProgramToken> {
 
-        private static final CompoundParser parser = new CompoundParser(
-                new WordParser("program"),
-                new LooseSpaceBoundedParser(NameToken.NameParser.instance),
-                BlockToken.BlockParser.instance
+        private static final CompoundParser parser = compound(
+                word("program"),
+                new LooseInlineParser(NameToken.NameParser.name),
+                BlockToken.BlockParser.block
         );
 
         @Override

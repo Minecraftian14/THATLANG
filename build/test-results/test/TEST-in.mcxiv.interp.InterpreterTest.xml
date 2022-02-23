@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="in.mcxiv.interp.InterpreterTest" tests="8" skipped="2" failures="0" errors="0" timestamp="2022-02-21T05:20:39" hostname="LEN-CELENTIS" time="0.275">
+<testsuite name="in.mcxiv.interp.InterpreterTest" tests="8" skipped="2" failures="0" errors="0" timestamp="2022-02-23T06:52:15" hostname="LEN-CELENTIS" time="0.147">
   <properties/>
-  <testcase name="simpleTest()" classname="in.mcxiv.interp.InterpreterTest" time="0.177"/>
-  <testcase name="testTheNewIndentTypeBlck()" classname="in.mcxiv.interp.InterpreterTest" time="0.012"/>
-  <testcase name="calculator()" classname="in.mcxiv.interp.InterpreterTest" time="0.041"/>
-  <testcase name="testExpressions()" classname="in.mcxiv.interp.InterpreterTest" time="0.018"/>
+  <testcase name="simpleTest()" classname="in.mcxiv.interp.InterpreterTest" time="0.095"/>
+  <testcase name="testTheNewIndentTypeBlck()" classname="in.mcxiv.interp.InterpreterTest" time="0.006"/>
+  <testcase name="calculator()" classname="in.mcxiv.interp.InterpreterTest" time="0.022"/>
+  <testcase name="testExpressions()" classname="in.mcxiv.interp.InterpreterTest" time="0.005"/>
   <testcase name="test()" classname="in.mcxiv.interp.InterpreterTest" time="0.001">
     <skipped/>
   </testcase>
   <testcase name="runAllTests()" classname="in.mcxiv.interp.InterpreterTest" time="0.0">
     <skipped/>
   </testcase>
-  <testcase name="testVariablesAndInputs()" classname="in.mcxiv.interp.InterpreterTest" time="0.005"/>
-  <testcase name="testingForLoops()" classname="in.mcxiv.interp.InterpreterTest" time="0.011"/>
+  <testcase name="testVariablesAndInputs()" classname="in.mcxiv.interp.InterpreterTest" time="0.003"/>
+  <testcase name="testingForLoops()" classname="in.mcxiv.interp.InterpreterTest" time="0.007"/>
   <system-out><![CDATA[?[38;2;255;255;255m?[48;2;104;41;246m            CENTRAL_REPOSITORY            ?[0m?[38;2;0;0;0m?[48;2;168;169;246m Under static initializer :)                                                                          ?[0m
-?[38;2;255;255;255m?[48;2;104;41;246m              DATE AND TIME               ?[0m?[38;2;0;0;0m?[48;2;168;169;246m 2022-02-21T10:50:39.828308800                                                                        ?[0m
+?[38;2;255;255;255m?[48;2;104;41;246m              DATE AND TIME               ?[0m?[38;2;0;0;0m?[48;2;168;169;246m 2022-02-23T12:22:15.909076                                                                           ?[0m
 ?[38;2;255;255;255m?[48;2;104;41;246m             CORES AVAILABLE              ?[0m?[38;2;0;0;0m?[48;2;168;169;246m 16                                                                                                   ?[0m
 ?[38;2;255;255;255m?[48;2;104;41;246m                User Name                 ?[0m?[38;2;0;0;0m?[48;2;168;169;246m mcxiv                                                                                                ?[0m
 ?[38;2;255;255;255m?[48;2;104;41;246m              User Directory              ?[0m?[38;2;0;0;0m?[48;2;168;169;246m D:\Projects\JAVA\THATLANG                                                                            ?[0m

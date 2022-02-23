@@ -2,15 +2,13 @@ package in.mcxiv.thatlang.parser.expression;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.OptionalParser;
-import in.mcxiv.thatlang.parser.power.RepeatableParser;
+import in.mcxiv.thatlang.parser.power.LooseInlineParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class ArgumentsToken extends Node {
 
@@ -35,11 +33,11 @@ public class ArgumentsToken extends Node {
 
     public static class ArgumentsParser implements Parser<ArgumentsToken> {
 
-        public static final ArgumentsParser instance = new ArgumentsParser();
+        public static final ArgumentsParser arguments = new ArgumentsParser();
 
-        private static final Parser parser = new CompoundParser(
-                ExpressionsToken.ExpressionsParser.instance,
-                new OptionalParser(new RepeatableParser(new LooseSpaceBoundedParser(","), ExpressionsToken.ExpressionsParser.instance))
+        private static final Parser parser = compound(
+                ExpressionsToken.ExpressionsParser.expression,
+                optional(repeatable(compound(new LooseInlineParser(","), ExpressionsToken.ExpressionsParser.expression)))
         );
 
         private ArgumentsParser() {

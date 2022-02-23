@@ -3,10 +3,7 @@ package in.mcxiv.thatlang.parser.expression;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.SimpleSafeNonRecursiveExpressionParser;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.EitherParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.RepeatableParser;
+import in.mcxiv.thatlang.parser.power.LooseInlineParser;
 import in.mcxiv.thatlang.parser.tokens.generic.StringValueNode;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.universe.Operators;
@@ -14,19 +11,21 @@ import in.mcxiv.utils.LinkedList;
 
 import java.util.ArrayList;
 
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+
 /**
  * things like 1+2/3+4 will convert to (1+(2/3))+4
  */
 class MultiOperandParser implements Parser<BinaryOperatorToken> {
 
-    public static final MultiOperandParser instance = new MultiOperandParser();
+    public static final MultiOperandParser multiOperand = new MultiOperandParser();
 
-    private static final Parser parser = new CompoundParser(
-            SimpleSafeNonRecursiveExpressionParser.instance,
-            new RepeatableParser(
-                    new EitherParser(new LinkedList<>(Operators.list, LooseSpaceBoundedParser::new)),
-                    SimpleSafeNonRecursiveExpressionParser.instance
-            )
+    private static final Parser parser = compound(
+            SimpleSafeNonRecursiveExpressionParser.safeExpression,
+            repeatable(compound(
+                    either(new LinkedList<>(Operators.list, LooseInlineParser::new)),
+                    SimpleSafeNonRecursiveExpressionParser.safeExpression
+            ))
     );
 
     private MultiOperandParser() {

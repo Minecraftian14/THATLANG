@@ -8,8 +8,8 @@ public class MinimumRepeatableParser extends RepeatableParser {
 
     int minimumRepeats;
 
-    public MinimumRepeatableParser(int minimumRepeats, Parser... parsers) {
-        super(parsers);
+    public MinimumRepeatableParser(int minimumRepeats, Parser parser) {
+        super(parser);
         this.minimumRepeats = minimumRepeats;
     }
 

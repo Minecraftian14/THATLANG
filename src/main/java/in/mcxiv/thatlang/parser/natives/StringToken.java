@@ -30,7 +30,7 @@ public class StringToken extends ExpressionsToken {
 
     public static class StringParser implements Parser<StringToken> {
 
-        public static final StringParser instance = new StringParser();
+        public static final StringParser string = new StringParser();
 
         private StringParser() {
         }

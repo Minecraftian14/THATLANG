@@ -19,7 +19,7 @@ class SingleStatementBlockToken extends BlockToken {
 
     public static class SingleStatementBlockParser implements Parser<SingleStatementBlockToken> {
 
-        public static final SingleStatementBlockParser instance = new SingleStatementBlockParser();
+        public static final SingleStatementBlockParser singleStatementBlock = new SingleStatementBlockParser();
 
         private SingleStatementBlockParser() {
         }
@@ -31,7 +31,7 @@ class SingleStatementBlockToken extends BlockToken {
 
             while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
 
-            StatementToken node = StatementToken.StatementParser.instance.parse(string);
+            StatementToken node = StatementToken.StatementParser.statement.parse(string);
             if (node == null) return null;
 
             return new SingleStatementBlockToken(parent, node);

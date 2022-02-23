@@ -3,9 +3,10 @@ package in.mcxiv.thatlang.parser.expression;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.SimpleSafeNonRecursiveExpressionParser;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
 import in.mcxiv.thatlang.parser.tree.Node;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.compound;
+import static in.mcxiv.thatlang.parser.power.PowerUtils.inline;
 
 /**
  * `operand operator operand` ie things like 1+3 gesuga()*78...
@@ -52,10 +53,10 @@ public class BinaryOperatorToken extends ExpressionsToken {
 
         public BinaryOperatorParser(String operator) {
             this.operator = operator;
-            parser = new CompoundParser(
-                    SimpleSafeNonRecursiveExpressionParser.instance,
-                    new LooseSpaceBoundedParser(this.operator),
-                    ExpressionsParser.instance
+            parser = compound(
+                    SimpleSafeNonRecursiveExpressionParser.safeExpression,
+                    inline(this.operator),
+                    ExpressionsParser.expression
             );
         }
 

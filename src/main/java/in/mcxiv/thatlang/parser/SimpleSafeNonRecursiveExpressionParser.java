@@ -8,13 +8,13 @@ import in.mcxiv.thatlang.parser.tree.Node;
 
 public class SimpleSafeNonRecursiveExpressionParser extends EitherParser {
 
-    public static final Parser<Node> instance = new SimpleSafeNonRecursiveExpressionParser();
+    public static final Parser<Node> safeExpression = new SimpleSafeNonRecursiveExpressionParser();
 
     private SimpleSafeNonRecursiveExpressionParser() {
         super(
-                StringToken.StringParser.instance,
-                ParenthesisParser.instance,
-                QuantaExpressionParser.instance
+                StringToken.StringParser.string,
+                ParenthesisParser.parenthesisBlock,
+                QuantaExpressionParser.quantaExpression
         );
     }
 }

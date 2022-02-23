@@ -5,15 +5,13 @@ import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.OptionalParser;
-import in.mcxiv.thatlang.parser.power.WordParser;
 import in.mcxiv.thatlang.parser.tokens.NameToken;
 import in.mcxiv.thatlang.parser.tokens.NameToken.NameParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 
 import java.util.List;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class ForEachToken extends StatementToken {
 
@@ -50,13 +48,13 @@ public class ForEachToken extends StatementToken {
 
     public static class ForEachParser implements Parser<ForEachToken> {
 
-        public static final ForEachParser instance = new ForEachParser();
+        public static final ForEachParser forEachStatement = new ForEachParser();
 
-        private static final Parser<Node> parser = new CompoundParser(
-                new WordParser("foreach"),
-                new LooseSpaceBoundedParser(new OptionalParser(new CompoundParser(NameParser.instance, new WordParser("in")))),
-                new LooseSpaceBoundedParser(ExpressionsParser.instance),
-                BlockToken.BlockParser.instance
+        private static final Parser<Node> parser = compound(
+                word("foreach"),
+                inline(optional(compound(NameParser.name, word("in")))),
+                inline(ExpressionsParser.expression),
+                BlockToken.BlockParser.block
         );
 
         @Override

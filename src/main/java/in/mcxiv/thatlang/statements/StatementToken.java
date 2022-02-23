@@ -18,12 +18,12 @@ import static in.mcxiv.thatlang.statements.VariableDefinitionToken.VariableDefin
 public class StatementToken extends Node {
 
     public static final ArrayList<Parser<?>> STATEMENT_PARSERS = new ArrayList<>(List.of(
-            VariableDefinitionParser.instance,
-            AssignmentParser.instance,
-            ForStatementParser.instance,
-            ForEachParser.instance,
-            IfStatementParser.instance,
-            QuantaStatementParser.instance
+            VariableDefinitionParser.variableDef,
+            AssignmentParser.assignment,
+            ForStatementParser.forStatement,
+            ForEachParser.forEachStatement,
+            IfStatementParser.isStatement,
+            QuantaStatementParser.quantaStatement
     ));
 
     public static final ArrayList<Class<?>> STATEMENT_TYPES = new ArrayList<>(List.of(
@@ -43,7 +43,7 @@ public class StatementToken extends Node {
 
     public static class StatementParser implements Parser<StatementToken> {
 
-        public static final StatementParser instance = new StatementParser();
+        public static final StatementParser statement = new StatementParser();
 
         private static final EitherParser parser = new EitherParser(STATEMENT_PARSERS);
 

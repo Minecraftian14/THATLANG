@@ -37,7 +37,7 @@ class InterpreterTest {
                 """;
 
         ProgramFileToken file;
-        assertNotNull(TestSuite.pj(file = ProgramFileToken.ProgramFileParser.instance.parse(program)));
+        assertNotNull(TestSuite.pj(file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
 
         assertDoesNotThrow(() -> new InterpreterOLD(file, new String[0]));
         assertDoesNotThrow(() -> new InterpreterOLD(file, new String[0]).run(file));
@@ -153,7 +153,7 @@ program main {
 
     private static void JustRunTheThing(String program) {
         ProgramFileToken file;
-        assertNotNull((file = ProgramFileToken.ProgramFileParser.instance.parse(program)));
+        assertNotNull((file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
 
         ThatVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
         vm.load(file);

@@ -11,12 +11,12 @@ class ProgramTokenTest {
         ProgramToken.ProgramParser parser = new ProgramToken.ProgramParser();
 
         assertNotNull(TestSuite.pj(parser.parse("""
-                aProgramName ->
+                program aProgramName ->
                     aStatement.aMember
                 """)));
 
         assertNotNull(TestSuite.pj(parser.parse("""
-                anotherProgramName ->
+                program anotherProgramName:
                     aStatement.aMember
                     aStatement.aMember.anotherMember
                 """)));

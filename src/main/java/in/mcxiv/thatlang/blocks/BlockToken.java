@@ -26,15 +26,15 @@ public class BlockToken extends Node {
 
     public static final class BlockParser implements Parser<BlockToken> {
 
-        public static final BlockParser instance = new BlockParser();
+        public static final BlockParser block = new BlockParser();
 
         private BlockParser() {
         }
 
         private static final EitherParser parser = new EitherParser(
-                IndentedBlockParser.instance,
-                SingleStatementBlockParser.instance,
-                BracedBlockParser.instance
+                IndentedBlockParser.indentedBlock,
+                SingleStatementBlockParser.singleStatementBlock,
+                BracedBlockParser.bracedBlock
         );
 
         @Override

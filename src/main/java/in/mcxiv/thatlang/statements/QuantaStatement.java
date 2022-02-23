@@ -36,11 +36,11 @@ public class QuantaStatement extends StatementToken {
 
     public static final class QuantaStatementParser implements Parser<QuantaStatement> {
 
-        public static final QuantaStatementParser instance = new QuantaStatementParser();
+        public static final QuantaStatementParser quantaStatement = new QuantaStatementParser();
 
         @Override
         public QuantaStatement __parse__(ParsableString string, Node parent) {
-            QuantaExpressionToken node = QuantaExpressionToken.QuantaExpressionParser.instance.parse(string);
+            QuantaExpressionToken node = QuantaExpressionToken.QuantaExpressionParser.quantaExpression.parse(string);
             if(node == null) return null;
             return new QuantaStatement(parent, node);
         }

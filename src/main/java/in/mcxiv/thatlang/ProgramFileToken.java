@@ -2,12 +2,13 @@ package in.mcxiv.thatlang;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.LooseBoundedParser;
-import in.mcxiv.thatlang.parser.power.RepeatableParser;
+import in.mcxiv.thatlang.parser.power.LooseBlockParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 
 import java.util.List;
 import java.util.Objects;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.repeatable;
 
 public class ProgramFileToken extends Node {
 
@@ -62,11 +63,11 @@ public class ProgramFileToken extends Node {
 
     public static class ProgramFileParser implements Parser<ProgramFileToken> {
 
-        private static final LooseBoundedParser parser = new LooseBoundedParser(
-                new RepeatableParser(new LooseBoundedParser(new ProgramToken.ProgramParser()))
+        private static final LooseBlockParser parser = new LooseBlockParser(
+                repeatable(new LooseBlockParser(new ProgramToken.ProgramParser()))
         );
 
-        public static ProgramFileParser instance = new ProgramFileParser();
+        public static ProgramFileParser programFile = new ProgramFileParser();
 
         @Override
         public ProgramFileToken __parse__(ParsableString string, Node parent) {
@@ -75,7 +76,7 @@ public class ProgramFileToken extends Node {
             ProgramToken[] programTokens = parse
                     .getChildren()
                     .stream()
-                    .map(node -> node.get(0))
+//                    .map(node -> node.get(0)) // NEW
                     .map(node -> ((ProgramToken) node)).toArray(ProgramToken[]::new);
             return new ProgramFileToken(programTokens);
         }

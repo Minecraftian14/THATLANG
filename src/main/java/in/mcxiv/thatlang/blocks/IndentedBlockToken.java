@@ -8,6 +8,8 @@ import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Cursors;
 
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+
 class IndentedBlockToken extends BlockToken {
 
     public IndentedBlockToken(Node... statements) {
@@ -16,7 +18,7 @@ class IndentedBlockToken extends BlockToken {
 
     public static class IndentedBlockParser implements Parser<IndentedBlockToken> {
 
-        public static final IndentedBlockParser instance = new IndentedBlockParser();
+        public static final IndentedBlockParser indentedBlock = new IndentedBlockParser();
 
         @Override
         public IndentedBlockToken __parse__(ParsableString string, Node parent) {
@@ -45,14 +47,14 @@ class IndentedBlockToken extends BlockToken {
 
             string.setCursor(fallBack);
 
-            RepeatableParser parser = new RepeatableParser(new EitherParser(
-                    new CompoundParser(
-                            new WordParser("\n" + spaces),
+            RepeatableParser parser = repeatable(new EitherParser(
+                    compound(
+                            word("\n" + spaces),
                             new StatementToken.StatementParser()
                     ),
-                    new CompoundParser(
-                            new WordParser("\n"),
-                            new OptionalParser(SpacesToken.SpacesParser.instance)
+                    compound(
+                            word("\n"),
+                            optional(SpacesToken.SpacesParser.spaces)
                     )
             ));
             Node node = parser.parse(string);
@@ -60,7 +62,7 @@ class IndentedBlockToken extends BlockToken {
 
             IndentedBlockToken token = new IndentedBlockToken();
             node.getChildren().stream() // for all repeat nodes which are compound nodes
-                    .map(ch -> ch.get(0)) // map them to their first arguments which are also compound nodes
+//                    .map(ch -> ch.get(0)) // map them to their first arguments which are also compound nodes // NEW
                     .map(ch -> ch.get(1)) // now, map those to their second arguments which can either be StatementToken or an empty node by optional
                     .forEach(token::addChild);
 

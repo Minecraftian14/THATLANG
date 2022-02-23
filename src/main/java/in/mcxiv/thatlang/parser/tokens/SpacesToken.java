@@ -22,7 +22,7 @@ public class SpacesToken extends StringValueNode {
     }
 
     public static class SpacesParser implements Parser<SpacesToken> {
-        public static SpacesParser instance = new SpacesParser();
+        public static SpacesParser spaces = new SpacesParser();
 
         @Override
         public SpacesToken __parse__(ParsableString string, Node parent) {

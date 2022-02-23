@@ -22,7 +22,7 @@ public class NameToken extends StringValueNode {
     }
 
     public static class NameParser implements Parser<NameToken> {
-        public static NameParser instance = new NameParser();
+        public static NameParser name = new NameParser();
 
         @Override
         public NameToken __parse__(ParsableString string, Node parent) {

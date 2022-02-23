@@ -2,12 +2,13 @@ package in.mcxiv.thatlang.blocks;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.*;
 import in.mcxiv.thatlang.parser.tokens.SpacesToken.SpacesParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.thatlang.statements.StatementToken.StatementParser;
 import in.mcxiv.utils.Cursors;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class BracedBlockToken extends BlockToken {
 
@@ -17,21 +18,21 @@ public class BracedBlockToken extends BlockToken {
 
     public static final class BracedBlockParser implements Parser<BracedBlockToken> {
 
-        public static final BracedBlockParser instance = new BracedBlockParser();
+        public static final BracedBlockParser bracedBlock = new BracedBlockParser();
 
-        private static final Parser<?> stepParser = new CompoundParser(
-                new EitherParser(SpacesParser.instance, StatementParser.instance),
-                new WordParser("\n")
+        private static final Parser<?> stepParser = compound(
+                either(SpacesParser.spaces, StatementParser.statement),
+                word("\n")
         );
 
         private static final Parser<?> parser =
-                new CompoundParser(
-                        new WordParser("{"),
-                        new RepeatableParser(
-                                new LooseBoundedParser(
+                compound(
+                        word("{"),
+                        repeatable(
+                                block(
                                         stepParser
                                 )),
-                        new WordParser("}")
+                        word("}")
                 );
 
         private BracedBlockParser() {
@@ -70,7 +71,7 @@ public class BracedBlockToken extends BlockToken {
                     .get(1) // The repeatable parser node
                     .getChildren() // Every node returned by CompoundParser inside the repeatable parser
                     .stream() // Each of those compound node contain only one node, returned by stepParser
-                    .map(ch -> ch.get(0)) // interreplacing the compound node by that stepParser node
+//                    .map(ch -> ch.get(0)) // interreplacing the compound node by that stepParser node // NEW
                     .map(ch -> ch.get(0)) // interreplacing the stepParser node which is also a compound node by the first node in step, ie, whatever was returned by EitherParser
                     .filter(ch -> ch instanceof StatementToken)
                     .map(ch -> ((StatementToken) ch))

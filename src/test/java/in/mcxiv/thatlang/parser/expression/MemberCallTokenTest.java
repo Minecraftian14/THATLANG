@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MemberCallTokenTest {
     @Test
     void test() {
-        MemberCallToken.MemberCallParser parser = MemberCallToken.MemberCallParser.instance;
+        MemberCallToken.MemberCallParser parser = MemberCallToken.MemberCallParser.member;
         assertNotNull(TestSuite.pj(parser.parse("mamam")));
     }
 }

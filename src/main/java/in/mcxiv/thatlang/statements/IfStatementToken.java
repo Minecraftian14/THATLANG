@@ -5,12 +5,11 @@ import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.WordParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 
 import java.util.List;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class IfStatementToken extends StatementToken {
 
@@ -41,14 +40,14 @@ public class IfStatementToken extends StatementToken {
 
     public static class IfStatementParser implements Parser<IfStatementToken> {
 
-        public static final IfStatementParser instance = new IfStatementParser();
+        public static final IfStatementParser isStatement = new IfStatementParser();
 
-        private static final Parser<Node> parser = new CompoundParser(
-                new WordParser("if"),
-                new LooseSpaceBoundedParser("("),
-                ExpressionsParser.instance,
-                new LooseSpaceBoundedParser(")"),
-                BlockToken.BlockParser.instance
+        private static final Parser<Node> parser = compound(
+                word("if"),
+                inline("("),
+                ExpressionsParser.expression,
+                inline(")"),
+                BlockToken.BlockParser.block
         );
 
         @Override

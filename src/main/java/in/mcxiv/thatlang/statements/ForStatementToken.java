@@ -5,12 +5,13 @@ import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.power.*;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
 import in.mcxiv.thatlang.statements.VariableDefinitionToken.VariableDefinitionParser;
 
 import java.util.List;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class ForStatementToken extends StatementToken {
 
@@ -53,18 +54,18 @@ public class ForStatementToken extends StatementToken {
 
     public static class ForStatementParser implements Parser<ForStatementToken> {
 
-        public static final ForStatementParser instance = new ForStatementParser();
+        public static final ForStatementParser forStatement = new ForStatementParser();
 
-        private static final Parser<Node> parser = new CompoundParser(
-                new WordParser("for"),
-                new LooseSpaceBoundedParser("("),
-                new OptionalParser(new EitherParser(VariableDefinitionParser.instance, AssignmentParser.instance)),
-                new LooseSpaceBoundedParser(";"),
-                new OptionalParser(ExpressionsParser.instance),
-                new LooseSpaceBoundedParser(";"),
-                new OptionalParser(AssignmentParser.instance),
-                new LooseSpaceBoundedParser(")"),
-                BlockToken.BlockParser.instance
+        private static final Parser<Node> parser = compound(
+                word("for"),
+                inline("("),
+                optional(either(VariableDefinitionParser.variableDef, AssignmentParser.assignment)),
+                inline(";"),
+                optional(ExpressionsParser.expression),
+                inline(";"),
+                optional(AssignmentParser.assignment),
+                inline(")"),
+                BlockToken.BlockParser.block
         );
 
         @Override

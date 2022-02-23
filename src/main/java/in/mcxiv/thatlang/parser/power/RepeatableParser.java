@@ -1,15 +1,15 @@
 package in.mcxiv.thatlang.parser.power;
 
-import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.ParsableString;
+import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.tree.Node;
 
 public class RepeatableParser implements Parser<Node> {
 
-    private final CompoundParser parser;
+    private final Parser<?> parser;
 
-    public RepeatableParser(Parser<?>... parsers) {
-        this.parser = new CompoundParser(parsers);
+    public RepeatableParser(Parser<?> parser) {
+        this.parser = parser;
     }
 
     @Override

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ExpressionsTokenTest {
     @Test
     void test() {
-        ExpressionsToken.ExpressionsParser parser = ExpressionsToken.ExpressionsParser.instance;
+        ExpressionsToken.ExpressionsParser parser = ExpressionsToken.ExpressionsParser.expression;
 
         assertNotNull(TestSuite.pj(parser.parse("oneWord.hello")));
         assertNotNull(TestSuite.pj(parser.parse("oneWord.hello()")));
@@ -21,7 +21,7 @@ class ExpressionsTokenTest {
 
     @Test
     void testSomethingMoreComplex() {
-        ExpressionsToken.ExpressionsParser parser = ExpressionsToken.ExpressionsParser.instance;
+        ExpressionsToken.ExpressionsParser parser = ExpressionsToken.ExpressionsParser.expression;
         Node node;
 
         assertNotNull(TestSuite.pj(node = parser.parse("1+2*4-4")));

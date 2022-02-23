@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class StatementParserTest {
     @Test
     void test() {
-        StatementToken.StatementParser parser = StatementToken.StatementParser.instance;
+        StatementToken.StatementParser parser = StatementToken.StatementParser.statement;
 
         Assertions.assertNotNull(TestSuite.pj(parser.parse("print(shit)")));
     }

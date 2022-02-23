@@ -2,22 +2,21 @@ package in.mcxiv.thatlang.parser.expression;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.WordParser;
 import in.mcxiv.thatlang.parser.tree.Node;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 /**
  * B of BODMAS
  */
 public class ParenthesisParser implements Parser<ExpressionsToken> {
 
-    public static final ParenthesisParser instance = new ParenthesisParser();
+    public static final ParenthesisParser parenthesisBlock = new ParenthesisParser();
 
-    private static final Parser parser = new CompoundParser(
-            new WordParser("("),
-            new LooseSpaceBoundedParser(ExpressionsToken.ExpressionsParser.instance),
-            new WordParser(")")
+    private static final Parser parser = compound(
+            word("("),
+            inline(ExpressionsToken.ExpressionsParser.expression),
+            word(")")
     );
 
     private ParenthesisParser() {

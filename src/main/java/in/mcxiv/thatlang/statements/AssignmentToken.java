@@ -3,13 +3,10 @@ package in.mcxiv.thatlang.statements;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.power.EitherParser;
-import in.mcxiv.thatlang.parser.power.LooseSpaceBoundedParser;
-import in.mcxiv.thatlang.parser.power.WordParser;
 import in.mcxiv.thatlang.parser.tokens.NameToken;
-import in.mcxiv.thatlang.parser.tokens.generic.StringValueNode;
 import in.mcxiv.thatlang.parser.tree.Node;
+
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class AssignmentToken extends StatementToken {
 
@@ -36,12 +33,12 @@ public class AssignmentToken extends StatementToken {
 
     public static class AssignmentParser implements Parser<AssignmentToken> {
 
-        private static final Parser<?> parser = new CompoundParser(
-                NameToken.NameParser.instance,
-                new LooseSpaceBoundedParser(new EitherParser(new WordParser("="), new WordParser("<<"))),
-                ExpressionsToken.ExpressionsParser.instance
+        private static final Parser<?> parser = compound(
+                NameToken.NameParser.name,
+                inline(either(word("="), word("<<"))),
+                ExpressionsToken.ExpressionsParser.expression
         );
-        public static AssignmentParser instance = new AssignmentParser();
+        public static AssignmentParser assignment = new AssignmentParser();
 
         @Override
         public AssignmentToken __parse__(ParsableString string, Node parent) {
