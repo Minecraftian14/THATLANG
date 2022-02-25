@@ -10,6 +10,7 @@ import in.mcxiv.thatlang.statements.ElseStatementToken.ElseStatementParser;
 import in.mcxiv.thatlang.statements.ForEachToken.ForEachParser;
 import in.mcxiv.thatlang.statements.ForStatementToken.ForStatementParser;
 import in.mcxiv.thatlang.statements.IfStatementToken.IfStatementParser;
+import in.mcxiv.thatlang.statements.MultiAssignmentToken.MultiAssignmentParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class StatementToken extends Node {
     public static final ArrayList<Parser<?>> STATEMENT_PARSERS = new ArrayList<>(List.of(
             VariableDefinitionParser.variableDef,
             AssignmentParser.assignment,
+            MultiAssignmentParser.multiAssignment,
             ForStatementParser.forStatement,
             ForEachParser.forEachStatement,
             IfStatementParser.ifStatement,
@@ -34,6 +36,7 @@ public class StatementToken extends Node {
     public static final ArrayList<Class<?>> STATEMENT_TYPES = new ArrayList<>(List.of(
             VariableDefinitionToken.class,
             AssignmentToken.class,
+            MultiAssignmentToken.class,
             ForStatementToken.class,
             ForEachToken.class,
             IfStatementToken.class,

@@ -142,19 +142,30 @@ program main {
     void test___ProllyTheLast___Well() {
         TestSuite.redefineInput("11");
 
+        //noinspection UnnecessaryStringEscape
         String program = """
                 program main:
                     var val = scani()
-                    if val == 10:
-                        pln("YES")
-                    else if val == 11 {
-                        pln("<'_'>")
-                    }
-                    else->pln("BRUH")
+                    if val == 10 -> pln("YES")
+                    else if val == 11 -> pln("<'_'>")
+                    else -> pln("BRUH")
+                    val.sub = 10
+                    pln(val.sub)
+                    val.sub 10 11 12
+                    printf("%s %s %s\n", val.s, val.u, val.b)
                 """;
 
         JustRunTheThing(program);
-        assertOutput("<'_'>", builder);
+        assertOutput("""
+                <'_'>
+                10
+                10 11 12
+                """, builder);
+
+
+        // TODO: CONTINUE HERE: Impl obj.xyz 10 20 30 thing
+
+
     }
 
     private void assertOutput(String s, StringBuilder builder) {

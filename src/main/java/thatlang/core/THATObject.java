@@ -13,12 +13,39 @@ public class THATObject {
 
     public String name = "loaded from memory";
     public Object value;
-    public HashMap< /*DATA_KEY*/ String, /*DATA_VALUE*/ Object> objectData = new HashMap<>();
+    HashMap< /*DATA_KEY*/ String, /*DATA_VALUE*/ Object> objectData = new HashMap<>();
 
     HashMap< /*NAME*/ String, /*OBJECT*/ THATObject> accessibleMember = new HashMap<>();
 
-    public THATObject seekMember(String name) {
-        return accessibleMember.getOrDefault(name, null);
+    public Object getObjectData(String dataKey) {
+        return objectData.get(dataKey);
+    }
+
+    public <T> T getObjectData(String dataKey, Class<T> dataClass) {
+        return dataClass.cast(objectData.get(dataKey));
+    }
+
+    public void putObjectData(String dataKey, Object dataValue) {
+        objectData.put(dataKey, dataValue);
+    }
+
+    public THATObject getMember(String memberName) {
+        return accessibleMember.get(memberName);
+    }
+
+    public void putMember(String memberName, THATObject member) {
+        accessibleMember.put(memberName, member);
+    }
+
+    public void putMember(THATObject member) {
+        accessibleMember.put(member.name, member);
+    }
+
+    public THATObject getPossiblyNewMember(String memberName) {
+        THATObject member = getMember(memberName);
+        if(member != null) return member;
+        member = THOSEObjects.createValue(null);
+        return member;
     }
 
     public THATObject seekFunction(FunctionCallToken name) {

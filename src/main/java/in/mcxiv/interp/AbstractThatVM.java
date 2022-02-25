@@ -64,15 +64,23 @@ public abstract class AbstractThatVM {
     public void runStatement(StatementToken node) {
 //        executionEnvironment.getPrograms(); may have optionally defined statements :evil_laugh:
 
-        if (node instanceof VariableDefinitionToken vdt){
+        if (node instanceof VariableDefinitionToken vdt) {
             THATObject object = eval(vdt.getExpression());
-            object.objectData.put(DATA_KEY_CONSTRUCTION_TYPE, vdt.getType());
+            object.putObjectData(DATA_KEY_CONSTRUCTION_TYPE, vdt.getType());
             object.name = vdt.getName();
             executionStack.peek().getB().newVariable(object);
         }
 //
         else if (node instanceof AssignmentToken at)
-            executionStack.peek().getB().variables.stream().filter(variable -> at.getName().equals(variable.name)).findFirst().ifPresent(variable -> variable.value = eval(at.getExpression()).value);
+            THOSEObjects.mutateValue(evalQuanta(at.getField()), eval(at.getExpression()).value);
+//
+        else if (node instanceof MultiAssignmentToken mat) {
+            THATObject field = evalQuanta(mat.getField());
+            for (int i = 0; i < mat.getSubFields().length; i++) {
+                THATObject value = THOSEObjects.createAfterReducing(mat.getValues()[i].getValue());
+                field.putMember(mat.getSubFields()[i].getValue(), value);
+            }
+        }
 //
         else if (node instanceof ForStatementToken fst)
             for (
@@ -129,22 +137,29 @@ public abstract class AbstractThatVM {
             if (iterator.isString()) {
                 String value = iterator.nextString().getValue();
                 assert variable == null : "Cant access a string as if it's a member of some variable...";
-                variable = THOSEObjects.create(value);
+                variable = THOSEObjects.createValue(value);
 
             } else if (iterator.isMember()) {
                 String value = iterator.nextMember().getValue();
-                if (variable == null) {
+                if (variable == null) /* ie we're probably accessing a local field */ {
                     variable = executionStack.peek().getB().seek(value);
-                    if (variable == null) variable = THOSEObjects.createAfterReducing(value);
-                } else variable = variable.seekMember(value);
+                    if (variable == null) /* ie there is no such variable created by that name */
+                        variable = THOSEObjects.createAfterReducing(value); // so we treat it as if it's a value
+                } else /* ie we're accessing a field in variable */ {
+                    var member = variable.getMember(value);
+                    if (member == null) /* ie we are probably creating something? */ {
+                        member = THOSEObjects.createValue(null);
+                        variable.putMember(value, member);
+                    }
+                    variable = member;
+                }
 
             } else if (iterator.isFunction()) {
                 FunctionCallToken function = iterator.nextFunction();
-                if (variable == null) {
+                if (variable == null)
                     variable = evalFunction(function);
-                } else {
+                else
                     variable = variable.seekFunction(function);
-                }
             }
         }
         return variable == null ? THOSEObjects.NULL : variable;

@@ -63,8 +63,12 @@ public class Node {
     }
 
     public void delete() {
-        if (parent != null) parent.getA().children.removeIf(pair -> pair.getA().equals(this));
+        detach();
 //        children.forEach(pair -> pair.getA().delete());
+    }
+
+    public void detach(){
+        if (parent != null) parent.getA().children.removeIf(pair -> pair.getA().equals(this));
     }
 
     public List<Node> getChildren() {

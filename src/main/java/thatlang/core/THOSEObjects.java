@@ -17,17 +17,20 @@ public final class THOSEObjects {
     private THOSEObjects() {
     }
 
-    public static THATObject create(Object value) {
-        THATObject object = new THATObject();
-
+    public static void mutateValue(THATObject object, Object value) {
         object.value = value;
+
         if (Types.isNativeType(value.getClass()))
             object.primaryInference = value.getClass();
         else {
-            object.primaryInference = null;
+            object.primaryInference = String.class; // TODO: should we place null or String (because every obj can be represented by toString?)
             object.secondaryInferences.add(value.getClass());
         }
+    }
 
+    public static THATObject create(Object value) {
+        THATObject object = new THATObject();
+        if (value != null) mutateValue(object, value);
         return object;
     }
 
