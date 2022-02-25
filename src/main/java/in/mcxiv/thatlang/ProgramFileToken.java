@@ -76,7 +76,6 @@ public class ProgramFileToken extends Node {
             ProgramToken[] programTokens = parse
                     .getChildren()
                     .stream()
-//                    .map(node -> node.get(0)) // NEW
                     .map(node -> ((ProgramToken) node)).toArray(ProgramToken[]::new);
             return new ProgramFileToken(programTokens);
         }

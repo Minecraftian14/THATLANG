@@ -2,17 +2,21 @@ package in.mcxiv.thatlang.blocks;
 
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.*;
+import in.mcxiv.thatlang.parser.power.EitherParser;
+import in.mcxiv.thatlang.parser.power.RepeatableParser;
 import in.mcxiv.thatlang.parser.tokens.SpacesToken;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Cursors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 class IndentedBlockToken extends BlockToken {
 
-    public IndentedBlockToken(Node... statements) {
+    public IndentedBlockToken(StatementToken... statements) {
         super(statements);
     }
 
@@ -43,7 +47,7 @@ class IndentedBlockToken extends BlockToken {
                     break;
             }
 
-            String spaces = string.subSequencePS(lastOccurrenceOfNewLine+1, string.getCursor()-1).toStringValue();
+            String spaces = string.subSequencePS(lastOccurrenceOfNewLine + 1, string.getCursor() - 1).toStringValue();
 
             string.setCursor(fallBack);
 
@@ -60,11 +64,18 @@ class IndentedBlockToken extends BlockToken {
             Node node = parser.parse(string);
             if (node == null) return null;
 
-            IndentedBlockToken token = new IndentedBlockToken();
-            node.getChildren().stream() // for all repeat nodes which are compound nodes
-//                    .map(ch -> ch.get(0)) // map them to their first arguments which are also compound nodes // NEW
-                    .map(ch -> ch.get(1)) // now, map those to their second arguments which can either be StatementToken or an empty node by optional
-                    .forEach(token::addChild);
+            List<Node> children = new ArrayList<>(node.getChildren());
+            if (children.get(children.size() - 1).get(1) instanceof SpacesToken st) {
+                string.moveCursor(-st.getValue().length() - 1);
+                children.remove(children.size() - 1);
+            }
+
+            IndentedBlockToken token = new IndentedBlockToken(
+                    children.stream() // for all repeat nodes which are compound nodes
+                            .map(ch -> ch.get(1)) // now, map those to their second arguments which can either be StatementToken or an empty node by optional
+                            .filter(ch -> ch instanceof StatementToken)
+                            .toArray(StatementToken[]::new)
+            );
 
 //            IntStream.range(0, node.noOfChildren() / 2)
 //                    .map(i -> 2 * i)

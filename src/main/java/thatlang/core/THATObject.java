@@ -13,7 +13,7 @@ public class THATObject {
 
     public String name = "loaded from memory";
     public Object value;
-    HashMap< /*DATA_KEY*/ String, /*DATA_VALUE*/ Object> objectData = new HashMap<>();
+    public HashMap< /*DATA_KEY*/ String, /*DATA_VALUE*/ Object> objectData = new HashMap<>();
 
     HashMap< /*NAME*/ String, /*OBJECT*/ THATObject> accessibleMember = new HashMap<>();
 
@@ -38,7 +38,9 @@ public class THATObject {
         // TODO
         if (primaryInference == String.class && that.primaryInference == String.class)
             return value.equals(that.value);
-        if (primaryInference == that.primaryInference)
+        if (Number.class.isAssignableFrom(primaryInference) && Number.class.isAssignableFrom(that.primaryInference))
+            return ((Number) value).doubleValue() == ((Number) that.value).doubleValue();
+        if (primaryInference == that.primaryInference) // TODO
             return value.equals(that.value);
         return value.equals(that.value);
     }

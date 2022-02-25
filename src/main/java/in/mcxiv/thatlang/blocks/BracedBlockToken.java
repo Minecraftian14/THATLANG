@@ -12,7 +12,7 @@ import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class BracedBlockToken extends BlockToken {
 
-    public BracedBlockToken(Node... statements) {
+    public BracedBlockToken(StatementToken... statements) {
         super(statements);
     }
 
@@ -71,7 +71,6 @@ public class BracedBlockToken extends BlockToken {
                     .get(1) // The repeatable parser node
                     .getChildren() // Every node returned by CompoundParser inside the repeatable parser
                     .stream() // Each of those compound node contain only one node, returned by stepParser
-//                    .map(ch -> ch.get(0)) // interreplacing the compound node by that stepParser node // NEW
                     .map(ch -> ch.get(0)) // interreplacing the stepParser node which is also a compound node by the first node in step, ie, whatever was returned by EitherParser
                     .filter(ch -> ch instanceof StatementToken)
                     .map(ch -> ((StatementToken) ch))

@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InterpreterTest {
 
-
     static StringBuilder builder;
 
     @BeforeAll
@@ -21,17 +20,8 @@ class InterpreterTest {
     }
 
     @Test
-    @Disabled
-    void runAllTests() {
-        simpleTest();
-        testExpressions();
-        testVariablesAndInputs();
-        testingForLoops();
-    }
-
-    @Test
     @Disabled("Deprecated")
-    void test() {
+    void testPrototype() {
         String program = """
                 main ->
                     print(HelloWorld)
@@ -107,7 +97,7 @@ class InterpreterTest {
 
     @Test
     void testingForLoops() {
-        TestSuite.redefineInput("10");
+        TestSuite.redefineInput("9");
 
         String program = """
                 program main:
@@ -121,6 +111,8 @@ class InterpreterTest {
 
     @Test
     void calculator() {
+        // CONTINUE HERE: Debug this test
+
         TestSuite.redefineInput("10\n20\n*");
 
         String program = """
@@ -140,10 +132,29 @@ program main {
     if(o=="+")->pln(a+b)
     if(o=="-")->pln(a-b)
     if(o=="%")->pln(a%b)
-                }
+}
                                 """;
         JustRunTheThing(program);
         assertOutput("200.0", builder);
+    }
+
+    @Test
+    void test___ProllyTheLast___Well() {
+        TestSuite.redefineInput("11");
+
+        String program = """
+                program main:
+                    var val = scani()
+                    if val == 10:
+                        pln("YES")
+                    else if val == 11 {
+                        pln("<'_'>")
+                    }
+                    else->pln("BRUH")
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("<'_'>", builder);
     }
 
     private void assertOutput(String s, StringBuilder builder) {

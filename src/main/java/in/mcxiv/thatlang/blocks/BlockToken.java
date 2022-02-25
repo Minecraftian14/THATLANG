@@ -11,8 +11,21 @@ import in.mcxiv.thatlang.statements.StatementToken;
 
 public class BlockToken extends Node {
 
-    public BlockToken(Node... statements) {
-        for (Node node : statements) addChild(node);
+    public BlockToken(StatementToken... statements) {
+        for (int i = 0; i < statements.length; i++) {
+            StatementToken stmt = statements[i];
+            addChild(stmt);
+            if (stmt.isCondensable())
+                for (++i; i < statements.length; i++) {
+                    if (stmt.isAccepted(statements[i]))
+                        stmt.processCondensability(statements[i]);
+                    else {
+                        --i;
+                        break;
+                    }
+                }
+        }
+//        for (Node node : statements) addChild(node);
     }
 
     @Override

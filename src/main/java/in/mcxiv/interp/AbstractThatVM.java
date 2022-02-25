@@ -17,6 +17,8 @@ import thatlang.core.THOSEObjects;
 import java.util.List;
 import java.util.Stack;
 
+import static thatlang.core.THOSEObjects.DATA_KEY_CONSTRUCTION_TYPE;
+
 public abstract class AbstractThatVM {
 
     final Environment executionEnvironment;
@@ -62,8 +64,12 @@ public abstract class AbstractThatVM {
     public void runStatement(StatementToken node) {
 //        executionEnvironment.getPrograms(); may have optionally defined statements :evil_laugh:
 
-        if (node instanceof VariableDefinitionToken vdt)
-            executionStack.peek().getB().newVariable(vdt.getType(), vdt.getName(), eval(vdt.getExpression()).v());
+        if (node instanceof VariableDefinitionToken vdt){
+            THATObject object = eval(vdt.getExpression());
+            object.objectData.put(DATA_KEY_CONSTRUCTION_TYPE, vdt.getType());
+            object.name = vdt.getName();
+            executionStack.peek().getB().newVariable(object);
+        }
 //
         else if (node instanceof AssignmentToken at)
             executionStack.peek().getB().variables.stream().filter(variable -> at.getName().equals(variable.name)).findFirst().ifPresent(variable -> variable.value = eval(at.getExpression()).value);
@@ -76,14 +82,29 @@ public abstract class AbstractThatVM {
             )
                 fst.getStatements().forEach(this::runStatement);
 //
-        else if (node instanceof IfStatementToken ist) {
-            if (PrimitiveParser.BOOLEAN.parse(eval(ist.getCondition()).v()))
-                ist.getStatements().forEach(this::runStatement);
-        }
+        else if (node instanceof IfStatementToken ist)
+            runIf(ist);
 //
         else if (node instanceof QuantaStatement qs)
             evalQuanta(qs.getToken());
 
+    }
+
+    private void runIf(IfStatementToken ist) {
+        if (PrimitiveParser.BOOLEAN.parse(eval(ist.getCondition()).v()))
+            ist.getStatements().forEach(this::runStatement);
+        else {
+            boolean if_captured = false;
+            for (ElseIfStatementToken eist : ist.getElseIfSts()) {
+                if (PrimitiveParser.BOOLEAN.parse(eval(eist.getCondition()).v())) {
+                    if_captured = true;
+                    eist.getStatements().forEach(this::runStatement);
+                    break;
+                }
+            }
+            if (!if_captured && ist.getElseSt() != null)
+                ist.getElseSt().getStatements().forEach(this::runStatement);
+        }
     }
 
     public THATObject eval(ExpressionsToken expression) {
@@ -114,7 +135,7 @@ public abstract class AbstractThatVM {
                 String value = iterator.nextMember().getValue();
                 if (variable == null) {
                     variable = executionStack.peek().getB().seek(value);
-                    if (variable == null) variable = THOSEObjects.create(value);
+                    if (variable == null) variable = THOSEObjects.createAfterReducing(value);
                 } else variable = variable.seekMember(value);
 
             } else if (iterator.isFunction()) {

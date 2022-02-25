@@ -6,13 +6,15 @@ import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Cursors;
 
+import static in.mcxiv.thatlang.statements.StatementToken.StatementParser.statement;
+
 class SingleStatementBlockToken extends BlockToken {
 
-    public SingleStatementBlockToken(Node statement) {
+    public SingleStatementBlockToken(StatementToken statement) {
         super(statement);
     }
 
-    public SingleStatementBlockToken(Node parent, Node statement) {
+    public SingleStatementBlockToken(Node parent, StatementToken statement) {
         super(statement);
         parent.addChild(this);
     }
@@ -31,8 +33,21 @@ class SingleStatementBlockToken extends BlockToken {
 
             while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
 
-            StatementToken node = StatementToken.StatementParser.statement.parse(string);
+            StatementToken node = statement.parse(string);
             if (node == null) return null;
+
+            // We gotta see if there are any condensable statements ahead...
+            if (node.isCondensable()) while (Cursors.bound(string)) {
+                int backup = string.getCursor();
+                while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
+                StatementToken possibility = statement.parse(string);
+                if (node.isAccepted(possibility))
+                    node.processCondensability(possibility);
+                else {
+                    string.setCursor(backup);
+                    break;
+                }
+            }
 
             return new SingleStatementBlockToken(parent, node);
         }
