@@ -30,6 +30,7 @@ public class StatementToken extends Node {
             ElseIfStatementParser.elseIfStatement,
             ElseStatementParser.elseStatement,
             IfStatementParser.ifStatement,
+            BinaryFunctionStatementToken.binaryFunctionStmt,
             QuantaStatementParser.quantaStatement
     ));
 

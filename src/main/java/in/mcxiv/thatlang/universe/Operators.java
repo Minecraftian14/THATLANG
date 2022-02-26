@@ -4,6 +4,7 @@ import com.mcxiv.logger.decorations.Format;
 import in.mcxiv.utils.LinkedList;
 import in.mcxiv.utils.PrimitiveParser;
 import thatlang.core.THATObject;
+import thatlang.core.THOSEObjects;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -23,11 +24,11 @@ public class Operators {
         prt(LOG_HEAD, UNDER_STATIC_INITIALIZER);
 
         map.put("**", (l, r) -> s(Math.pow(n(l), n(r))));
-//        operators.put("++"); Unary
-//        operators.put("--"); Unary
-//        operators.put("+"); Unary
-//        operators.put("-"); Unary
-//        operators.put("~"); Unary
+        map.put("++", unary(l -> getAndIncr(l, +1), r -> incrAndGet(r, +1))); // Unary
+        map.put("--", unary(l -> getAndIncr(l, -1), r -> incrAndGet(r, -1))); // Unary
+//        operators.put("+"); // Unary // TODO: CONTINUE HERE
+//        operators.put("-"); // Unary
+//        operators.put("~"); // Unary
 //        operators.put("(type cast)"); Unary (cast)
 //        operators.put("!"); Unary
 //        operators.put("not"); Unary (for operators)
@@ -76,6 +77,18 @@ public class Operators {
         list = new LinkedList<>(map, s -> s);
     }
 
+    private static THATObject getAndIncr(THATObject l, int d) {
+        double n = n(l);
+        THOSEObjects.mutateValue(l, n + d);
+        return s(n);
+    }
+
+    private static THATObject incrAndGet(THATObject r, int d) {
+        double n = n(r) + 1;
+        THOSEObjects.mutateValue(r, n - d);
+        return s(n);
+    }
+
     private static boolean XOR(boolean a, boolean b) {
         return (a || b) && (!(a && b));
     }
@@ -107,6 +120,30 @@ public class Operators {
 
     public interface BinaryOperatorOperation {
         THATObject act(THATObject l, THATObject r);
+    }
+
+    public static BinaryOperatorOperation unary(PrefixOperation prefix, PostfixOperation postfix) {
+        return (l, r) -> {
+            if (l != null) return postfix.act(l);
+            else if (r != null) return prefix.act(r);
+            else throw new IllegalStateException();
+        };
+    }
+
+    public interface UnaryOperatorOperation extends BinaryOperatorOperation {
+        THATObject act(THATObject l);
+
+        default THATObject act(THATObject l, THATObject r) {
+            return act(l);
+        }
+    }
+
+    public interface PrefixOperation extends UnaryOperatorOperation {
+        THATObject act(THATObject l);
+    }
+
+    public interface PostfixOperation extends UnaryOperatorOperation {
+        THATObject act(THATObject r);
     }
 
 }

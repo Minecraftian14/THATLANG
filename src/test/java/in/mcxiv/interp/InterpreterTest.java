@@ -116,24 +116,24 @@ class InterpreterTest {
         TestSuite.redefineInput("10\n20\n*");
 
         String program = """
-program main {
-    var a = scani()
-    var b = scani()
-    var o = scan()
-    prt("The value of operand A received is ")
-    pln(a)
-    prt("The value of operand B received is ")
-    pln(b)
-    prt("The operation on A and B requested is ")
-    pln(o)
-    prt("The result of this operation is ")
-    if(o=="*")->pln(a*b)
-    if(o=="/")->pln(a/b)
-    if(o=="+")->pln(a+b)
-    if(o=="-")->pln(a-b)
-    if(o=="%")->pln(a%b)
-}
-                                """;
+                program main {
+                    var a = scani()
+                    var b = scani()
+                    var o = scan()
+                    prt("The value of operand A received is ")
+                    pln(a)
+                    prt("The value of operand B received is ")
+                    pln(b)
+                    prt("The operation on A and B requested is ")
+                    pln(o)
+                    prt("The result of this operation is ")
+                    if(o=="*")->pln(a*b)
+                    if(o=="/")->pln(a/b)
+                    if(o=="+")->pln(a+b)
+                    if(o=="-")->pln(a-b)
+                    if(o=="%")->pln(a%b)
+                }
+                                                """;
         JustRunTheThing(program);
         assertOutput("200.0", builder);
     }
@@ -162,10 +162,27 @@ program main {
                 10 11 12
                 """, builder);
 
+    }
 
-        // TODO: CONTINUE HERE: Impl obj.xyz 10 20 30 thing
+    @Test
+    void functions() {
+        String program = """
+                program main   -> act(hey)
+                fun act < word -> printf(">> %s%n", word)
+                """;
 
+        JustRunTheThing(program);
+        assertOutput("hey", builder);
 
+        program = """
+                program main:
+                    act(Hello, World)
+                    Hello act World
+                fun act < a, b -> printf(">> %s %s%n", a, b)
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("Hello World", builder);
     }
 
     private void assertOutput(String s, StringBuilder builder) {
@@ -177,6 +194,7 @@ program main {
     private static void JustRunTheThing(String program) {
         ProgramFileToken file;
         assertNotNull((file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
+//        System.out.println(TestSuite.pj(file));
 
         ThatVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
         vm.load(file);

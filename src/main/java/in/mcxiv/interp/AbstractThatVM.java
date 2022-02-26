@@ -14,6 +14,7 @@ import in.mcxiv.utils.PrimitiveParser;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -35,14 +36,14 @@ public abstract class AbstractThatVM {
     }
 
     public ProgramToken getMain(ProgramFileToken file) {
-        return file.getProgramTokens().stream()
+        return Arrays.stream(file.getPrograms())
                 .filter(program -> program.getProgramName().equals("main"))
-                .findFirst().orElse((ProgramToken) file.getChildren().get(0));
+                .findFirst().orElse(file.getPrograms()[0]);
     }
 
     public void load(ProgramFileToken file) {
         executionEnvironment.addProgramFile(file);
-        file.getProgramTokens().stream()
+        Arrays.stream(file.getPrograms())
                 .filter(program -> program.getProgramName().equals("init"))
                 .forEach(this::run);
     }
@@ -168,7 +169,6 @@ public abstract class AbstractThatVM {
     public THATObject evalBinary(BinaryOperatorToken bot) {
         return Operators.operate(eval(bot.getLeft()), bot.getOperator(), eval((bot.getRight())));
     }
-
     public THATObject evalFunction(FunctionCallToken fct) {
         List<FunctionEvaluator> list = executionEnvironment.getFunctionEvaluators();
 

@@ -31,7 +31,7 @@ public class QuantaStatement extends StatementToken {
 
     @Override
     public String toString() {
-        return toExtendedString(token.getChildren());
+        return toExtendedString("call seq", token.getChildren());
     }
 
     public static final class QuantaStatementParser implements Parser<QuantaStatement> {
@@ -41,7 +41,7 @@ public class QuantaStatement extends StatementToken {
         @Override
         public QuantaStatement __parse__(ParsableString string, Node parent) {
             QuantaExpressionToken node = QuantaExpressionToken.QuantaExpressionParser.quantaExpression.parse(string);
-            if(node == null) return null;
+            if (node == null) return null;
             return new QuantaStatement(parent, node);
         }
     }

@@ -16,7 +16,7 @@ class SingleStatementBlockToken extends BlockToken {
 
     public SingleStatementBlockToken(Node parent, StatementToken statement) {
         super(statement);
-        parent.addChild(this);
+        if (parent != null) parent.addChild(this);
     }
 
     public static class SingleStatementBlockParser implements Parser<SingleStatementBlockToken> {
