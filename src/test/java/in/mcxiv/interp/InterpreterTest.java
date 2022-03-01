@@ -88,11 +88,11 @@ class InterpreterTest {
                 program main:
                     var a = scani()
                     var b = scanf()
-                    pln ( a + b * (a ** b) - (a&&b) * (a xand b) +( a<<b)/a)
+                    pln ( a + b * (a ** b) - (a / b) * (a << b) +( a<<b)/a)
                 """;
 
         JustRunTheThing(program);
-        assertOutput("12.0", builder);
+        assertOutput("18", builder);
     }
 
     @Test
@@ -111,8 +111,6 @@ class InterpreterTest {
 
     @Test
     void calculator() {
-        // CONTINUE HERE: Debug this test
-
         TestSuite.redefineInput("10\n20\n*");
 
         String program = """
@@ -127,15 +125,15 @@ class InterpreterTest {
                     prt("The operation on A and B requested is ")
                     pln(o)
                     prt("The result of this operation is ")
-                    if(o=="*")->pln(a*b)
-                    if(o=="/")->pln(a/b)
-                    if(o=="+")->pln(a+b)
-                    if(o=="-")->pln(a-b)
-                    if(o=="%")->pln(a%b)
+                    if(o equals "*")->pln(a*b)
+                    if(o equals "/")->pln(a/b)
+                    if(o equals "+")->pln(a+b)
+                    if(o equals "-")->pln(a-b)
+                    if(o equals "%")->pln(a%b)
                 }
                                                 """;
         JustRunTheThing(program);
-        assertOutput("200.0", builder);
+        assertOutput("200", builder);
     }
 
     @Test
@@ -167,8 +165,8 @@ class InterpreterTest {
     @Test
     void functions() {
         String program = """
-                program main   -> act(hey)
-                fun act < word -> printf(">> %s%n", word)
+                program main  -> act(hey)
+                fun act(word) -> printf(">> %s%n", word)
                 """;
 
         JustRunTheThing(program);
@@ -178,11 +176,41 @@ class InterpreterTest {
                 program main:
                     act(Hello, World)
                     Hello act World
-                fun act < a, b -> printf(">> %s %s%n", a, b)
+                fun act(a, b) -> printf(">> %s %s%n", a, b)
                 """;
 
         JustRunTheThing(program);
         assertOutput("Hello World", builder);
+
+        program = """
+                program main:
+                    act("Hello", "World")
+                    pln(c)
+                fun c act(a, b) -> c = a + b
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("HelloWorld", builder);
+    }
+
+    @Test
+    void simPleProGram() {
+        String program = """
+                
+                program main {
+                    act(19867, 23)
+                    pf("Q = %d, R = %d\n", quo, rem)
+                }
+                    
+                fun quo, rem act(numA, numB) {
+                    quo = numA / numB
+                    rem = numA - quo
+                }
+                
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("Q = 863, R = 19004", builder);
     }
 
     private void assertOutput(String s, StringBuilder builder) {

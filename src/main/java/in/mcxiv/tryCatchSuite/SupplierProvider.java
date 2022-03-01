@@ -8,7 +8,7 @@ public interface SupplierProvider<ReturnType> {
     ReturnType Else(Supplier<ReturnType> returnTypeSupplier);
 
     default ReturnType ElseNull() {
-        return null;
+        return Else(() -> null);
     }
 
     static <ReturnType> Supplier<ReturnType> NULL() {

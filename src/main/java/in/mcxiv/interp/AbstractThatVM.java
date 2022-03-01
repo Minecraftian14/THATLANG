@@ -13,6 +13,7 @@ import in.mcxiv.utils.Pair;
 import in.mcxiv.utils.PrimitiveParser;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
+import thatlang.core.THOSEOperatorsPrototype;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,7 +70,7 @@ public abstract class AbstractThatVM {
             THATObject object = eval(vdt.getExpression());
             object.putObjectData(DATA_KEY_CONSTRUCTION_TYPE, vdt.getType());
             object.name = vdt.getName();
-            executionStack.peek().getB().newVariable(object);
+            executionStack.peek().getB().addVariable(object);
         }
 //
         else if (node instanceof AssignmentToken at)
@@ -167,7 +168,7 @@ public abstract class AbstractThatVM {
     }
 
     public THATObject evalBinary(BinaryOperatorToken bot) {
-        return Operators.operate(eval(bot.getLeft()), bot.getOperator(), eval((bot.getRight())));
+        return THOSEOperatorsPrototype.operate(eval(bot.getLeft()), bot.getOperator(), eval((bot.getRight())));
     }
     public THATObject evalFunction(FunctionCallToken fct) {
         List<FunctionEvaluator> list = executionEnvironment.getFunctionEvaluators();

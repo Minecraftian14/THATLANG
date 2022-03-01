@@ -65,7 +65,7 @@ class IndentedBlockToken extends BlockToken {
             if (node == null) return null;
 
             // remove the last line if it had no statement
-            // TODO: instead of checking with SpaceToken **WHICH MIGHT NOT EVEN BE THERE DUMMY** check if the SVN has only "\n" or "\n   +"
+            // TODO: instead of checking with SpaceToken **WHICH MIGHT NOT EVEN BE THERE** check if the SVN has only "\n" or "\n   +"
             List<Node> children = new ArrayList<>(node.getChildren());
             if (children.get(children.size() - 1).get(1) instanceof SpacesToken st) {
                 string.moveCursor(-st.getValue().length() - 1);
@@ -79,7 +79,8 @@ class IndentedBlockToken extends BlockToken {
                             .toArray(StatementToken[]::new)
             );
 
-            parent.addChild(token);
+            if (parent != null)
+                parent.addChild(token);
             return token;
         }
     }

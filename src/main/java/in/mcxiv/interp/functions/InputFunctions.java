@@ -39,7 +39,7 @@ public class InputFunctions extends FunctionEvaluator {
         String s = Try.If(scanner::hasNextLine).Then(scanner::nextLine).Else(() -> "").toString();
         THATObject variable = THOSEObjects.createValue(switch (fct.getValue()) {
             case SCAN_LINE -> s;
-            case SCAN_INT -> PrimitiveParser.LONG.parse(s);
+            case SCAN_INT -> PrimitiveParser.INT.parse(s);
             case SCAN_FLOAT -> PrimitiveParser.DOUBLE.parse(s);
             default -> throw new IllegalStateException("Unexpected value: " + fct.getValue());
         });

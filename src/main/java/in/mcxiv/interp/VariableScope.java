@@ -17,7 +17,7 @@ public class VariableScope {
         variables.add(THOSEObjects.create(type, name, eval));
     }
 
-    public void newVariable(THATObject object) {
+    public void addVariable(THATObject object) {
         variables.add(object);
     }
 

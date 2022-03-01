@@ -9,4 +9,10 @@ public class THOSEUtils {
         return false;
     }
 
+    public static boolean contains(Iterable<?> i, Object o) {
+        for (Object value : i)
+            if (o.equals(value))
+                return true;
+        return false;
+    }
 }

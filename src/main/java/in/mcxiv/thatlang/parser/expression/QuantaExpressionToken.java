@@ -44,7 +44,7 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
 
         private static final Parser callStepParser = new EitherParser(
                 FunctionCallToken.FunctionCallParser.function,
-                MemberCallToken.MemberCallParser.member // Will also catch 1234 :cry:... // TODO: Not a good thing either, because it's catching every possible Name afterwards
+                MemberCallToken.MemberCallParser.member // Will also catch 1234
         );
 
         private static final Parser parser = compound(

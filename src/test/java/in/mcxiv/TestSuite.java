@@ -23,7 +23,7 @@ public class TestSuite {
     }
 
     public static <Type> Type alsoPrtln(String msg, Type type) {
-        System.out.printf(">> %s >>", msg);
+        System.out.printf(">> %s >> ", msg);
         System.out.println(type);
         return type;
     }

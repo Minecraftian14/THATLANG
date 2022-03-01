@@ -6,8 +6,8 @@ import in.mcxiv.thatlang.parser.SimpleSafeNonRecursiveExpressionParser;
 import in.mcxiv.thatlang.parser.power.LooseInlineParser;
 import in.mcxiv.thatlang.parser.tokens.generic.StringValueNode;
 import in.mcxiv.thatlang.parser.tree.Node;
-import in.mcxiv.thatlang.universe.Operators;
 import in.mcxiv.utils.LinkedList;
+import thatlang.core.THOSEOperatorsPrototype;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,7 @@ class MultiOperandParser implements Parser<BinaryOperatorToken> {
     private static final Parser parser = compound(
             SimpleSafeNonRecursiveExpressionParser.safeExpression,
             repeatable(compound(
-                    either(new LinkedList<>(Operators.list, LooseInlineParser::new)),
+                    either(new LinkedList<>(THOSEOperatorsPrototype.KNOWN_OPERATORS, LooseInlineParser::new)),
                     SimpleSafeNonRecursiveExpressionParser.safeExpression
             ))
     );
@@ -68,7 +68,7 @@ class MultiOperandParser implements Parser<BinaryOperatorToken> {
         // compound -> compound.forEachChild iterates the TWO Nodes, one is a LooseSpaceBoundedParser and the other ExpressionsToken
         node.get(1).forEachChild(compound -> compound.forEachChild(nodes::add));
 
-        for (String operator : Operators.list) {
+        for (String operator : THOSEOperatorsPrototype.KNOWN_OPERATORS) {
             for (int i = 1, s = nodes.size(); i < s; i += 2) /*iterating only the ops*/ {
                 StringValueNode svn = (StringValueNode) nodes.get(i);
                 if (operator.equals(svn.getValue())) {

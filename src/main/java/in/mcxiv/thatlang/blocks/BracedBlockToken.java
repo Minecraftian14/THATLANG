@@ -77,7 +77,8 @@ public class BracedBlockToken extends BlockToken {
                     .toArray(StatementToken[]::new);
 
             BracedBlockToken token = new BracedBlockToken(array);
-            parent.addChild(token);
+            if(parent!=null)
+                parent.addChild(token);
             return token;
         }
     }
