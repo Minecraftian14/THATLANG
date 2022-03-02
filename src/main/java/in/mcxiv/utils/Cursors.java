@@ -34,4 +34,8 @@ public class Cursors {
     public static boolean matches(ParsableString string, String match) {
         return Strings.matches(string.getChars(), string.getCursor(), match.toCharArray());
     }
+
+    public static void skipSpaces(ParsableString string) {
+        while (Cursors.bound(string) && Cursors.isSpace(string)) string.moveCursor(1);
+    }
 }

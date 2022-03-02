@@ -20,17 +20,8 @@ class InterpreterTest {
     }
 
     @Test
-    @Disabled
-    void runAllTests() {
-        simpleTest();
-        testExpressions();
-        testVariablesAndInputs();
-        testingForLoops();
-    }
-
-    @Test
     @Disabled("Deprecated")
-    void test() {
+    void testPrototype() {
         String program = """
                 main ->
                     print(HelloWorld)
@@ -97,16 +88,16 @@ class InterpreterTest {
                 program main:
                     var a = scani()
                     var b = scanf()
-                    pln ( a + b * (a ** b) - (a&&b) * (a xand b) +( a<<b)/a)
+                    pln ( a + b * (a ** b) - (a / b) * (a << b) +( a<<b)/a)
                 """;
 
         JustRunTheThing(program);
-        assertOutput("12.0", builder);
+        assertOutput("18", builder);
     }
 
     @Test
     void testingForLoops() {
-        TestSuite.redefineInput("10");
+        TestSuite.redefineInput("9");
 
         String program = """
                 program main:
@@ -123,26 +114,103 @@ class InterpreterTest {
         TestSuite.redefineInput("10\n20\n*");
 
         String program = """
-program main {
-    var a = scani()
-    var b = scani()
-    var o = scan()
-    prt("The value of operand A received is ")
-    pln(a)
-    prt("The value of operand B received is ")
-    pln(b)
-    prt("The operation on A and B requested is ")
-    pln(o)
-    prt("The result of this operation is ")
-    if(o=="*")->pln(a*b)
-    if(o=="/")->pln(a/b)
-    if(o=="+")->pln(a+b)
-    if(o=="-")->pln(a-b)
-    if(o=="%")->pln(a%b)
+                program main {
+                    var a = scani()
+                    var b = scani()
+                    var o = scan()
+                    prt("The value of operand A received is ")
+                    pln(a)
+                    prt("The value of operand B received is ")
+                    pln(b)
+                    prt("The operation on A and B requested is ")
+                    pln(o)
+                    prt("The result of this operation is ")
+                    if(o equals "*")->pln(a*b)
+                    if(o equals "/")->pln(a/b)
+                    if(o equals "+")->pln(a+b)
+                    if(o equals "-")->pln(a-b)
+                    if(o equals "%")->pln(a%b)
                 }
-                                """;
+                                                """;
         JustRunTheThing(program);
-        assertOutput("200.0", builder);
+        assertOutput("200", builder);
+    }
+
+    @Test
+    void test___ProllyTheLast___Well() {
+        TestSuite.redefineInput("11");
+
+        //noinspection UnnecessaryStringEscape
+        String program = """
+                program main:
+                    var val = scani()
+                    if val == 10 -> pln("YES")
+                    else if val == 11 -> pln("<'_'>")
+                    else -> pln("BRUH")
+                    val.sub = 10
+                    pln(val.sub)
+                    val.sub 10 11 12
+                    printf("%s %s %s\n", val.s, val.u, val.b)
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("""
+                <'_'>
+                10
+                10 11 12
+                """, builder);
+
+    }
+
+    @Test
+    void functions() {
+        String program = """
+                program main  -> act(hey)
+                fun act(word) -> printf(">> %s%n", word)
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("hey", builder);
+
+        program = """
+                program main:
+                    act(Hello, World)
+                    Hello act World
+                fun act(a, b) -> printf(">> %s %s%n", a, b)
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("Hello World", builder);
+
+        program = """
+                program main:
+                    act("Hello", "World")
+                    pln(c)
+                fun c act(a, b) -> c = a + b
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("HelloWorld", builder);
+    }
+
+    @Test
+    void simPleProGram() {
+        String program = """
+                
+                program main {
+                    act(19867, 23)
+                    pf("Q = %d, R = %d\n", quo, rem)
+                }
+                    
+                fun quo, rem act(numA, numB) {
+                    quo = numA / numB
+                    rem = numA - quo
+                }
+                
+                """;
+
+        JustRunTheThing(program);
+        assertOutput("Q = 863, R = 19004", builder);
     }
 
     private void assertOutput(String s, StringBuilder builder) {
@@ -154,6 +222,7 @@ program main {
     private static void JustRunTheThing(String program) {
         ProgramFileToken file;
         assertNotNull((file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
+//        System.out.println(TestSuite.pj(file));
 
         ThatVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
         vm.load(file);

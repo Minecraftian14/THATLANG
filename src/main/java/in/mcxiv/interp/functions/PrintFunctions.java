@@ -67,7 +67,7 @@ public class PrintFunctions extends FunctionEvaluator {
                 list = new ArrayList<>(fct.getArguments().getExpressions());
                 if (list.size() == 0) break;
                 String str = environment.vm.eval(list.remove(0)).v();
-                environment.out.printf(str, list.stream().map(environment.vm::eval).map(THATObject::v).toArray());
+                environment.out.printf(str, list.stream().map(environment.vm::eval).map(object -> object.value).toArray());
             }
         }
 

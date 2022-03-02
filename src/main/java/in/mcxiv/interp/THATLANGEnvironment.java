@@ -2,6 +2,8 @@ package in.mcxiv.interp;
 
 import in.mcxiv.interp.functions.InputFunctions;
 import in.mcxiv.interp.functions.PrintFunctions;
+import in.mcxiv.interp.functions.ProgramFunctions;
+import in.mcxiv.thatlang.FunctionToken;
 import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.thatlang.ProgramToken;
 import in.mcxiv.thatlang.statements.StatementToken;
@@ -12,11 +14,12 @@ import java.util.List;
 
 public class THATLANGEnvironment extends Environment {
 
-    public static final Evaluator<StatementToken> NO_OPERATION = statementToken -> {};
+    public static final Evaluator<StatementToken> NO_OPERATION = statementToken -> {
+    };
 
     final ArrayList<ProgramFileToken> programFiles;
     final ArrayList<ProgramToken> programs;
-    final LinkedList<Evaluator<StatementToken>, Class<?>>  evaluators;
+    final LinkedList<Evaluator<StatementToken>, Class<?>> evaluators;
     final ArrayList<FunctionEvaluator> functions;
 
     public THATLANGEnvironment(AbstractThatVM vm) {
@@ -30,7 +33,8 @@ public class THATLANGEnvironment extends Environment {
         evaluators = new LinkedList<>(StatementToken.STATEMENT_TYPES, this::evaluateStatement);
         functions = new ArrayList<>(List.of(
                 new PrintFunctions(this),
-                new InputFunctions(this)
+                new InputFunctions(this),
+                new ProgramFunctions(this)
         ));
     }
 
@@ -52,7 +56,12 @@ public class THATLANGEnvironment extends Environment {
     @Override
     public void addProgramFile(ProgramFileToken fpt) {
         programFiles.add(fpt);
-        fpt.getProgramTokens().forEach(this::addProgram);
+        for (ProgramToken programToken : fpt.getPrograms())
+            addProgram(programToken);
+        for (FunctionToken function : fpt.getFunctions()) {
+            functions.add(FunctionEvaluator.createEvaluatorFromToken(this, function));
+        }
+
     }
 
     @Override

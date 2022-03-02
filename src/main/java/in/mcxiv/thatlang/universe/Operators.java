@@ -4,6 +4,7 @@ import com.mcxiv.logger.decorations.Format;
 import in.mcxiv.utils.LinkedList;
 import in.mcxiv.utils.PrimitiveParser;
 import thatlang.core.THATObject;
+import thatlang.core.THOSEObjects;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -11,6 +12,7 @@ import java.util.Objects;
 import static in.mcxiv.CentralRepository.*;
 import static thatlang.core.THOSEObjects.createValue;
 
+@Deprecated
 public class Operators {
 
     public static final String LOG_HEAD = getLogHead();
@@ -19,15 +21,19 @@ public class Operators {
 
     public static final LinkedList<String, String> list;
 
+    private static final Class[] SUNKEN_NUMBER = {Byte.class, Short.class, Integer.class, Long.class};
+    private static final Class[] FLOATING_NUMBER = {Float.class, Double.class};
+    private static final Class[] NUMBER = {Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class};
+
     static {
         prt(LOG_HEAD, UNDER_STATIC_INITIALIZER);
 
         map.put("**", (l, r) -> s(Math.pow(n(l), n(r))));
-//        operators.put("++"); Unary
-//        operators.put("--"); Unary
-//        operators.put("+"); Unary
-//        operators.put("-"); Unary
-//        operators.put("~"); Unary
+        map.put("++", unary(l -> getAndIncr(l, +1), r -> incrAndGet(r, +1))); // Unary
+        map.put("--", unary(l -> getAndIncr(l, -1), r -> incrAndGet(r, -1))); // Unary
+//        operators.put("+"); // Unary // TODO: CONTINUE HERE
+//        operators.put("-"); // Unary
+//        operators.put("~"); // Unary
 //        operators.put("(type cast)"); Unary (cast)
 //        operators.put("!"); Unary
 //        operators.put("not"); Unary (for operators)
@@ -35,7 +41,7 @@ public class Operators {
         map.put("*", (l, r) -> s(n(l) * n(r)));
         map.put("%", (l, r) -> s(n(l) % n(r)));
         map.put("/", (l, r) -> s(n(l) / n(r)));
-        map.put("+", (l, r) -> s(n(l) + n(r)));
+        map.put("+", Operators::plusSymbol);
         map.put("-", (l, r) -> s(n(l) - n(r)));
         map.put("<<", (l, r) -> s(i(l) << i(r)));
         map.put(">>", (l, r) -> s(i(l) >> i(r)));
@@ -76,6 +82,33 @@ public class Operators {
         list = new LinkedList<>(map, s -> s);
     }
 
+    private static THATObject plusSymbol(THATObject a, THATObject b) {
+        if (a.primaryInference == null) return THOSEObjects.createValue(a.v() + b.v());
+        if (a.primaryInference == String.class)
+            return THOSEObjects.createValue(((String) a.value) + b.value.toString());
+        if (Number.class.isAssignableFrom(a.primaryInference)) {
+            if (!Number.class.isAssignableFrom(b.primaryInference))
+                return THOSEObjects.createValue(a.value.toString() + b.value.toString());
+            // TODO: convert number to the lowest possible complexity.
+            // Like... say we add 1L + 1, 1st is long, and 2nd is int. Convert both to long and return a long
+            // and.. say we add 1 + 1f, 1st is int, and 2nd is float. Convert both to float and return a float
+            return THOSEObjects.createValue(((Number) a.value).doubleValue() + ((Number) b.value).doubleValue());
+        }
+        return THOSEObjects.createValue(a.value.toString() + b.value.toString());
+    }
+
+    private static THATObject getAndIncr(THATObject l, int d) {
+        double n = n(l);
+        THOSEObjects.mutateValue(l, n + d);
+        return s(n);
+    }
+
+    private static THATObject incrAndGet(THATObject r, int d) {
+        double n = n(r) + 1;
+        THOSEObjects.mutateValue(r, n - d);
+        return s(n);
+    }
+
     private static boolean XOR(boolean a, boolean b) {
         return (a || b) && (!(a && b));
     }
@@ -108,5 +141,95 @@ public class Operators {
     public interface BinaryOperatorOperation {
         THATObject act(THATObject l, THATObject r);
     }
+
+    public static BinaryOperatorOperation unary(PrefixOperation prefix, PostfixOperation postfix) {
+        return (l, r) -> {
+            if (l != null) return postfix.act(l);
+            else if (r != null) return prefix.act(r);
+            else throw new IllegalStateException();
+        };
+    }
+
+    public static Object simplify(Object a, Object b) {
+        if (a instanceof Number numA)
+            if (b instanceof Number numB)
+                return simplify(numA, numB);
+        return null;
+    }
+
+    public static Number simplify(Number a, Number b) {
+        if (a instanceof Byte A)
+            return b instanceof Byte B ? ((byte) (A + B))
+                    : b instanceof Short B ? ((short) (A + B))
+                    : b instanceof Integer B ? (A + B)
+                    : b instanceof Long B ? (A + B)
+                    : b instanceof Float B ? (A + B)
+                    : b instanceof Double B ? (A + B)
+                    : A + b.byteValue();
+
+        else if (a instanceof Short A)
+            return b instanceof Byte B ? ((short) (A + B))
+                    : b instanceof Short B ? ((short) (A + B))
+                    : b instanceof Integer B ? (A + B)
+                    : b instanceof Long B ? (A + B)
+                    : b instanceof Float B ? (A + B)
+                    : b instanceof Double B ? (A + B)
+                    : A + b.shortValue();
+
+        else if (a instanceof Integer A)
+            return b instanceof Byte B ? (A + B)
+                    : b instanceof Short B ? (A + B)
+                    : b instanceof Integer B ? (A + B)
+                    : b instanceof Long B ? (A + B)
+                    : b instanceof Float B ? (A + B)
+                    : b instanceof Double B ? (A + B)
+                    : A + b.intValue();
+
+        else if (a instanceof Long A)
+            return b instanceof Byte B ? (A + B)
+                    : b instanceof Short B ? (A + B)
+                    : b instanceof Integer B ? (A + B)
+                    : b instanceof Long B ? (A + B)
+                    : b instanceof Float B ? (double) (A + B)
+                    : b instanceof Double B ? (A + B)
+                    : A + b.longValue();
+
+        else if (a instanceof Float A)
+            return b instanceof Byte B ? (A + B)
+                    : b instanceof Short B ? (A + B)
+                    : b instanceof Integer B ? (A + B)
+                    : b instanceof Long B ? (A + B)
+                    : b instanceof Float B ? (A + B)
+                    : b instanceof Double B ? (A + B)
+                    : A + b.floatValue();
+
+        else if (a instanceof Double A)
+            return b instanceof Byte B ? (A + B)
+                    : b instanceof Short B ? (A + B)
+                    : b instanceof Integer B ? (A + B)
+                    : b instanceof Long B ? (A + B)
+                    : b instanceof Float B ? (A + B)
+                    : b instanceof Double B ? (A + B)
+                    : A + b.doubleValue();
+
+        else throw new IllegalStateException();
+    }
+
+    public interface UnaryOperatorOperation extends BinaryOperatorOperation {
+        THATObject act(THATObject l);
+
+        default THATObject act(THATObject l, THATObject r) {
+            return act(l);
+        }
+    }
+
+    public interface PrefixOperation extends UnaryOperatorOperation {
+        THATObject act(THATObject l);
+    }
+
+    public interface PostfixOperation extends UnaryOperatorOperation {
+        THATObject act(THATObject r);
+    }
+
 
 }

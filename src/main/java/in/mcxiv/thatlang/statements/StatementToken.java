@@ -5,9 +5,12 @@ import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.power.EitherParser;
 import in.mcxiv.thatlang.parser.tree.Node;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
+import in.mcxiv.thatlang.statements.ElseIfStatementToken.ElseIfStatementParser;
+import in.mcxiv.thatlang.statements.ElseStatementToken.ElseStatementParser;
 import in.mcxiv.thatlang.statements.ForEachToken.ForEachParser;
 import in.mcxiv.thatlang.statements.ForStatementToken.ForStatementParser;
 import in.mcxiv.thatlang.statements.IfStatementToken.IfStatementParser;
+import in.mcxiv.thatlang.statements.MultiAssignmentToken.MultiAssignmentParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +23,62 @@ public class StatementToken extends Node {
     public static final ArrayList<Parser<?>> STATEMENT_PARSERS = new ArrayList<>(List.of(
             VariableDefinitionParser.variableDef,
             AssignmentParser.assignment,
+            MultiAssignmentParser.multiAssignment,
             ForStatementParser.forStatement,
             ForEachParser.forEachStatement,
-            IfStatementParser.isStatement,
+            IfStatementParser.ifStatement,
+            ElseIfStatementParser.elseIfStatement,
+            ElseStatementParser.elseStatement,
+            IfStatementParser.ifStatement,
+            BinaryFunctionStatementToken.binaryFunctionStmt,
             QuantaStatementParser.quantaStatement
     ));
 
     public static final ArrayList<Class<?>> STATEMENT_TYPES = new ArrayList<>(List.of(
             VariableDefinitionToken.class,
             AssignmentToken.class,
+            MultiAssignmentToken.class,
             ForStatementToken.class,
+            ForEachToken.class,
             IfStatementToken.class,
+            ElseIfStatementToken.class,
+            ElseStatementToken.class,
             QuantaStatement.class
     ));
 
+    private final boolean isCondensable;
+    private final Class<?>[] condensability;
+
     public StatementToken() {
+        this((Node) null);
     }
 
     public StatementToken(Node parent) {
+        this(parent, new Class[0]);
+    }
+
+    public StatementToken(Class<?>... condensability) {
+        this(null, condensability);
+    }
+
+    public StatementToken(Node parent, Class<?>... condensability) {
         super(parent);
+        this.isCondensable = condensability.length != 0;
+        this.condensability = condensability;
+    }
+
+    public boolean isCondensable() {
+        return isCondensable;
+    }
+
+    public boolean isAccepted(StatementToken token) {
+        for (Class<?> clazz : condensability)
+            if (clazz.isInstance(token))
+                return true;
+        return false;
+    }
+
+    public void processCondensability(StatementToken token) {
     }
 
     public static class StatementParser implements Parser<StatementToken> {

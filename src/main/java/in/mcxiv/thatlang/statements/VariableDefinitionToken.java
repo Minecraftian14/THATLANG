@@ -41,6 +41,11 @@ public class VariableDefinitionToken extends StatementToken {
         return expression;
     }
 
+    @Override
+    public String toString() {
+        return toExtendedString("type", type, "name", name, "expression", expression);
+    }
+
     public static class VariableDefinitionParser implements Parser<VariableDefinitionToken> {
 
         private static final Parser<?> parser = compound(

@@ -4,7 +4,6 @@ import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.thatlang.ProgramToken;
 import in.mcxiv.transpiler.templates.THATProgramFileTemplate;
 import in.mcxiv.transpiler.templates.THATProgramTemplate;
-import thatlang.core.THATProgramFile;
 
 import java.util.ArrayList;
 
@@ -28,7 +27,7 @@ public class BaseTranspiler {
         var template = new THATProgramFileTemplate();
         template.injectFileName(token.getProgramFileName());
 
-        for (ProgramToken programToken : token.getProgramTokens()) {
+        for (ProgramToken programToken : token.getPrograms()) {
             template.addProgram(make(programToken));
         }
 

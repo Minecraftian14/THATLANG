@@ -13,9 +13,13 @@ import in.mcxiv.utils.Pair;
 import in.mcxiv.utils.PrimitiveParser;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
+import thatlang.core.THOSEOperatorsPrototype;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+
+import static thatlang.core.THOSEObjects.DATA_KEY_CONSTRUCTION_TYPE;
 
 public abstract class AbstractThatVM {
 
@@ -33,14 +37,14 @@ public abstract class AbstractThatVM {
     }
 
     public ProgramToken getMain(ProgramFileToken file) {
-        return file.getProgramTokens().stream()
+        return Arrays.stream(file.getPrograms())
                 .filter(program -> program.getProgramName().equals("main"))
-                .findFirst().orElse((ProgramToken) file.getChildren().get(0));
+                .findFirst().orElse(file.getPrograms()[0]);
     }
 
     public void load(ProgramFileToken file) {
         executionEnvironment.addProgramFile(file);
-        file.getProgramTokens().stream()
+        Arrays.stream(file.getPrograms())
                 .filter(program -> program.getProgramName().equals("init"))
                 .forEach(this::run);
     }
@@ -62,11 +66,23 @@ public abstract class AbstractThatVM {
     public void runStatement(StatementToken node) {
 //        executionEnvironment.getPrograms(); may have optionally defined statements :evil_laugh:
 
-        if (node instanceof VariableDefinitionToken vdt)
-            executionStack.peek().getB().newVariable(vdt.getType(), vdt.getName(), eval(vdt.getExpression()).v());
+        if (node instanceof VariableDefinitionToken vdt) {
+            THATObject object = eval(vdt.getExpression());
+            object.putObjectData(DATA_KEY_CONSTRUCTION_TYPE, vdt.getType());
+            object.name = vdt.getName();
+            executionStack.peek().getB().addVariable(object);
+        }
 //
         else if (node instanceof AssignmentToken at)
-            executionStack.peek().getB().variables.stream().filter(variable -> at.getName().equals(variable.name)).findFirst().ifPresent(variable -> variable.value = eval(at.getExpression()).value);
+            THOSEObjects.mutateValue(evalQuanta(at.getField()), eval(at.getExpression()).value);
+//
+        else if (node instanceof MultiAssignmentToken mat) {
+            THATObject field = evalQuanta(mat.getField());
+            for (int i = 0; i < mat.getSubFields().length; i++) {
+                THATObject value = THOSEObjects.createAfterReducing(mat.getValues()[i].getValue());
+                field.putMember(mat.getSubFields()[i].getValue(), value);
+            }
+        }
 //
         else if (node instanceof ForStatementToken fst)
             for (
@@ -76,14 +92,29 @@ public abstract class AbstractThatVM {
             )
                 fst.getStatements().forEach(this::runStatement);
 //
-        else if (node instanceof IfStatementToken ist) {
-            if (PrimitiveParser.BOOLEAN.parse(eval(ist.getCondition()).v()))
-                ist.getStatements().forEach(this::runStatement);
-        }
+        else if (node instanceof IfStatementToken ist)
+            runIf(ist);
 //
         else if (node instanceof QuantaStatement qs)
             evalQuanta(qs.getToken());
 
+    }
+
+    private void runIf(IfStatementToken ist) {
+        if (PrimitiveParser.BOOLEAN.parse(eval(ist.getCondition()).v()))
+            ist.getStatements().forEach(this::runStatement);
+        else {
+            boolean if_captured = false;
+            for (ElseIfStatementToken eist : ist.getElseIfSts()) {
+                if (PrimitiveParser.BOOLEAN.parse(eval(eist.getCondition()).v())) {
+                    if_captured = true;
+                    eist.getStatements().forEach(this::runStatement);
+                    break;
+                }
+            }
+            if (!if_captured && ist.getElseSt() != null)
+                ist.getElseSt().getStatements().forEach(this::runStatement);
+        }
     }
 
     public THATObject eval(ExpressionsToken expression) {
@@ -108,31 +139,37 @@ public abstract class AbstractThatVM {
             if (iterator.isString()) {
                 String value = iterator.nextString().getValue();
                 assert variable == null : "Cant access a string as if it's a member of some variable...";
-                variable = THOSEObjects.create(value);
+                variable = THOSEObjects.createValue(value);
 
             } else if (iterator.isMember()) {
                 String value = iterator.nextMember().getValue();
-                if (variable == null) {
+                if (variable == null) /* ie we're probably accessing a local field */ {
                     variable = executionStack.peek().getB().seek(value);
-                    if (variable == null) variable = THOSEObjects.create(value);
-                } else variable = variable.seekMember(value);
+                    if (variable == null) /* ie there is no such variable created by that name */
+                        variable = THOSEObjects.createAfterReducing(value); // so we treat it as if it's a value
+                } else /* ie we're accessing a field in variable */ {
+                    var member = variable.getMember(value);
+                    if (member == null) /* ie we are probably creating something? */ {
+                        member = THOSEObjects.createValue(null);
+                        variable.putMember(value, member);
+                    }
+                    variable = member;
+                }
 
             } else if (iterator.isFunction()) {
                 FunctionCallToken function = iterator.nextFunction();
-                if (variable == null) {
+                if (variable == null)
                     variable = evalFunction(function);
-                } else {
+                else
                     variable = variable.seekFunction(function);
-                }
             }
         }
         return variable == null ? THOSEObjects.NULL : variable;
     }
 
     public THATObject evalBinary(BinaryOperatorToken bot) {
-        return Operators.operate(eval(bot.getLeft()), bot.getOperator(), eval((bot.getRight())));
+        return THOSEOperatorsPrototype.operate(eval(bot.getLeft()), bot.getOperator(), eval((bot.getRight())));
     }
-
     public THATObject evalFunction(FunctionCallToken fct) {
         List<FunctionEvaluator> list = executionEnvironment.getFunctionEvaluators();
 

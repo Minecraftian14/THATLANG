@@ -3,6 +3,7 @@ package in.mcxiv.thatlang.parser.tree;
 import in.mcxiv.utils.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -63,15 +64,19 @@ public class Node {
     }
 
     public void delete() {
-        if (parent != null) parent.getA().children.removeIf(pair -> pair.getA().equals(this));
+        detach();
 //        children.forEach(pair -> pair.getA().delete());
+    }
+
+    public void detach() {
+        if (parent != null) parent.getA().children.removeIf(pair -> pair.getA().equals(this));
     }
 
     public List<Node> getChildren() {
         return children.stream().map(Pair::getA).toList();
     }
 
-    public  <Element> List<Element> getChildren(Class<Element> clazz) {
+    public <Element> List<Element> getChildren(Class<Element> clazz) {
         return getChildren().stream()
                 .filter(clazz::isInstance)
                 .map(clazz::cast)
@@ -97,7 +102,7 @@ public class Node {
     public String toExtendedString(Object... fields) {
         StringBuilder builder = new StringBuilder(getClass().getSimpleName()).append('{');
         for (int i = 0; i + 1 < fields.length; i += 2)
-            builder.append(fields[i]).append('=').append(fields[i + 1]).append(", ");
+            builder.append(fields[i]).append('=').append(fields[i + 1].getClass().isArray() ? Arrays.toString((Object[]) fields[i + 1]) : fields[i + 1]).append(", ");
 
         if (fields.length % 2 == 1 && fields[fields.length - 1] == children) {
             if (children.size() > 0) {

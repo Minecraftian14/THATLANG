@@ -17,8 +17,11 @@ public class VariableScope {
         variables.add(THOSEObjects.create(type, name, eval));
     }
 
+    public void addVariable(THATObject object) {
+        variables.add(object);
+    }
+
     public THATObject seek(String name) {
         return variables.stream().filter(variable -> variable.name.equals(name)).findFirst().orElse(null);
     }
-
 }

@@ -6,6 +6,8 @@ import in.mcxiv.thatlang.parser.tokens.NameToken;
 import in.mcxiv.thatlang.parser.tokens.generic.StringValueNode;
 import in.mcxiv.thatlang.parser.tree.Node;
 
+import java.util.ArrayList;
+
 import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class FunctionCallToken extends StringValueNode {
@@ -38,7 +40,7 @@ public class FunctionCallToken extends StringValueNode {
         private static final Parser parser = compound(
                 NameToken.NameParser.name,
                 inline("("),
-                optional(inline(ArgumentsToken.ArgumentsParser.arguments)),
+                optional(inline(ArgumentsToken.arguments)),
                 inline(")")
         );
 
@@ -51,7 +53,7 @@ public class FunctionCallToken extends StringValueNode {
             if (node == null) return null;
             String functionName = node.getExp(NameToken.class).getValue();
             ArgumentsToken arguments = node.getExp(ArgumentsToken.class);
-            if(arguments == null) /*optional*/ arguments = new ArgumentsToken(new ExpressionsToken[0]);
+            if(arguments == null) /*optional*/ arguments = new ArgumentsToken();
             return new FunctionCallToken(parent, functionName, arguments);
         }
     }

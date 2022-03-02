@@ -8,31 +8,35 @@ import in.mcxiv.thatlang.parser.tree.Node;
 import java.util.List;
 import java.util.Objects;
 
-import static in.mcxiv.thatlang.parser.power.PowerUtils.repeatable;
+import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class ProgramFileToken extends Node {
 
     String programFileName;
+    ProgramToken[] programs;
+    FunctionToken[] functions;
 
-    public ProgramFileToken(ProgramToken[] programs) {
-        this("loadedFromMemory", null, programs);
+    public ProgramFileToken(ProgramToken[] programs, FunctionToken[] functions) {
+        this("loadedFromMemory", null, programs, functions);
     }
 
-    public ProgramFileToken(String programFileName, ProgramToken[] programs) {
-        this(programFileName, null, programs);
+    public ProgramFileToken(String programFileName, ProgramToken[] programs, FunctionToken[] functions) {
+        this(programFileName, null, programs, functions);
     }
 
-    public ProgramFileToken(String programFileName, Node parent, ProgramToken[] programs) {
+    public ProgramFileToken(String programFileName, Node parent, ProgramToken[] programs, FunctionToken[] functions) {
         super(parent);
         this.programFileName = programFileName;
-        for (ProgramToken program : programs) addChild(program);
+        this.programs = programs;
+        this.functions = functions;
     }
 
-    public List<ProgramToken> getProgramTokens() {
-        return getChildren().stream()
-                .filter(node -> node instanceof ProgramToken)
-                .map(node -> ((ProgramToken) node))
-                .toList();
+    public ProgramToken[] getPrograms() {
+        return programs;
+    }
+
+    public FunctionToken[] getFunctions() {
+        return functions;
     }
 
     public void setProgramFileName(String programFileName) {
@@ -58,27 +62,35 @@ public class ProgramFileToken extends Node {
 
     @Override
     public String toString() {
-        return toExtendedString("file name", getProgramFileName(), "programs", getChildren());
+        return toExtendedString("file name", getProgramFileName(), "programs", getPrograms(), "functions", getFunctions());
     }
 
     public static class ProgramFileParser implements Parser<ProgramFileToken> {
 
-        private static final LooseBlockParser parser = new LooseBlockParser(
-                repeatable(new LooseBlockParser(new ProgramToken.ProgramParser()))
+        private static final LooseBlockParser parser = block(
+                repeatable(block(either(
+                        new ProgramToken.ProgramParser(),
+                        FunctionToken.function
+                )))
         );
 
         public static ProgramFileParser programFile = new ProgramFileParser();
 
         @Override
         public ProgramFileToken __parse__(ParsableString string, Node parent) {
-            Node parse = parser.parse(string);
-//            if (parse == null) return null;
-            ProgramToken[] programTokens = parse
+            Node node = parser.parse(string);
+//          if (node == null) return null;
+            ProgramToken[] programTokens = node
                     .getChildren()
                     .stream()
-//                    .map(node -> node.get(0)) // NEW
-                    .map(node -> ((ProgramToken) node)).toArray(ProgramToken[]::new);
-            return new ProgramFileToken(programTokens);
+                    .filter(ch -> ch instanceof ProgramToken)
+                    .map(ch -> ((ProgramToken) ch)).toArray(ProgramToken[]::new);
+            FunctionToken[] functionTokens = node
+                    .getChildren()
+                    .stream()
+                    .filter(ch -> ch instanceof FunctionToken)
+                    .map(ch -> ((FunctionToken) ch)).toArray(FunctionToken[]::new);
+            return new ProgramFileToken(programTokens, functionTokens);
         }
     }
 

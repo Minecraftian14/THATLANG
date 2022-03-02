@@ -59,4 +59,13 @@ public class Strings {
                 return false;
         return true;
     }
+
+    public static String interlumble(String f, String  n) {
+        StringBuilder builder = new StringBuilder();
+        int i = 0;
+        for (int s = Math.min(f.length(), n.length()); i < s; i++)
+            builder.append(f.charAt(i)).append(n.charAt(i));
+        // Append the remaining part of the longer string
+        return builder.toString();
+    }
 }

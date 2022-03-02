@@ -1,5 +1,6 @@
 package in.mcxiv.interp;
 
+import in.mcxiv.thatlang.FunctionToken;
 import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.thatlang.ProgramToken;
 import in.mcxiv.thatlang.statements.StatementToken;

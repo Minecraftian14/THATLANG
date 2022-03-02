@@ -3,38 +3,44 @@ package in.mcxiv.thatlang.statements;
 import in.mcxiv.thatlang.parser.ParsableString;
 import in.mcxiv.thatlang.parser.Parser;
 import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
-import in.mcxiv.thatlang.parser.tokens.NameToken;
+import in.mcxiv.thatlang.parser.expression.QuantaExpressionToken;
 import in.mcxiv.thatlang.parser.tree.Node;
 
+import static in.mcxiv.thatlang.parser.expression.QuantaExpressionToken.QuantaExpressionParser.quantaExpression;
 import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
 
 public class AssignmentToken extends StatementToken {
 
-    String name;
+    QuantaExpressionToken field;
     ExpressionsToken expression;
 
-    public AssignmentToken(String name, ExpressionsToken expression) {
-        this(null, name, expression);
+    public AssignmentToken(QuantaExpressionToken field, ExpressionsToken expression) {
+        this(null, field, expression);
     }
 
-    public AssignmentToken(Node parent, String name, ExpressionsToken expression) {
+    public AssignmentToken(Node parent, QuantaExpressionToken field, ExpressionsToken expression) {
         super(parent);
-        this.name = name;
+        this.field = field;
         this.expression = expression;
     }
 
-    public String getName() {
-        return name;
+    public QuantaExpressionToken getField() {
+        return field;
     }
 
     public ExpressionsToken getExpression() {
         return expression;
     }
 
+    @Override
+    public String toString() {
+        return toExtendedString("field", field, "expression", expression);
+    }
+
     public static class AssignmentParser implements Parser<AssignmentToken> {
 
         private static final Parser<?> parser = compound(
-                NameToken.NameParser.name,
+                quantaExpression,
                 inline(either(word("="), word("<<"))),
                 ExpressionsToken.ExpressionsParser.expression
         );
@@ -46,8 +52,8 @@ public class AssignmentToken extends StatementToken {
             if (node == null) return null;
             return new AssignmentToken(
                     parent,
-                    node.getExp(NameToken.class).getValue(),
-                    node.getExp(ExpressionsToken.class)
+                    (QuantaExpressionToken) node.get(0),
+                    (ExpressionsToken) node.get(2)
             );
         }
     }
