@@ -1,16 +1,18 @@
 package in.mcxiv.thatlang;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.LooseBlockParser;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.power.LooseBlockParser;
+import in.mcxiv.thatlang.interpreter.AbstractVM;
+import interpreter.Interpretable;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Objects;
 
-import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+import static in.mcxiv.parser.power.PowerUtils.*;
 
-public class ProgramFileToken extends Node {
+public class ProgramFileToken extends Node implements Interpretable<AbstractVM, ProgramFileToken> {
 
     String programFileName;
     ProgramToken[] programs;
@@ -63,6 +65,18 @@ public class ProgramFileToken extends Node {
     @Override
     public String toString() {
         return toExtendedString("file name", getProgramFileName(), "programs", getPrograms(), "functions", getFunctions());
+    }
+
+    public ProgramToken getMain() {
+        return Arrays.stream(getPrograms())
+                .filter(program -> program.getProgramName().equals("main"))
+                .findFirst().orElse(getPrograms()[0]);
+    }
+
+    @Override
+    public ProgramFileToken interpret(AbstractVM vm) {
+        getMain().interpret(vm);
+        return this;
     }
 
     public static class ProgramFileParser implements Parser<ProgramFileToken> {

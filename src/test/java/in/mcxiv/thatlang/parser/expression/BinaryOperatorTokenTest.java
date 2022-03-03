@@ -1,6 +1,7 @@
 package in.mcxiv.thatlang.parser.expression;
 
 import in.mcxiv.TestSuite;
+import in.mcxiv.thatlang.expression.BinaryOperatorToken;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

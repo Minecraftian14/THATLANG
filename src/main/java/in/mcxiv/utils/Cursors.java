@@ -1,6 +1,6 @@
 package in.mcxiv.utils;
 
-import in.mcxiv.thatlang.parser.ParsableString;
+import in.mcxiv.parser.ParsableString;
 
 public class Cursors {
     public static boolean isLetterOrDigit(ParsableString string) {

@@ -1,6 +1,6 @@
 package thatlang.core;
 
-import in.mcxiv.thatlang.parser.expression.FunctionCallToken;
+import in.mcxiv.thatlang.expression.FunctionCallToken;
 
 import java.util.ArrayList;
 import java.util.HashMap;

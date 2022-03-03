@@ -1,13 +1,13 @@
 package in.mcxiv.thatlang.power;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.power.CompoundParser;
-import in.mcxiv.thatlang.parser.tokens.NameToken;
-import in.mcxiv.thatlang.parser.tokens.SpacesToken;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.power.CompoundParser;
+import in.mcxiv.parser.generic.NameToken;
+import in.mcxiv.parser.generic.SpacesToken;
 import org.junit.jupiter.api.Test;
 
 import static in.mcxiv.TestSuite.alsoPrtln;
-import static in.mcxiv.thatlang.parser.power.PowerUtils.compound;
+import static in.mcxiv.parser.power.PowerUtils.compound;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 

@@ -1,17 +1,14 @@
 package in.mcxiv.thatlang.statements;
 
 import in.mcxiv.thatlang.blocks.BlockToken;
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
-import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.tokens.SpacesToken;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.Node;
 
 import java.util.List;
 
-import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
-import static in.mcxiv.thatlang.parser.tokens.SpacesToken.SpacesParser.spaces;
+import static in.mcxiv.parser.power.PowerUtils.*;
+import static in.mcxiv.parser.generic.SpacesToken.SpacesParser.spaces;
 
 public class ElseStatementToken extends StatementToken {
 

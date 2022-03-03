@@ -1,9 +1,9 @@
 package in.mcxiv.thatlang.power;
 
-import in.mcxiv.thatlang.parser.power.PowerUtils;
-import in.mcxiv.thatlang.parser.power.RepeatableParser;
-import in.mcxiv.thatlang.parser.tokens.NameToken;
-import in.mcxiv.thatlang.parser.tokens.SpacesToken;
+import in.mcxiv.parser.power.PowerUtils;
+import in.mcxiv.parser.power.RepeatableParser;
+import in.mcxiv.parser.generic.NameToken;
+import in.mcxiv.parser.generic.SpacesToken;
 import org.junit.jupiter.api.Test;
 
 import static in.mcxiv.TestSuite.pj;

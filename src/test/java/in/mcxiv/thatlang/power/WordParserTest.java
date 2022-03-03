@@ -1,7 +1,7 @@
 package in.mcxiv.thatlang.power;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.power.WordParser;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.power.WordParser;
 import org.junit.jupiter.api.Test;
 
 import static in.mcxiv.TestSuite.alsoPrtln;

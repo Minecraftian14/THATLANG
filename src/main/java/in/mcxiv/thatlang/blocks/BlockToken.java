@@ -3,10 +3,10 @@ package in.mcxiv.thatlang.blocks;
 import in.mcxiv.thatlang.blocks.BracedBlockToken.BracedBlockParser;
 import in.mcxiv.thatlang.blocks.IndentedBlockToken.IndentedBlockParser;
 import in.mcxiv.thatlang.blocks.SingleStatementBlockToken.SingleStatementBlockParser;
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.EitherParser;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.power.EitherParser;
+import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 
 public class BlockToken extends Node {

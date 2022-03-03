@@ -1,7 +1,7 @@
 package in.mcxiv.thatlang.tokens;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.tokens.NameToken.NameParser;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.generic.NameToken.NameParser;
 import org.junit.jupiter.api.Test;
 
 import static in.mcxiv.TestSuite.alsoPrtln;

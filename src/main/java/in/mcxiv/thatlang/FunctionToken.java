@@ -2,19 +2,19 @@ package in.mcxiv.thatlang;
 
 import in.mcxiv.thatlang.blocks.BlockToken;
 import in.mcxiv.thatlang.blocks.BlockToken.BlockParser;
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.natives.TupleToken;
-import in.mcxiv.thatlang.parser.tokens.NameToken;
-import in.mcxiv.thatlang.parser.tokens.NameToken.NameParser;
-import in.mcxiv.thatlang.parser.tokens.generic.StringValueNode;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.power.TupleToken;
+import in.mcxiv.parser.generic.NameToken;
+import in.mcxiv.parser.generic.NameToken.NameParser;
+import in.mcxiv.parser.generic.StringValueNode;
+import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Cursors;
 
 import java.util.List;
 
-import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+import static in.mcxiv.parser.power.PowerUtils.*;
 
 public class FunctionToken extends StringValueNode {
 

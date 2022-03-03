@@ -1,16 +1,16 @@
 package in.mcxiv.thatlang.statements;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.expression.ArgumentsToken;
-import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
-import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.expression.FunctionCallToken;
-import in.mcxiv.thatlang.parser.expression.QuantaExpressionToken;
-import in.mcxiv.thatlang.parser.power.PowerUtils;
-import in.mcxiv.thatlang.parser.tokens.NameToken;
-import in.mcxiv.thatlang.parser.tokens.NameToken.NameParser;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.thatlang.expression.ArgumentsToken;
+import in.mcxiv.thatlang.expression.ExpressionsToken;
+import in.mcxiv.thatlang.expression.ExpressionsToken.ExpressionsParser;
+import in.mcxiv.thatlang.expression.FunctionCallToken;
+import in.mcxiv.thatlang.expression.QuantaExpressionToken;
+import in.mcxiv.parser.power.PowerUtils;
+import in.mcxiv.parser.generic.NameToken;
+import in.mcxiv.parser.generic.NameToken.NameParser;
+import in.mcxiv.parser.Node;
 
 import java.util.ArrayList;
 

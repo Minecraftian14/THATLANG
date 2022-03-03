@@ -1,17 +1,21 @@
 package in.mcxiv.thatlang.statements;
 
+import in.mcxiv.parser.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
 import in.mcxiv.thatlang.blocks.BlockToken;
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
-import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.thatlang.expression.ExpressionsToken;
+import in.mcxiv.thatlang.expression.ExpressionsToken.ExpressionsParser;
+import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
 import in.mcxiv.thatlang.statements.VariableDefinitionToken.VariableDefinitionParser;
+import in.mcxiv.utils.PrimitiveParser;
+import thatlang.core.THATObject;
+import thatlang.core.THOSEObjects;
 
 import java.util.List;
 
-import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+import static in.mcxiv.parser.power.PowerUtils.*;
 
 public class ForStatementToken extends StatementToken {
 
@@ -50,6 +54,17 @@ public class ForStatementToken extends StatementToken {
     @Override
     public String toString() {
         return toExtendedString("initializer", initializer, "condition", condition, "incremental", incremental, "statements", getChildren());
+    }
+
+    @Override
+    public THATObject interpret(AbstractVM vm) {
+        for (
+                initializer.interpret(vm);
+                PrimitiveParser.BOOLEAN.parse(condition.interpret(vm).value);
+                incremental.interpret(vm)
+        )
+            getStatements().forEach(token -> token.interpret(vm));
+        return THOSEObjects.NULL;
     }
 
     public static class ForStatementParser implements Parser<ForStatementToken> {
