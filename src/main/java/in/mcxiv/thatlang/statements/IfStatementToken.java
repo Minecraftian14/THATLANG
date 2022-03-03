@@ -1,16 +1,20 @@
 package in.mcxiv.thatlang.statements;
 
 import in.mcxiv.thatlang.blocks.BlockToken;
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.expression.ExpressionsToken;
-import in.mcxiv.thatlang.parser.expression.ExpressionsToken.ExpressionsParser;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.thatlang.expression.ExpressionsToken;
+import in.mcxiv.thatlang.expression.ExpressionsToken.ExpressionsParser;
+import in.mcxiv.parser.Node;
+import in.mcxiv.thatlang.interpreter.AbstractVM;
+import in.mcxiv.utils.PrimitiveParser;
+import thatlang.core.THATObject;
+import thatlang.core.THOSEObjects;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+import static in.mcxiv.parser.power.PowerUtils.*;
 
 public class IfStatementToken extends StatementToken {
 
@@ -57,6 +61,25 @@ public class IfStatementToken extends StatementToken {
 
     public ElseStatementToken getElseSt() {
         return elseSt;
+    }
+
+    @Override
+    public THATObject interpret(AbstractVM vm) {
+        if (PrimitiveParser.BOOLEAN.parse(condition.interpret(vm).value))
+            getStatements().forEach(token -> token.interpret(vm));
+        else {
+            boolean if_captured = false;
+            for (ElseIfStatementToken eist : elseIfSts) {
+                if (PrimitiveParser.BOOLEAN.parse(eist.condition.interpret(vm).value)) {
+                    if_captured = true;
+                    eist.getStatements().forEach(token -> token.interpret(vm));
+                    break;
+                }
+            }
+            if (!if_captured && elseSt != null)
+                elseSt.getStatements().forEach(token -> token.interpret(vm));
+        }
+        return THOSEObjects.NULL;
     }
 
     @Override

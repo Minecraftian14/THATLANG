@@ -1,17 +1,20 @@
 package in.mcxiv.thatlang.statements;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.expression.MemberCallToken;
-import in.mcxiv.thatlang.parser.expression.QuantaExpressionToken;
-import in.mcxiv.thatlang.parser.tokens.NameToken;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.thatlang.expression.MemberCallToken;
+import in.mcxiv.thatlang.expression.QuantaExpressionToken;
+import in.mcxiv.parser.generic.NameToken;
+import in.mcxiv.parser.Node;
+import in.mcxiv.thatlang.interpreter.AbstractVM;
+import thatlang.core.THATObject;
+import thatlang.core.THOSEObjects;
 
-import static in.mcxiv.thatlang.parser.expression.QuantaExpressionToken.QuantaExpressionParser.quantaExpression;
-import static in.mcxiv.thatlang.parser.power.PowerUtils.compound;
-import static in.mcxiv.thatlang.parser.power.PowerUtils.repeatable;
-import static in.mcxiv.thatlang.parser.tokens.NameToken.NameParser.name;
-import static in.mcxiv.thatlang.parser.tokens.SpacesToken.SpacesParser.spaces;
+import static in.mcxiv.thatlang.expression.QuantaExpressionToken.QuantaExpressionParser.quantaExpression;
+import static in.mcxiv.parser.power.PowerUtils.compound;
+import static in.mcxiv.parser.power.PowerUtils.repeatable;
+import static in.mcxiv.parser.generic.NameToken.NameParser.name;
+import static in.mcxiv.parser.generic.SpacesToken.SpacesParser.spaces;
 
 public class MultiAssignmentToken extends StatementToken {
 
@@ -45,6 +48,16 @@ public class MultiAssignmentToken extends StatementToken {
     @Override
     public String toString() {
         return toExtendedString("field", field, "subFields", subFields, "values", values);
+    }
+
+    @Override
+    public THATObject interpret(AbstractVM vm) {
+        THATObject lhs = field.interpret(vm);
+        for (int i = 0; i < subFields.length; i++) {
+            THATObject value = THOSEObjects.createAfterReducing(values[i].getValue());
+            lhs.putMember(subFields[i].getValue(), value);
+        }
+        return lhs;
     }
 
     public static class MultiAssignmentParser implements Parser<MultiAssignmentToken> {

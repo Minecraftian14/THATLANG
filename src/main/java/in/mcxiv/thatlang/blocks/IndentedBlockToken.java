@@ -1,18 +1,18 @@
 package in.mcxiv.thatlang.blocks;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.EitherParser;
-import in.mcxiv.thatlang.parser.power.RepeatableParser;
-import in.mcxiv.thatlang.parser.tokens.SpacesToken;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.power.EitherParser;
+import in.mcxiv.parser.power.RepeatableParser;
+import in.mcxiv.parser.generic.SpacesToken;
+import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Cursors;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+import static in.mcxiv.parser.power.PowerUtils.*;
 
 class IndentedBlockToken extends BlockToken {
 

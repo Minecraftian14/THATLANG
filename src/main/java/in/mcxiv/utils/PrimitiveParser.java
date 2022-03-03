@@ -31,6 +31,12 @@ public class PrimitiveParser<Type> {
         return Try.GetAnd(() -> parser.apply(string)).Else(() -> def);
     }
 
+    public Type parse(Object object) {
+        if (clazz.isInstance(object))
+            return clazz.cast(object);
+        return parse(object.toString());
+    }
+
     @SuppressWarnings("unchecked")
     public static <Type> Type parseOpt(String string) {
         for (PrimitiveParser<?> type : TYPES) {

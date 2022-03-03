@@ -1,9 +1,10 @@
 package in.mcxiv.thatlang.statements;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.power.EitherParser;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.power.EitherParser;
+import in.mcxiv.parser.Node;
+import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
 import in.mcxiv.thatlang.statements.ElseIfStatementToken.ElseIfStatementParser;
 import in.mcxiv.thatlang.statements.ElseStatementToken.ElseStatementParser;
@@ -11,6 +12,9 @@ import in.mcxiv.thatlang.statements.ForEachToken.ForEachParser;
 import in.mcxiv.thatlang.statements.ForStatementToken.ForStatementParser;
 import in.mcxiv.thatlang.statements.IfStatementToken.IfStatementParser;
 import in.mcxiv.thatlang.statements.MultiAssignmentToken.MultiAssignmentParser;
+import interpreter.Interpretable;
+import thatlang.core.THATObject;
+import thatlang.core.THOSEObjects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +22,7 @@ import java.util.List;
 import static in.mcxiv.thatlang.statements.QuantaStatement.QuantaStatementParser;
 import static in.mcxiv.thatlang.statements.VariableDefinitionToken.VariableDefinitionParser;
 
-public class StatementToken extends Node {
+public class StatementToken extends Node implements Interpretable<AbstractVM, THATObject> {
 
     public static final ArrayList<Parser<?>> STATEMENT_PARSERS = new ArrayList<>(List.of(
             VariableDefinitionParser.variableDef,
@@ -79,6 +83,11 @@ public class StatementToken extends Node {
     }
 
     public void processCondensability(StatementToken token) {
+    }
+
+    @Override
+    public THATObject interpret(AbstractVM vm) {
+        return THOSEObjects.NULL;
     }
 
     public static class StatementParser implements Parser<StatementToken> {

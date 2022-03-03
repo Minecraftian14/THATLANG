@@ -1,14 +1,14 @@
 package in.mcxiv.thatlang.blocks;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.tokens.SpacesToken.SpacesParser;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.generic.SpacesToken.SpacesParser;
+import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.thatlang.statements.StatementToken.StatementParser;
 import in.mcxiv.utils.Cursors;
 
-import static in.mcxiv.thatlang.parser.power.PowerUtils.*;
+import static in.mcxiv.parser.power.PowerUtils.*;
 
 public class BracedBlockToken extends BlockToken {
 

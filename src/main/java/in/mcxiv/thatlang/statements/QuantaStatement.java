@@ -1,9 +1,11 @@
 package in.mcxiv.thatlang.statements;
 
-import in.mcxiv.thatlang.parser.ParsableString;
-import in.mcxiv.thatlang.parser.Parser;
-import in.mcxiv.thatlang.parser.expression.QuantaExpressionToken;
-import in.mcxiv.thatlang.parser.tree.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
+import in.mcxiv.thatlang.expression.QuantaExpressionToken;
+import in.mcxiv.parser.Node;
+import in.mcxiv.thatlang.interpreter.AbstractVM;
+import thatlang.core.THATObject;
 
 import java.util.List;
 
@@ -27,6 +29,11 @@ public class QuantaStatement extends StatementToken {
     @Override
     public List<Node> getChildren() {
         return token.getChildren();
+    }
+
+    @Override
+    public THATObject interpret(AbstractVM vm) {
+        return token.interpret(vm);
     }
 
     @Override
