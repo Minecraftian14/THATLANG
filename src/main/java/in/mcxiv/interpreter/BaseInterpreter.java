@@ -1,4 +1,4 @@
-package interpreter;
+package in.mcxiv.interpreter;
 
 public class BaseInterpreter<Environment> {
 

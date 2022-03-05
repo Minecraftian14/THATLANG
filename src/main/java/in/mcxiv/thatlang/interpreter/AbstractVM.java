@@ -3,7 +3,7 @@ package in.mcxiv.thatlang.interpreter;
 import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.thatlang.ProgramToken;
 import in.mcxiv.utils.Pair;
-import interpreter.BaseInterpreter;
+import in.mcxiv.interpreter.BaseInterpreter;
 
 import java.util.Arrays;
 import java.util.Stack;

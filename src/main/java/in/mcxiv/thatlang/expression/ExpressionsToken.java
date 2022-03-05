@@ -5,7 +5,7 @@ import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.power.EitherParser;
 import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
-import interpreter.Interpretable;
+import in.mcxiv.interpreter.Interpretable;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 

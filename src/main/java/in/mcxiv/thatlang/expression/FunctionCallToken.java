@@ -7,7 +7,7 @@ import in.mcxiv.parser.generic.NameToken;
 import in.mcxiv.parser.generic.StringValueNode;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.interpreter.FunctionEvaluator;
-import interpreter.Interpretable;
+import in.mcxiv.interpreter.Interpretable;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
@@ -61,7 +61,7 @@ public class FunctionCallToken extends StringValueNode implements Interpretable<
                 NameToken.NameParser.name,
                 inline("("),
                 optional(inline(ArgumentsToken.arguments)),
-                inline(")")
+                word(")")
         );
 
         private FunctionCallParser() {

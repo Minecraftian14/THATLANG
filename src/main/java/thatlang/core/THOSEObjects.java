@@ -53,6 +53,10 @@ public final class THOSEObjects {
         return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, null, value);
     }
 
+    public static THATObject createVariable(String name, Object value) {
+        return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, name, value);
+    }
+
     private static final Pattern rgx_value = Pattern.compile("^([+-]?)(?:([_0-9]+)|([_0-9]*\\.[_0-9]*))([sdlfSDLF]?)$");
 
     public static THATObject createAfterReducing(String value) {

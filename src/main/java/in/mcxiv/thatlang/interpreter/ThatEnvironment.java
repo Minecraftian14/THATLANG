@@ -6,6 +6,7 @@ import in.mcxiv.thatlang.ProgramToken;
 import in.mcxiv.thatlang.interpreter.functions.InputFunctions;
 import in.mcxiv.thatlang.interpreter.functions.PrintFunctions;
 import in.mcxiv.thatlang.interpreter.functions.ProgramFunctions;
+import in.mcxiv.thatlang.interpreter.functions.UIFunctions;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.LinkedList;
 
@@ -34,7 +35,8 @@ public class ThatEnvironment extends AbstractEnvironment {
         functions = new ArrayList<>(List.of(
                 new PrintFunctions(this),
                 new InputFunctions(this),
-                new ProgramFunctions(this)
+                new ProgramFunctions(this),
+                new UIFunctions(this)
         ));
     }
 

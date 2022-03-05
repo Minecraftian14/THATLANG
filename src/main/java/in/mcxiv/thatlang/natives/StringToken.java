@@ -49,7 +49,7 @@ public class StringToken extends ExpressionsToken {
             int start = string.getCursor();
             while (Cursors.bound(string) && Cursors.getCharAndNext(string) != '"') ;
 //            if (Cursors.getChar(string) != '"') return null;
-            return new StringToken(parent, ((ParsableString) string.subSequence(start, string.getCursor() - 1)).toStringValue());
+            return new StringToken(parent, (String) string.subSequence(start, string.getCursor() - start - 1));
         }
     }
 }

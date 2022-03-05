@@ -3,8 +3,10 @@ package in.mcxiv.utils;
 import in.mcxiv.parser.ParsableString;
 
 public class Cursors {
-    public static boolean isLetterOrDigit(ParsableString string) {
-        return Character.isLetterOrDigit(getChar(string));
+
+    public static boolean isValueTokenCharacter(ParsableString string) {
+        char c = getChar(string);
+        return Character.isLetterOrDigit(c) || c == '.';
     }
 
     public static boolean isSpace(ParsableString string) {
@@ -31,11 +33,21 @@ public class Cursors {
         return string.getCursor() < string.length();
     }
 
-    public static boolean matches(ParsableString string, String match) {
-        return Strings.matches(string.getChars(), string.getCursor(), match.toCharArray());
+    public static boolean matches(ParsableString string, char[] match) {
+        return Strings.matches(string.getChars(), string.getCursor(), match);
     }
 
     public static void skipSpaces(ParsableString string) {
         while (Cursors.bound(string) && Cursors.isSpace(string)) string.moveCursor(1);
+    }
+
+    public static String fetchEverythingUpTo(ParsableString string, String symbol) {
+        int start = string.getCursor();
+        char[] chars = symbol.toCharArray();
+        while (bound(string))
+            if (matches(string, chars))
+                return new String(string.getChars(), start, string.getCursor() - start);
+            else string.moveCursor(1);
+        return null;
     }
 }

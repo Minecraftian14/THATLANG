@@ -93,7 +93,7 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
 
         private static final Parser parser = compound(
                 callStepParser,
-                optional(repeatable(compound(new WordParser("."), callStepParser)))
+                optional(repeatable(compound(inline("."), callStepParser)))
         );
 
         private QuantaExpressionParser() {

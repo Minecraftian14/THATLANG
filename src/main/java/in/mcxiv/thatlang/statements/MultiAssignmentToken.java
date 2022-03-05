@@ -1,48 +1,41 @@
 package in.mcxiv.thatlang.statements;
 
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.generic.NameToken;
 import in.mcxiv.thatlang.expression.MemberCallToken;
 import in.mcxiv.thatlang.expression.QuantaExpressionToken;
-import in.mcxiv.parser.generic.NameToken;
-import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
+import in.mcxiv.tryCatchSuite.Try;
+import in.mcxiv.utils.Cursors;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
-import static in.mcxiv.thatlang.expression.QuantaExpressionToken.QuantaExpressionParser.quantaExpression;
-import static in.mcxiv.parser.power.PowerUtils.compound;
-import static in.mcxiv.parser.power.PowerUtils.repeatable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 import static in.mcxiv.parser.generic.NameToken.NameParser.name;
-import static in.mcxiv.parser.generic.SpacesToken.SpacesParser.spaces;
+import static in.mcxiv.parser.power.PowerUtils.*;
+import static in.mcxiv.thatlang.expression.FunctionCallToken.FunctionCallParser.function;
+import static in.mcxiv.thatlang.expression.MemberCallToken.MemberCallParser.member;
 
 public class MultiAssignmentToken extends StatementToken {
 
     QuantaExpressionToken field;
-    NameToken[] subFields;
-    NameToken[] values;
+    String[] subFields;
+    String[] values;
 
-    public MultiAssignmentToken(QuantaExpressionToken field, NameToken[] subFields, NameToken[] values) {
+    public MultiAssignmentToken(QuantaExpressionToken field, String[] subFields, String[] values) {
         this(null, field, subFields, values);
     }
 
-    public MultiAssignmentToken(Node parent, QuantaExpressionToken field, NameToken[] subFields, NameToken[] values) {
+    public MultiAssignmentToken(Node parent, QuantaExpressionToken field, String[] subFields, String[] values) {
         super(parent);
         this.field = field;
         this.subFields = subFields;
         this.values = values;
-    }
-
-    public QuantaExpressionToken getField() {
-        return field;
-    }
-
-    public NameToken[] getSubFields() {
-        return subFields;
-    }
-
-    public NameToken[] getValues() {
-        return values;
     }
 
     @Override
@@ -54,44 +47,86 @@ public class MultiAssignmentToken extends StatementToken {
     public THATObject interpret(AbstractVM vm) {
         THATObject lhs = field.interpret(vm);
         for (int i = 0; i < subFields.length; i++) {
-            THATObject value = THOSEObjects.createAfterReducing(values[i].getValue());
-            lhs.putMember(subFields[i].getValue(), value);
+//          THATObject value = THOSEObjects.createAfterReducing(values[i]);
+            // TODO: Refactor to store only QETs of length 1 so that we can directly call interpret
+            THATObject member = lhs.getMember(subFields[i]);
+            Object value = new QuantaExpressionToken(new Node[]{new MemberCallToken(values[i])}).interpret(vm).value;
+            if (member == null) {
+                lhs.putMember(subFields[i], THOSEObjects.createVariable(value));
+            } else {
+                THOSEObjects.mutateValue(member, value);
+            }
         }
         return lhs;
     }
 
     public static class MultiAssignmentParser implements Parser<MultiAssignmentToken> {
 
-        private static final Parser<?> parser = compound(
-                quantaExpression,
-                repeatable(compound(spaces, name))
-        );
         public static MultiAssignmentParser multiAssignment = new MultiAssignmentParser();
+
+        private static final Parser<?> callStepParser = either(function, member);
+
+        private static final Parser<?> fieldParser = compound(
+                callStepParser,
+                optional(repeatable(compound(word("."), callStepParser)))
+        );
 
         @Override
         public MultiAssignmentToken __parse__(ParsableString string, Node parent) {
-            Node node = parser.parse(string);
+            Node node = fieldParser.parse(string);
             if (node == null) return null;
 
-            var qet = (QuantaExpressionToken) node.get(0);
+            var field = convert(node);
 
-            if (qet.noOfChildren() < 2) return null;
-            var children = qet.getChildren();
-            Node qetElement = children.get(children.size() - 1);
-            qetElement.detach();
-            if (!(qetElement instanceof MemberCallToken)) return null;
-            var member = ((MemberCallToken) qetElement);
+            if (!Cursors.isSpace(string)) return null;
+            Cursors.skipSpaces(string);
 
-            NameToken[] subFields = member.getValue().chars().mapToObj(value -> new NameToken("" + ((char) value))).toArray(NameToken[]::new);
-            NameToken[] values = node.get(1).getChildren().stream().map(ch -> ch.get(1)).map(ch -> ((NameToken) ch)).toArray(NameToken[]::new);
-            if (subFields.length != values.length) return null;
+            ArrayList<String[][]> pairs = new ArrayList<>();
+            String[][] pair;
+            while ((pair = parseSubfields(string)) != null) {
+                pairs.add(pair);
+                Cursors.skipSpaces(string);
+            }
+            if (pairs.size() < 1) return null;
+
+            String[] subFields = pairs.stream().map(strings -> strings[0]).flatMap(Arrays::stream).toArray(String[]::new);
+            String[] values = pairs.stream().map(strings -> strings[1]).flatMap(Arrays::stream).toArray(String[]::new);
+
+            if (subFields.length != values.length)
+                throw new RuntimeException("Critical Error");
 
             return new MultiAssignmentToken(
                     parent,
-                    qet,
+                    field,
                     subFields,
                     values
             );
+        }
+
+        private QuantaExpressionToken convert(Node field) {
+            ArrayList<Node> list = new ArrayList<>();
+            list.add(field.get(0));
+            IntStream.range(0, Try.GetAnd(() -> field.get(1).get(0).noOfChildren() / 2).Else(() -> 0))
+                    .map(i -> 2 * i + 1)
+                    .mapToObj(index -> field.get(1).get(0).get(index))
+                    .forEach(list::add);
+            return new QuantaExpressionToken(list.toArray(new Node[0]));
+        }
+
+        private String[][] parseSubfields(ParsableString string) {
+            if (Cursors.getChar(string) != '.') return null;
+            string.moveCursor(1);
+            NameToken node = name.parse(string);
+            if (node == null) return null;
+            String[] subFields = node.getValue().chars().mapToObj(value -> "" + (char) value).toArray(String[]::new);
+            String[] values = new String[subFields.length];
+            for (int i = 0; i < subFields.length; i++) {
+                Cursors.skipSpaces(string);
+                node = name.parse(string);
+                if (node == null) return null;
+                values[i] = node.getValue();
+            }
+            return new String[][]{subFields, values};
         }
     }
 }

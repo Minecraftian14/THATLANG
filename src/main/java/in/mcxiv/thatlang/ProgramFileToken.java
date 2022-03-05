@@ -5,7 +5,7 @@ import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.power.LooseBlockParser;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
-import interpreter.Interpretable;
+import in.mcxiv.interpreter.Interpretable;
 
 import java.util.Arrays;
 import java.util.Objects;

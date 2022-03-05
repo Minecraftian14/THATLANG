@@ -4,6 +4,8 @@ import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.power.EitherParser;
 import in.mcxiv.parser.Node;
+import in.mcxiv.thatlang.comments.CommentToken;
+import in.mcxiv.thatlang.comments.CommentToken.CommentParser;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
 import in.mcxiv.thatlang.statements.ElseIfStatementToken.ElseIfStatementParser;
@@ -12,7 +14,7 @@ import in.mcxiv.thatlang.statements.ForEachToken.ForEachParser;
 import in.mcxiv.thatlang.statements.ForStatementToken.ForStatementParser;
 import in.mcxiv.thatlang.statements.IfStatementToken.IfStatementParser;
 import in.mcxiv.thatlang.statements.MultiAssignmentToken.MultiAssignmentParser;
-import interpreter.Interpretable;
+import in.mcxiv.interpreter.Interpretable;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
@@ -35,7 +37,8 @@ public class StatementToken extends Node implements Interpretable<AbstractVM, TH
             ElseStatementParser.elseStatement,
             IfStatementParser.ifStatement,
             BinaryFunctionStatementToken.binaryFunctionStmt,
-            QuantaStatementParser.quantaStatement
+            QuantaStatementParser.quantaStatement,
+            CommentParser.comment
     ));
 
     public static final ArrayList<Class<?>> STATEMENT_TYPES = new ArrayList<>(List.of(
@@ -47,7 +50,8 @@ public class StatementToken extends Node implements Interpretable<AbstractVM, TH
             IfStatementToken.class,
             ElseIfStatementToken.class,
             ElseStatementToken.class,
-            QuantaStatement.class
+            QuantaStatement.class,
+            CommentToken.class
     ));
 
     private final boolean isCondensable;

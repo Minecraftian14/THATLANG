@@ -10,6 +10,20 @@ import java.util.function.Function;
 
 public abstract class FunctionEvaluator implements Function<FunctionCallToken, THATObject> {
 
+    public static final FunctionEvaluator anonymous(final AbstractEnvironment environment, final String name, final Function<FunctionCallToken, THATObject> function) {
+        return new FunctionEvaluator(environment) {
+            @Override
+            public boolean isApplicable(FunctionCallToken fct) {
+                return name.equals(fct.getValue());
+            }
+
+            @Override
+            public THATObject apply(FunctionCallToken fct) {
+                return function.apply(fct);
+            }
+        };
+    }
+
     final protected AbstractEnvironment environment;
 
     protected FunctionEvaluator(AbstractEnvironment environment) {
@@ -51,18 +65,24 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
 
         @Override
         public THATObject apply(FunctionCallToken call) {
+            // p-parameters
             String[] pNames = token.getParameterNames();
             THATObject[] pValues = call.getArguments().getExpressions().stream().map(et -> et.interpret(environment.vm)).toArray(THATObject[]::new);
             for (int i = 0; i < numberOfParameters; i++)
                 pValues[i].name = pNames[i];
 
-            String[] rNames = token.getReturnArgNames();
-            THATObject[] rValues = new THATObject[rNames.length];
-            for (int i = 0; i < rNames.length; i++)
-                rValues[i] = THOSEObjects.createEmptyVariable(rNames[i]);
-
             var that = environment.vm.executionStack.peek();
             var tScope = that.getB();
+
+            // r-returnables
+            String[] rNames = token.getReturnArgNames();
+            THATObject[] rValues = new THATObject[rNames.length];
+            for (int i = 0; i < rNames.length; i++){
+                THATObject object = tScope.seek(rNames[i]);
+                if(object!=null) rValues[i] = object;
+                else rValues[i] = THOSEObjects.createEmptyVariable(rNames[i]);
+            }
+
             for (int i = 0; i < rValues.length; i++)
                 tScope.addVariable(rValues[i]);
 

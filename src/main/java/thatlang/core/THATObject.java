@@ -1,9 +1,11 @@
 package thatlang.core;
 
 import in.mcxiv.thatlang.expression.FunctionCallToken;
+import in.mcxiv.thatlang.interpreter.FunctionEvaluator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class THATObject {
@@ -16,6 +18,7 @@ public class THATObject {
     HashMap< /*DATA_KEY*/ String, /*DATA_VALUE*/ Object> objectData = new HashMap<>();
 
     HashMap< /*NAME*/ String, /*OBJECT*/ THATObject> accessibleMember = new HashMap<>();
+    List<FunctionEvaluator> accessibleFunctions = new ArrayList<>();
 
     public Object getObjectData(String dataKey) {
         return objectData.get(dataKey);
@@ -43,14 +46,26 @@ public class THATObject {
 
     public THATObject getPossiblyNewMember(String memberName) {
         THATObject member = getMember(memberName);
-        if(member != null) return member;
+        if (member != null) return member;
         member = THOSEObjects.createValue(null);
         return member;
     }
 
-    public THATObject seekFunction(FunctionCallToken name) {
-        // TODO
-        return null;
+    public void addFunction(FunctionEvaluator evaluator) {
+        accessibleFunctions.add(evaluator);
+    }
+
+    public THATObject seekFunction(FunctionCallToken fct) {
+
+        for (FunctionEvaluator evaluator : accessibleFunctions)
+            if (evaluator.isApplicable(fct))
+                return evaluator.apply(fct);
+
+        for (FunctionEvaluator evaluator : accessibleFunctions)
+            if (evaluator.isDigestible(fct))
+                return evaluator.apply(fct);
+
+        return THOSEObjects.NULL;
     }
 
     public String v() {

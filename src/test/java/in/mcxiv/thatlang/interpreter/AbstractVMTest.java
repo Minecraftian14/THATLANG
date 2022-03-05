@@ -1,5 +1,6 @@
 package in.mcxiv.thatlang.interpreter;
 
+import com.mcxiv.logger.tools.LogLevel;
 import in.mcxiv.TestSuite;
 import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.tryCatchSuite.Try;
@@ -29,7 +30,6 @@ class AbstractVMTest {
         JustRunTheThing(program);
         assertOutput("simple Test", builder);
     }
-
 
     @Test
     void testTheNewIndentTypeBlck() {
@@ -134,8 +134,9 @@ class AbstractVMTest {
                     else -> pln("BRUH")
                     val.sub = 10
                     pln(val.sub)
-                    val.sub 10 11 12
+                    val .sub 10 11 12 .max 1 2 3
                     printf("%s %s %s\n", val.s, val.u, val.b)
+                    printf("%s %s %s\n", val.m, val.a, val.x)
                 """;
 
         JustRunTheThing(program);
@@ -143,6 +144,7 @@ class AbstractVMTest {
                 <'_'>
                 10
                 10 11 12
+                1 2 3
                 """, builder);
 
     }
@@ -198,6 +200,37 @@ class AbstractVMTest {
         assertOutput("Q = 863, R = 19004", builder);
     }
 
+    public static void main(String[] args) {
+        AbstractVMTest test = new AbstractVMTest();
+        test.setUp();
+        test.testUI();
+    }
+
+    @Test
+    void testUI() {
+        LogLevel.DEBUG.activate();
+        String program = """
+                program main {
+                    val size = 500
+                    UI("Example", size, size)
+                    for (var i = 0; i < size; i = i+50) :
+                        for (var j = 0; j < size; j = j+50) :
+                            var box = UI().box()
+                            box .xy i j .wh 0.1 0.1
+                            if ((i + j)/50) % 2 == 0 -> box .rgb 255 0 255
+                            or else                  -> box .rgb 255 255 0
+                            sleep(16)
+                    UI().button("Press Me!", act("oi?")) .xywh 0.4 0.4 0.2 0.1
+                    UI()
+                    sleep(5000000)
+                }
+                    
+                function act(word):
+                    prtln(word)
+                """;
+
+        JustRunTheThing(program);
+    }
 
     private void assertOutput(String s, StringBuilder builder) {
         s = s.replaceAll("[\n\r]", "");

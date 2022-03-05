@@ -25,9 +25,9 @@ public class NameToken extends StringValueNode {
 
         @Override
         public NameToken __parse__(ParsableString string, Node parent) {
-            if (!Cursors.isLetterOrDigit(string)) return null;
+            if (!Cursors.isValueTokenCharacter(string)) return null;
             StringBuilder builder = new StringBuilder();
-            while (Cursors.bound(string) && Cursors.isLetterOrDigit(string))
+            while (Cursors.bound(string) && Cursors.isValueTokenCharacter(string))
                 builder.append(Cursors.getCharAndNext(string));
             return new NameToken(parent, builder.toString());
         }
