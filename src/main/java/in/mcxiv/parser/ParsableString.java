@@ -59,6 +59,10 @@ public class ParsableString implements CharSequence, Comparable<ParsableString> 
         return new ParsableString(Arrays.copyOfRange(chars, start, end));
     }
 
+    public CharSequence splitAtCursor() {
+        return subSequence(cursor, length - cursor);
+    }
+
     @Override
     public int compareTo(ParsableString o) {
         int lim = Math.min(length, o.length);

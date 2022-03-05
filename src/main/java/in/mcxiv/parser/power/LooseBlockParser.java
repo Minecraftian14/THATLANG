@@ -19,12 +19,12 @@ public class LooseBlockParser implements Parser<Node> {
 
     @Override
     public Node __parse__(ParsableString string, Node parent) {
-        while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
+        while (Cursors.bound(string) && Cursors.isBlank(string)) string.moveCursor(1);
 
         Node value = parser.parse(string, parent);
         if (value == null) return null;
 
-        while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
+        while (Cursors.bound(string) && Cursors.isBlank(string)) string.moveCursor(1);
 
         return value;
     }

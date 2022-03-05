@@ -1,9 +1,9 @@
 package in.mcxiv.thatlang.natives;
 
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.thatlang.expression.ExpressionsToken;
-import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.utils.Cursors;
 import thatlang.core.THATObject;
@@ -47,8 +47,17 @@ public class StringToken extends ExpressionsToken {
         public StringToken __parse__(ParsableString string, Node parent) {
             if (Cursors.getCharAndNext(string) != '"') return null;
             int start = string.getCursor();
-            while (Cursors.bound(string) && Cursors.getCharAndNext(string) != '"') ;
-//            if (Cursors.getChar(string) != '"') return null;
+
+            boolean flag_isEscape = false;
+            while (Cursors.bound(string)) {
+                char c = Cursors.getCharAndNext(string);
+                if (flag_isEscape) {
+                    flag_isEscape = false;
+                    continue;
+                }
+                if (c == '\\') flag_isEscape = true;
+                else if (c == '"') break;
+            }
             return new StringToken(parent, (String) string.subSequence(start, string.getCursor() - start - 1));
         }
     }

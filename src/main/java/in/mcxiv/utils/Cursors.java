@@ -14,9 +14,13 @@ public class Cursors {
         return c == ' ' || c == '\t';
     }
 
-    public static boolean isWhite(ParsableString string) {
+    public static boolean isNewLine(ParsableString string) {
         char c = getChar(string);
-        return isSpace(string) || c == '\n' || c == '\r';
+        return c == '\n' || c == '\r';
+    }
+
+    public static boolean isBlank(ParsableString string) {
+        return isSpace(string) || isNewLine(string);
     }
 
     public static char getChar(ParsableString string) {
@@ -31,6 +35,10 @@ public class Cursors {
 
     public static boolean bound(ParsableString string) {
         return string.getCursor() < string.length();
+    }
+
+    public static boolean matches(ParsableString string, String match) {
+        return matches(string, match.toCharArray());
     }
 
     public static boolean matches(ParsableString string, char[] match) {
@@ -49,5 +57,26 @@ public class Cursors {
                 return new String(string.getChars(), start, string.getCursor() - start);
             else string.moveCursor(1);
         return null;
+    }
+
+    /**
+     * Returns the (spaces) string which lyes between the current char and the last new line.
+     * <p>
+     * YES! It requires the current character to be a non-space and the preceding char to be a (black).
+     */
+    public static String getElevation(ParsableString string) {
+        int end = string.getCursor();
+        String result = null;
+        while (string.getCursor() > 0) {
+            string.moveCursor(-1);
+            int start = string.getCursor();
+            if (isNewLine(string)) {
+                result = (String) string.subSequence(start + 1, end - start - 1);
+                break;
+            }
+            if (!isSpace(string)) break;
+        }
+        string.setCursor(end);
+        return result;
     }
 }

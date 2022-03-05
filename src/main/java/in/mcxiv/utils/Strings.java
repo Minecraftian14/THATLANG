@@ -60,12 +60,23 @@ public class Strings {
         return true;
     }
 
-    public static String interlumble(String f, String  n) {
+    public static String interlumble(String f, String n) {
         StringBuilder builder = new StringBuilder();
         int i = 0;
         for (int s = Math.min(f.length(), n.length()); i < s; i++)
             builder.append(f.charAt(i)).append(n.charAt(i));
         // Append the remaining part of the longer string
         return builder.toString();
+    }
+
+    public static int getIndentSpaces(String line) {
+        int spaces = 0;
+        for (int i = 0, s = line.length(); i < s; i++) {
+            char c = line.charAt(i);
+            if (c != ' ')
+                break;
+            spaces++;
+        }
+        return spaces;
     }
 }

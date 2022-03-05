@@ -10,8 +10,9 @@ import thatlang.core.THATObject;
 
 import static in.mcxiv.parser.power.PowerUtils.either;
 import static in.mcxiv.thatlang.comments.BoxedMultilineLineCommentToken.BoxedMultilineCommentParser.boxedMultiLineComment;
-import static in.mcxiv.thatlang.comments.MultilineLineCommentToken.MultilineCommentParser.multiLineComment;
+import static in.mcxiv.thatlang.comments.MultilineCommentToken.MultilineCommentParser.multiLineComment;
 import static in.mcxiv.thatlang.comments.SingleLineCommentToken.SingleLineCommentParser.singleLineComment;
+import static in.mcxiv.thatlang.comments.TableCommentToken.TableCommentParser.tableComment;
 
 public class CommentToken extends StatementToken implements Interpretable<AbstractVM, THATObject> {
 
@@ -31,16 +32,11 @@ public class CommentToken extends StatementToken implements Interpretable<Abstra
         return toExtendedString("content", content);
     }
 
-    @Override
-    public THATObject interpret(AbstractVM abstractVM) {
-        return null;
-    }
-
     public static class CommentParser implements Parser<CommentToken> {
 
         public static final Parser<CommentToken> comment = new CommentParser();
 
-        private static final Parser<?> parser = either(singleLineComment, boxedMultiLineComment, multiLineComment);
+        private static final Parser<?> parser = either(singleLineComment, boxedMultiLineComment, multiLineComment, tableComment);
 
         private CommentParser() {
         }

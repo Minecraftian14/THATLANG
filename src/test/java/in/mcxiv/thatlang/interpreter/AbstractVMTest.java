@@ -6,6 +6,7 @@ import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.tryCatchSuite.Try;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +28,7 @@ class AbstractVMTest {
                 program main->
                     pln(scan())
                 """;
-        JustRunTheThing(program);
+        JustRunTheThing(program, true);
         assertOutput("simple Test", builder);
     }
 
@@ -39,11 +40,49 @@ class AbstractVMTest {
                                 
                     pln(scan())
                     
+                    var something = ""
+                        OMG
+                        HEYA
+                        noice
+                    ""
+                    
+                    pln(something)
+                    
+                    something = <%
+                        <!DOCTYPE yaml>
+                        #a comment in yaml
+                    %>
+                    
+                    // A comment
+                    
+                    /* And a block comment
+                                */
+                    
+                    /**
+                     * And a box comment
+                     **/
+                    
+                    /============================#=====================\\
+                    |            MODEL           | Activation Function |
+                    |----------------------------|---------------------|
+                    | Regression                 | Linear Function     |
+                    | Binary Classification      | Sigmoid Function    |
+                    | Multiclass Classification  | Soft-Max Function   |
+                    | Multilabel Classification  | Sigmoid Function    |
+                    \\============================^=====================/
+                    
                     prtf("%s", "lmao")
                     
                 """;
-        JustRunTheThing(program);
-        assertOutput("simple Test\nlmao", builder);
+        JustRunTheThing(program, true);
+        assertOutput("""
+                simple Test
+                                
+                OMG
+                HEYA
+                noice
+                    lmao
+                """, builder);
     }
 
     @Test
@@ -60,7 +99,7 @@ class AbstractVMTest {
                 }
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("Hello\nTestVariablesAndInputs", builder);
     }
 
@@ -76,7 +115,7 @@ class AbstractVMTest {
                     pln ( a + b * (a ** b) - (a / b) * (a << b) +( a<<b)/a)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("18", builder);
     }
 
@@ -90,7 +129,7 @@ class AbstractVMTest {
                    
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("1.0", builder);
     }
 
@@ -117,7 +156,7 @@ class AbstractVMTest {
                     if(o equals "%")->pln(a%b)
                 }
                                                 """;
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("200", builder);
     }
 
@@ -139,7 +178,7 @@ class AbstractVMTest {
                     printf("%s %s %s\n", val.m, val.a, val.x)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("""
                 <'_'>
                 10
@@ -156,7 +195,7 @@ class AbstractVMTest {
                 fun act(word) -> printf(">> %s%n", word)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("hey", builder);
 
         program = """
@@ -166,7 +205,7 @@ class AbstractVMTest {
                 fun act(a, b) -> printf(">> %s %s%n", a, b)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("Hello World", builder);
 
         program = """
@@ -176,7 +215,7 @@ class AbstractVMTest {
                 fun c act(a, b) -> c = a + b
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("HelloWorld", builder);
     }
 
@@ -196,7 +235,7 @@ class AbstractVMTest {
                                 
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("Q = 863, R = 19004", builder);
     }
 
@@ -207,6 +246,7 @@ class AbstractVMTest {
     }
 
     @Test
+    @Disabled("We had to disable it because of the sleep(5000000)")
     void testUI() {
         LogLevel.DEBUG.activate();
         String program = """
@@ -229,7 +269,7 @@ class AbstractVMTest {
                     prtln(word)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
     }
 
     private void assertOutput(String s, StringBuilder builder) {
@@ -238,10 +278,10 @@ class AbstractVMTest {
         assertEquals(s, act.substring(act.length() - s.length()));
     }
 
-    private static void JustRunTheThing(String program) {
+    private static void JustRunTheThing(String program, boolean print) {
         ProgramFileToken file;
         assertNotNull((file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
-//        System.out.println(TestSuite.pj(file));
+        if (print) System.out.println(TestSuite.pj(file));
 
         AbstractVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
         vm.load(file);
