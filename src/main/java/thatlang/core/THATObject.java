@@ -2,11 +2,13 @@ package thatlang.core;
 
 import in.mcxiv.thatlang.expression.FunctionCallToken;
 import in.mcxiv.thatlang.interpreter.FunctionEvaluator;
+import thatlang.core.util.Types;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class THATObject {
 
@@ -19,6 +21,8 @@ public class THATObject {
 
     HashMap< /*NAME*/ String, /*OBJECT*/ THATObject> accessibleMember = new HashMap<>();
     List<FunctionEvaluator> accessibleFunctions = new ArrayList<>();
+
+    public Function<THATObject, String> toStringFunction = object -> "" + object.value;
 
     public Object getObjectData(String dataKey) {
         return objectData.get(dataKey);
@@ -33,7 +37,10 @@ public class THATObject {
     }
 
     public THATObject getMember(String memberName) {
-        return accessibleMember.get(memberName);
+        return switch (memberName) {
+            case "type" -> THOSEObjects.createValue(primaryInference.getSimpleName());
+            default -> accessibleMember.get(memberName);
+        };
     }
 
     public void putMember(String memberName, THATObject member) {
@@ -69,7 +76,7 @@ public class THATObject {
     }
 
     public String v() {
-        return value.toString();
+        return toString();
     }
 
     @Override
@@ -90,5 +97,17 @@ public class THATObject {
     @Override
     public int hashCode() {
         return Objects.hash(primaryInference, secondaryInferences, name, value, objectData, accessibleMember);
+    }
+
+    @Override
+    public String toString() {
+        return toStringFunction.apply(this);
+    }
+
+    public Object printSafe() {
+        if (primaryInference == null) return toStringFunction.apply(this);
+        if (Types.isPrimitiveType(primaryInference)) return value;
+        if (Types.isNativeType(primaryInference)) return toStringFunction.apply(this);
+        throw new IllegalStateException("Hmmm... Then what kind of a type is " + primaryInference + "??");
     }
 }

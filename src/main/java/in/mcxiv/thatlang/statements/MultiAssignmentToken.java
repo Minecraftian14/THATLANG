@@ -4,6 +4,7 @@ import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.generic.NameToken;
+import in.mcxiv.parser.generic.ValueToken;
 import in.mcxiv.thatlang.expression.MemberCallToken;
 import in.mcxiv.thatlang.expression.QuantaExpressionToken;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
@@ -92,6 +93,15 @@ public class MultiAssignmentToken extends StatementToken {
             String[] subFields = pairs.stream().map(strings -> strings[0]).flatMap(Arrays::stream).toArray(String[]::new);
             String[] values = pairs.stream().map(strings -> strings[1]).flatMap(Arrays::stream).toArray(String[]::new);
 
+            for (int i = 0; i < subFields.length; i++) {
+                char c = subFields[i].charAt(0);
+                int count = 0;
+                for (int j = 0; j < i; j++)
+                    if (subFields[j].charAt(0) == c)
+                        count++;
+                if (count > 0) subFields[i] += (count + 1);
+            }
+
             if (subFields.length != values.length)
                 throw new RuntimeException("Critical Error");
 
@@ -118,13 +128,15 @@ public class MultiAssignmentToken extends StatementToken {
             string.moveCursor(1);
             NameToken node = name.parse(string);
             if (node == null) return null;
+
             String[] subFields = node.getValue().chars().mapToObj(value -> "" + (char) value).toArray(String[]::new);
             String[] values = new String[subFields.length];
+
             for (int i = 0; i < subFields.length; i++) {
                 Cursors.skipSpaces(string);
-                node = name.parse(string);
-                if (node == null) return null;
-                values[i] = node.getValue();
+                ValueToken vt = ValueToken.ValueParser.value.parse(string);
+                if (vt == null) return null;
+                values[i] = vt.getValue();
             }
             return new String[][]{subFields, values};
         }

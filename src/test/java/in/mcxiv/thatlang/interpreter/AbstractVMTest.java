@@ -74,7 +74,7 @@ class AbstractVMTest {
                     prtf("%s", "lmao")
                     
                 """;
-        JustRunTheThing(program, true);
+        JustRunTheThing(program, false);
         assertOutput("""
                 simple Test
                                 
@@ -167,15 +167,28 @@ class AbstractVMTest {
         //noinspection UnnecessaryStringEscape
         String program = """
                 program main:
-                    var val = scani()
-                    if val == 10 -> pln("YES")
-                    else if val == 11 -> pln("<'_'>")
+                    var smx = scani()
+                    if smx == 10 -> pln("YES")
+                    else if smx == 11 -> pln("<'_'>")
                     else -> pln("BRUH")
-                    val.sub = 10
-                    pln(val.sub)
-                    val .sub 10 11 12 .max 1 2 3
-                    printf("%s %s %s\n", val.s, val.u, val.b)
-                    printf("%s %s %s\n", val.m, val.a, val.x)
+                    smx.sub = 10
+                    pln(smx.sub)
+                    smx .sub 10 11 12 .max 1 2 3
+                    printf("%s %s %s\n", smx.s, smx.u, smx.b)
+                    printf("%s %s %s\n", smx.m, smx.a, smx.x)
+                    
+                    smx = [1, 2, 3]
+                    printf("%-20s %-20s %-20s\n", smx, smx[0], smx.type)
+                    smx = l[1, 2, 3]
+                    printf("%-20s %-20s %-20s\n", smx, smx[1], smx.type)
+                    smx = {1, 2, 3}
+                    printf("%-20s %-20s %-20s\n", smx, smx[2], smx.type)
+                    smx = {"a":1, "b":2, "c":3}
+                    printf("%-20s %-20s %-20s\n", smx, smx["a"], smx.type)
+                    smx = t{a:1, b:2, c:3}
+                    printf("%-20s %-20s %-20s\n", smx, smx[b], smx.type)
+                    smx = |1, 2, 3<
+                    printf("%-20s %-20s %-20s\n", smx, smx[0], smx.type)
                 """;
 
         JustRunTheThing(program, false);
@@ -184,6 +197,12 @@ class AbstractVMTest {
                 10
                 10 11 12
                 1 2 3
+                [1, 2, 3]            1                    ArrayList          \s
+                l[1, 2, 3]           2                    LinkedList         \s
+                {1, 3, 2}            true                 HashSet            \s
+                {c=3, b=2, a=1}      1                    HashMap            \s
+                t{c=3, b=2, a=1}     2                    Hashtable          \s
+                |1, 2, 3<            1                    Stack              \s
                 """, builder);
 
     }
@@ -224,7 +243,7 @@ class AbstractVMTest {
         String program = """
                                 
                 program main {
-                    act(19867, 23)
+                    act(numB=23, 19867)
                     pf("Q = %d, R = %d\n", quo, rem)
                 }
                     
@@ -235,7 +254,7 @@ class AbstractVMTest {
                                 
                 """;
 
-        JustRunTheThing(program, false);
+        JustRunTheThing(program, true);
         assertOutput("Q = 863, R = 19004", builder);
     }
 
@@ -253,13 +272,16 @@ class AbstractVMTest {
                 program main {
                     val size = 500
                     UI("Example", size, size)
+                    UI().box() .xy 0.1 0.1 .xy -0.1 -0.1
                     for (var i = 0; i < size; i = i+50) :
                         for (var j = 0; j < size; j = j+50) :
                             var box = UI().box()
                             box .xy i j .wh 0.1 0.1
-                            if ((i + j)/50) % 2 == 0 -> box .rgb 255 0 255
-                            or else                  -> box .rgb 255 255 0
+                            if ((i + j)/50) % 2 == 0 -> box .rgb 200 0 200
+                            or else                  -> box .rgb 200 200 0
                             sleep(16)
+                    UI().oval() .xyxy 0.15 0.15 -0.15 -0.15 .rgb 100 0 100
+                    UI().poly(0,1,1,1,0.5,0.8) .xyxy 0.15 0.15 -0.15 -0.15 .rgb 0 0 0
                     UI().button("Press Me!", act("oi?")) .xywh 0.4 0.4 0.2 0.1
                     UI()
                     sleep(5000000)

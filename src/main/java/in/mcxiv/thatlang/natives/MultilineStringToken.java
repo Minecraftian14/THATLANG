@@ -57,10 +57,10 @@ public class MultilineStringToken extends ExpressionsToken {
         public MultilineStringToken __parse__(ParsableString string, Node parent) {
             if (!Cursors.matches(string, starter))
                 return null;
-            string.moveCursor(2);
+            string.moveCursor(starter.length());
             String everything = Cursors.fetchEverythingUpTo(string, ender);
             if (everything == null) return null;
-            string.moveCursor(2);
+            string.moveCursor(ender.length());
 
             String[] lines = everything.split("[\n\r]");
             int maxSpaces = 0;

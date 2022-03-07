@@ -43,7 +43,7 @@ public class AssignmentToken extends StatementToken {
     @Override
     public THATObject interpret(AbstractVM vm) {
         THATObject lhs = field.interpret(vm);
-        THOSEObjects.mutateValue(lhs, expression.interpret(vm).value);
+        THOSEObjects.mutateValue(lhs, expression.interpret(vm));
         return lhs;
     }
 

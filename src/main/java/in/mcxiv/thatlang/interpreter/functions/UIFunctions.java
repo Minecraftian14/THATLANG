@@ -1,26 +1,24 @@
 package in.mcxiv.thatlang.interpreter.functions;
 
-import in.mcxiv.thatlang.expression.ExpressionsToken;
+import com.formdev.flatlaf.FlatDarkLaf;
 import in.mcxiv.thatlang.expression.FunctionCallToken;
-import in.mcxiv.thatlang.expression.QuantaExpressionToken;
 import in.mcxiv.thatlang.interpreter.AbstractEnvironment;
 import in.mcxiv.thatlang.interpreter.FunctionEvaluator;
 import in.mcxiv.thatlang.interpreter.VariableScope;
 import in.mcxiv.thatlang.ui.EasyCanvas;
 import in.mcxiv.thatlang.ui.RootCanvas;
-import in.mcxiv.thatlang.ui.components.ShapePanel;
-import in.mcxiv.thatlang.ui.components.primitives.ComponentBinder;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
-
-import javax.swing.*;
-import java.util.List;
 
 public class UIFunctions extends FunctionEvaluator {
 
     public static final String UIFunctionCall = "UI";
     private static final String UI_CONTEXT = "ui context";
     private static final String ROOT_UI_CONTEXT = "root ui context";
+
+    static {
+        FlatDarkLaf.setup();
+    }
 
     public UIFunctions(AbstractEnvironment environment) {
         super(environment);
@@ -88,31 +86,15 @@ public class UIFunctions extends FunctionEvaluator {
 
     private THATObject createCanvas(EasyCanvas canvas) {
         THATObject object = THOSEObjects.create("ui", UI_CONTEXT, canvas);
-        object.addFunction(FunctionEvaluator.anonymous(environment, "box", fct -> newRect(canvas)));
-        object.addFunction(FunctionEvaluator.anonymous(environment, "button", fct -> newButton(fct, canvas)));
+        object.addFunction(FunctionEvaluator.anonymous(environment, "box", fct -> UIFunctionCollection.newRect(environment.vm, fct, canvas)));
+        object.addFunction(FunctionEvaluator.anonymous(environment, "oval", fct -> UIFunctionCollection.newOval(environment.vm, fct, canvas)));
+        object.addFunction(FunctionEvaluator.anonymous(environment, "poly", fct -> UIFunctionCollection.newPolygon(environment.vm, fct, canvas)));
+        object.addFunction(FunctionEvaluator.anonymous(environment, "button", fct -> UIFunctionCollection.newButton(environment.vm, fct, canvas)));
+        object.addFunction(FunctionEvaluator.anonymous(environment, "field", fct -> UIFunctionCollection.newTextField(environment.vm, fct, canvas)));
+        object.addFunction(FunctionEvaluator.anonymous(environment, "check", fct -> UIFunctionCollection.newCheckBox(environment.vm, fct, canvas)));
+        object.addFunction(FunctionEvaluator.anonymous(environment, "radio", fct -> UIFunctionCollection.newRadioButton(environment.vm, fct, canvas)));
+        object.addFunction(FunctionEvaluator.anonymous(environment, "group", fct -> UIFunctionCollection.newButtonGroup(environment.vm, fct, canvas)));
         return object;
-    }
-
-    private THATObject newRect(EasyCanvas canvas) {
-        ComponentBinder binder = new ComponentBinder(canvas.add(new ShapePanel(ShapePanel.ShapeType.Rectangle)));
-        canvas.addDrawable(binder);
-        return binder.getObject();
-    }
-
-    private THATObject newButton(FunctionCallToken fct, EasyCanvas canvas) {
-        List<ExpressionsToken> expressions = fct.getArguments().getExpressions();
-        String name = expressions.size() < 1 ? "Button" : expressions.get(0).interpret(environment.vm).v();
-
-        JButton button = new JButton(name);
-        if (expressions.size() > 1)
-            if (expressions.get(1) instanceof QuantaExpressionToken qet)
-                button.addActionListener(e -> qet.interpret(environment.vm));
-
-
-        ComponentBinder binder = new ComponentBinder(button);
-        canvas.add(button);
-        canvas.addDrawable(binder);
-        return binder.getObject();
     }
 
     private RootCanvas findASuperiorRootCanvas() {

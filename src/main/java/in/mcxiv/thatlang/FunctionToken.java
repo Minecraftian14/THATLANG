@@ -1,14 +1,16 @@
 package in.mcxiv.thatlang;
 
-import in.mcxiv.thatlang.blocks.BlockToken;
-import in.mcxiv.thatlang.blocks.BlockToken.BlockParser;
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
-import in.mcxiv.parser.power.TupleToken;
 import in.mcxiv.parser.generic.NameToken;
 import in.mcxiv.parser.generic.NameToken.NameParser;
 import in.mcxiv.parser.generic.StringValueNode;
-import in.mcxiv.parser.Node;
+import in.mcxiv.parser.generic.ValueToken;
+import in.mcxiv.parser.generic.ValueToken.ValueParser;
+import in.mcxiv.parser.power.TupleToken;
+import in.mcxiv.thatlang.blocks.BlockToken;
+import in.mcxiv.thatlang.blocks.BlockToken.BlockParser;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Cursors;
 
@@ -44,13 +46,18 @@ public class FunctionToken extends StringValueNode {
         return getChildren(StatementToken.class);
     }
 
+    @Override
+    public String toString() {
+        return toExtendedString("returnArgNames",returnArgNames, "parameterNames", parameterNames, getChildren());
+    }
+
     public static final Parser<FunctionToken> function = new Parser<>() {
 
         private static final Parser<?>
                 functionDefStart = either(word("function"), word("func"), word("fun"));
 
-        private static final TupleToken.TupleParser<NameToken, StringValueNode, TupleToken<NameToken>>
-                commaSeparatedNames = new TupleToken.TupleParser<>(NameParser.name, word(","));
+        private static final TupleToken.TupleParser<ValueToken, StringValueNode, TupleToken<ValueToken>>
+                commaSeparatedNames = new TupleToken.TupleParser<>(ValueParser.value, word(","));
 
         private static final Parser<?> greaterThanSign = inline(">");
         private static final Parser<?> colon = inline(":");
@@ -68,8 +75,8 @@ public class FunctionToken extends StringValueNode {
             if (functionDefStart.parse(string) == null) return null;
             Cursors.skipSpaces(string);
 
-            TupleToken<NameToken> csn = commaSeparatedNames.parse(string);
-            String[] returnArgNames = csn == null ? new String[0] : csn.getItems().stream().map(NameToken::getValue).toArray(String[]::new);
+            TupleToken<ValueToken> csn = commaSeparatedNames.parse(string);
+            String[] returnArgNames = csn == null ? new String[0] : csn.getItems().stream().map(ValueToken::getValue).toArray(String[]::new);
             Cursors.skipSpaces(string);
 
             var nameNode = NameParser.name.parse(string);
@@ -86,7 +93,7 @@ public class FunctionToken extends StringValueNode {
             Cursors.skipSpaces(string);
 
             csn = commaSeparatedNames.parse(string);
-            String[] parameterNames = csn == null ? new String[0] : csn.getItems().stream().map(NameToken::getValue).toArray(String[]::new);
+            String[] parameterNames = csn == null ? new String[0] : csn.getItems().stream().map(ValueToken::getValue).toArray(String[]::new);
             Cursors.skipSpaces(string);
 
             if (Cursors.getCharAndNext(string) != ')') return null;

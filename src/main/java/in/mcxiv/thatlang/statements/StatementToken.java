@@ -6,6 +6,7 @@ import in.mcxiv.parser.power.EitherParser;
 import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.comments.CommentToken;
 import in.mcxiv.thatlang.comments.CommentToken.CommentParser;
+import in.mcxiv.thatlang.expression.ExpressionsToken;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
 import in.mcxiv.thatlang.statements.ElseIfStatementToken.ElseIfStatementParser;
@@ -24,7 +25,7 @@ import java.util.List;
 import static in.mcxiv.thatlang.statements.QuantaStatement.QuantaStatementParser;
 import static in.mcxiv.thatlang.statements.VariableDefinitionToken.VariableDefinitionParser;
 
-public class StatementToken extends Node implements Interpretable<AbstractVM, THATObject> {
+public class StatementToken extends ExpressionsToken implements Interpretable<AbstractVM, THATObject> {
 
     public static final ArrayList<Parser<?>> STATEMENT_PARSERS = new ArrayList<>(List.of(
             VariableDefinitionParser.variableDef,

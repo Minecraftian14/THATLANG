@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class NameTokenTest {
     @Test
     void test() {
-        NameParser parser = new NameParser();
+        NameParser parser =  NameParser.name;
         assertNotNull(alsoPrtln(parser.parse(new ParsableString("4689"))));
         assertNotNull(alsoPrtln(parser.parse(new ParsableString("mold"))));
         assertNull(alsoPrtln(parser.parse(new ParsableString(" 8c8f"))));

@@ -17,6 +17,15 @@ public final class THOSEObjects {
     private THOSEObjects() {
     }
 
+    public static void mutateValue(THATObject object, THATObject value) {
+        mutateValue(object, value.value);
+        object.toStringFunction = value.toStringFunction;
+        object.accessibleFunctions.removeAll(value.accessibleFunctions);
+        object.accessibleFunctions.addAll(value.accessibleFunctions);
+//      object.accessibleMember.removeAll(value.accessibleMember);
+        object.accessibleMember.putAll(value.accessibleMember);
+    }
+
     public static void mutateValue(THATObject object, Object value) {
         object.value = value;
 

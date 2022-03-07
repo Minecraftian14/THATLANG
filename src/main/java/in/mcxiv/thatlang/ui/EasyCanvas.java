@@ -12,7 +12,8 @@ public class EasyCanvas extends JPanel {
 
     public EasyCanvas() {
         setLayout(new SolidLayout());
-        setBackground(Color.WHITE);
+        setOpaque(false);
+//        setBackground(Color.WHITE);
         setForeground(Color.BLACK);
     }
 
@@ -38,4 +39,5 @@ public class EasyCanvas extends JPanel {
     public boolean isOptimizedDrawingEnabled() {
         return false;
     }
+
 }

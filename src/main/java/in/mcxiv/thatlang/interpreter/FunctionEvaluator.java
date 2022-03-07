@@ -1,12 +1,18 @@
 package in.mcxiv.thatlang.interpreter;
 
 import in.mcxiv.thatlang.FunctionToken;
+import in.mcxiv.thatlang.expression.ExpressionsToken;
 import in.mcxiv.thatlang.expression.FunctionCallToken;
+import in.mcxiv.thatlang.expression.MappedArgumentsToken;
 import in.mcxiv.utils.Pair;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class FunctionEvaluator implements Function<FunctionCallToken, THATObject> {
 
@@ -60,16 +66,28 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
         @Override
         public boolean isApplicable(FunctionCallToken fct) {
             return token.getValue().equals(fct.getValue())
-                   && numberOfParameters == fct.getArguments().noOfChildren();
+                   && numberOfParameters == fct.getArguments().getArgs().length + fct.getArguments().getMappings().length;
         }
 
         @Override
         public THATObject apply(FunctionCallToken call) {
             // p-parameters
-            String[] pNames = token.getParameterNames();
-            THATObject[] pValues = call.getArguments().getExpressions().stream().map(et -> et.interpret(environment.vm)).toArray(THATObject[]::new);
-            for (int i = 0; i < numberOfParameters; i++)
-                pValues[i].name = pNames[i];
+            ArrayList<String> pNames = new ArrayList<>(Arrays.asList(token.getParameterNames()));
+            ArrayList<THATObject> pValues = new ArrayList<>();
+
+            for (MappedArgumentsToken.MappingsToken mapping : call.getArguments().getMappings()) {
+                if(pNames.remove(mapping.getName())){
+                    THATObject object = mapping.getExpression().interpret(environment.vm);
+                    object.name = mapping.getName();
+                    pValues.add(object);
+                }
+            }
+            assert call.getArguments().getArgs().length == pNames.size(): "The total number of given args should be equal...";
+            for (ExpressionsToken arg : call.getArguments().getArgs()) {
+                THATObject object = arg.interpret(environment.vm);
+                object.name = pNames.remove(0);
+                pValues.add(object);
+            }
 
             var that = environment.vm.executionStack.peek();
             var tScope = that.getB();
@@ -77,9 +95,9 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
             // r-returnables
             String[] rNames = token.getReturnArgNames();
             THATObject[] rValues = new THATObject[rNames.length];
-            for (int i = 0; i < rNames.length; i++){
+            for (int i = 0; i < rNames.length; i++) {
                 THATObject object = tScope.seek(rNames[i]);
-                if(object!=null) rValues[i] = object;
+                if (object != null) rValues[i] = object;
                 else rValues[i] = THOSEObjects.createEmptyVariable(rNames[i]);
             }
 
@@ -91,7 +109,7 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
 
             fScope.addVariable(THOSEObjects.create("rt val", "that", that));
             for (int i = 0; i < numberOfParameters; i++)
-                fScope.addVariable(pValues[i]);
+                fScope.addVariable(pValues.get(i));
             for (int i = 0; i < rValues.length; i++)
                 fScope.addVariable(rValues[i]);
 
@@ -103,6 +121,19 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
                 return rValues[0];
             return THOSEObjects.NULL;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        // It's supposed to be a singleton.
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this);
     }
 
 }

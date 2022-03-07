@@ -14,7 +14,7 @@ class EitherParserTest {
 
     @Test
     void test() {
-        EitherParser either = new EitherParser(new NameToken.NameParser(), new SpacesToken.SpacesParser());
+        EitherParser either = new EitherParser( NameToken.NameParser.name, new SpacesToken.SpacesParser());
         assertNotNull(alsoPrtln(either.parse(new ParsableString("4689"))));
         assertNotNull(alsoPrtln(either.parse(new ParsableString("mold"))));
         assertNull(alsoPrtln(either.parse(new ParsableString("-8c8f"))));

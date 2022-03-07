@@ -4,6 +4,37 @@ import in.mcxiv.parser.ParsableString;
 
 public class Cursors {
 
+    public static boolean isNameStarter(ParsableString string) {
+        char c = getChar(string);
+        return Character.isLetter(c) || c == '_' || c == '$';
+    }
+
+    public static boolean isDigital(ParsableString string) {
+        return Character.isDigit(getChar(string));
+    }
+
+    public static boolean isNameContent(ParsableString string) {
+        return isNameStarter(string) || isDigital(string);
+    }
+
+    public static boolean isNumericStarter(ParsableString string) {
+        char c = getChar(string);
+        return isDigital(string) || c == '+' || c == '-' || c == '.';
+    }
+
+    public static boolean isNumericContent(ParsableString string) {
+        return isDigital(string);
+    }
+
+    public static boolean isNumericSingletonContent(ParsableString string) {
+        char c = getChar(string);
+        return c == '.' || c == 'e' || c == '+' || c == '-';
+    }
+
+    public static boolean isNumericEnding(ParsableString string) {
+        return isDigital(string) || "slfdx".indexOf(getChar(string)) != -1;
+    }
+
     public static boolean isValueTokenCharacter(ParsableString string) {
         char c = getChar(string);
         return Character.isLetterOrDigit(c) || c == '.';
