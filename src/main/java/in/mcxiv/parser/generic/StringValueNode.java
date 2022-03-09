@@ -25,6 +25,6 @@ public class StringValueNode extends Node {
 
     @Override
     public String toString() {
-        return toExtendedString("value", value);
+        return "\"StringValueNode\":\"" + value + "\"";
     }
 }

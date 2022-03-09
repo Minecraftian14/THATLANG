@@ -1,11 +1,13 @@
 package in.mcxiv.external.parsers.json;
 
+import in.mcxiv.external.parsers.SimpleNestableToken;
+import in.mcxiv.external.parsers.json.primitive.ValueToken;
 import in.mcxiv.interpreter.Interpretable;
 import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import thatlang.core.THATObject;
 
-public class JSONNode extends Node implements Interpretable<AbstractVM, THATObject> {
+public class JSONNode extends SimpleNestableToken implements Interpretable<AbstractVM, THATObject> {
 
     private final Node tree;
 
@@ -25,7 +27,8 @@ public class JSONNode extends Node implements Interpretable<AbstractVM, THATObje
     }
 
     @Override
-    public THATObject interpret(AbstractVM abstractVM) {
-        return null;
+    public THATObject interpret(AbstractVM vm) {
+        return ((ValueToken) tree).interpret(vm);
     }
+
 }

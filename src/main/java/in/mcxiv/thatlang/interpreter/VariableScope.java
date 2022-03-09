@@ -3,8 +3,8 @@ package in.mcxiv.thatlang.interpreter;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class VariableScope {
 
@@ -24,5 +24,9 @@ public class VariableScope {
 
     public THATObject seek(String name) {
         return variables.get(name);
+    }
+
+    public void foreach(Consumer<THATObject> consumer) {
+        variables.forEach((s, object) -> consumer.accept(object));
     }
 }

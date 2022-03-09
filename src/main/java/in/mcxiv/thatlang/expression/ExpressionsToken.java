@@ -7,10 +7,8 @@ import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.power.EitherParser;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.natives.CollectionsToken;
-import in.mcxiv.thatlang.natives.ElementAccessToken;
 import in.mcxiv.thatlang.natives.ElementAccessToken.ElementAccessParser;
-import in.mcxiv.thatlang.statements.MultiAssignmentToken;
-import in.mcxiv.thatlang.statements.MultiAssignmentToken.MultiAssignmentParser;
+import in.mcxiv.thatlang.expression.MultiAssignmentToken.MultiAssignmentParser;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
@@ -34,7 +32,7 @@ public class ExpressionsToken extends Node implements Interpretable<AbstractVM, 
         private static final Parser<?> parser = new EitherParser(
                 MultiOperandParser.multiOperand,
                 CollectionsToken.CollectionType.collections,
-                ElementAccessParser.elementAccess,
+//                ElementAccessParser.elementAccess,
                 MultiAssignmentParser.multiAssignment /* TODO: Highly experimental addition!! MAT is a statement not an expression! Remove it if it causes disasters. */ ,
                 SimpleSafeNonRecursiveExpressionParser.safeExpression
         );

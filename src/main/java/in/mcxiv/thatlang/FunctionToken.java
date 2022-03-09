@@ -59,9 +59,6 @@ public class FunctionToken extends StringValueNode {
         private static final TupleToken.TupleParser<ValueToken, StringValueNode, TupleToken<ValueToken>>
                 commaSeparatedNames = new TupleToken.TupleParser<>(ValueParser.value, word(","));
 
-        private static final Parser<?> greaterThanSign = inline(">");
-        private static final Parser<?> colon = inline(":");
-
         @Override
         public FunctionToken __parse__(ParsableString string, Node parent) {
 

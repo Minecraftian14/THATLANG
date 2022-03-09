@@ -68,9 +68,14 @@ public class ProgramToken extends Node implements Interpretable<AbstractVM, Prog
 
     @Override
     public ProgramToken interpret(AbstractVM vm) {
-        vm.executionStack.push(new Pair<>(this, new VariableScope()));
-        getStatements().forEach(token -> token.interpret(vm));
-        vm.executionStack.pop();
+        vm.getExecutionStack().push(new Pair<>(this, new VariableScope()));
+        try {
+            getStatements().forEach(token -> token.interpret(vm));
+        } catch (RuntimeException re) {
+            if (!re.getMessage().equals(AbstractVM.EXECUTION_STOPPED))
+                throw re;
+        }
+        vm.getExecutionStack().pop();
         return this;
     }
 
@@ -93,5 +98,4 @@ public class ProgramToken extends Node implements Interpretable<AbstractVM, Prog
             return new ProgramToken(parent, programName, nodes);
         }
     }
-
 }

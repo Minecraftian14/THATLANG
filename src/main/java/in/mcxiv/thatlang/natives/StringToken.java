@@ -24,7 +24,7 @@ public class StringToken extends ExpressionsToken {
 
     @Override
     public String toString() {
-        return toExtendedString("value", value);
+        return "\"StringToken\":\"" + value + "\"";
     }
 
     public String getValue() {

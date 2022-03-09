@@ -1,12 +1,11 @@
 package in.mcxiv.thatlang.expression;
 
-import in.mcxiv.parser.power.EitherParser;
-import in.mcxiv.parser.power.WordParser;
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
+import in.mcxiv.parser.power.EitherParser;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
-import in.mcxiv.thatlang.natives.StringToken;
-import in.mcxiv.parser.Node;
+import in.mcxiv.thatlang.natives.ElementAccessToken;
 import in.mcxiv.tryCatchSuite.Try;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
@@ -51,15 +50,22 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
 
         while (iterator.hasNext()) {
 
-            if (iterator.isString()) {
-                String value = iterator.nextString().getValue();
-                assert variable == null : "Cant access a string as if it's a member of some variable...";
-                variable = THOSEObjects.createValue(value);
+            if (iterator.isElementAccess()) {
+                ElementAccessToken value = iterator.nextElementAccess();
+                if (variable == null) variable = value.interpret(vm);
+                else {
+                    var member = variable.getMember(value.getField().getValue());
+                    if (member == null) {
+                        member = THOSEObjects.createValue("null");
+                        variable.putMember(value.getField().getValue(), member);
+                    }
+                    variable = value.reduce(member);
+                }
 
             } else if (iterator.isMember()) {
                 String value = iterator.nextMember().getValue();
                 if (variable == null) /* ie we're probably accessing a local field */ {
-                    variable = vm.executionStack.peek().getB().seek(value);
+                    variable = vm.getExecutionStack().peek().getB().seek(value);
                     if (variable == null) /* ie there is no such variable created by that name */
                         variable = THOSEObjects.createAfterReducing(value); // so we treat it as if it's a value
                 } else /* ie we're accessing a field in variable */ {
@@ -87,6 +93,7 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
         public static final QuantaExpressionParser quantaExpression = new QuantaExpressionParser();
 
         private static final Parser callStepParser = new EitherParser(
+                ElementAccessToken.ElementAccessParser.elementAccess, // TODO: This is not really a safe non recursive expressing -_-
                 FunctionCallToken.FunctionCallParser.function,
                 MemberCallToken.MemberCallParser.member // Will also catch 1234
         );
@@ -105,9 +112,11 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
             if (node == null) return null;
             ArrayList<Node> list = new ArrayList<>();
             list.add(node.get(0));
-            IntStream.range(0, Try.GetAnd(() -> node.get(1).get(0).noOfChildren() / 2).Else(() -> 0))
-                    .map(i -> 2 * i + 1)
-                    .mapToObj(index -> node.get(1).get(0).get(index))
+//            IntStream.range(0, Try.GetAnd(() -> node.get(1).get(0).noOfChildren() / 2).Else(() -> 0))
+//                    .map(i -> 2 * i + 1)
+//                    .mapToObj(index -> node.get(1).get(0).get(index))
+            IntStream.range(0, Try.GetAnd(() -> node.get(1).noOfChildren()).Else(() -> 0))
+                    .mapToObj(index -> node.get(1).get(index).get(1))
                     .forEach(list::add);
             return new QuantaExpressionToken(parent, list.toArray(new Node[0]));
         }
@@ -134,8 +143,8 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
             return tokens[index++];
         }
 
-        public boolean isString() {
-            if (hasNext()) return tokens[index] instanceof StringToken;
+        public boolean isElementAccess() {
+            if (hasNext()) return tokens[index] instanceof ElementAccessToken;
             return false;
         }
 
@@ -149,8 +158,8 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
             return false;
         }
 
-        public StringToken nextString() {
-            return (StringToken) next();
+        public ElementAccessToken nextElementAccess() {
+            return (ElementAccessToken) next();
         }
 
         public MemberCallToken nextMember() {

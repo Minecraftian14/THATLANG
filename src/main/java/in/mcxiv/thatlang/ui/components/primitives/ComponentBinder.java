@@ -79,7 +79,7 @@ public class ComponentBinder implements Drawable {
         }
         TRY_XY:
         {
-            // TODO : mak in.mcxiv.thatlang.statements.MultiAssignmentToken parse xyxyx into x, y, x2, y2, x3
+            // TODO : mak in.mcxiv.thatlang.expression.MultiAssignmentToken parse xyxyx into x, y, x2, y2, x3
             THATObject x2o = object.getMember("x2");
             THATObject y2o = object.getMember("y2");
             if (x2o != null && y2o != null)

@@ -63,11 +63,11 @@ public class MultilineStringToken extends ExpressionsToken {
             string.moveCursor(ender.length());
 
             String[] lines = everything.split("[\n\r]");
-            int maxSpaces = 0;
+            int maxSpaces = Integer.MAX_VALUE;
             for (int i = 0; i < lines.length; i++) {
                 if (lines[i].trim().matches("")) continue;
                 int spaces = Strings.getIndentSpaces(lines[i]);
-                if (maxSpaces < spaces) maxSpaces = spaces;
+                if (maxSpaces > spaces) maxSpaces = spaces;
             }
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < lines.length; i++) {

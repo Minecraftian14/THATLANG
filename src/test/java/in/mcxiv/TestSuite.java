@@ -54,7 +54,7 @@ public class TestSuite {
                 for (int i = 0; i < depth; i++, b.append("  ")) ;
                 b.append("}");
             } else if (c == ',') {
-                b.append("\n");
+                b.append(",\n");
                 for (int i = 0; i < depth - 1; i++, b.append("  ")) ;
                 b.append(" ");
             } else {

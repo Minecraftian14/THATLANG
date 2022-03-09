@@ -294,7 +294,9 @@ public class THOSEOperatorsPrototype {
                 Operable.of("xor", Boolean.class, Boolean.class, Boolean.class)
                         .apply(() -> (f, n) -> (f || n) && (!(f && n))),
                 Operable.of("xnor", Boolean.class, Boolean.class, Boolean.class)
-                        .apply(() -> (f, n) -> !((f || n) && (!(f && n))))
+                        .apply(() -> (f, n) -> !((f || n) && (!(f && n)))),
+                Operable.of("implies", Boolean.class, Boolean.class, Boolean.class)
+                        .apply(() -> (f, n) -> !f || n)
         );
 
         Map<String, Operable<Boolean, Boolean, ?>> WithABoolean = new HashMap<>() {{
@@ -327,7 +329,7 @@ public class THOSEOperatorsPrototype {
 
         List<Operable<Object, Object, ?>> WithAnObjectList = List.of(
                 Operable.of("%", Object.class, Object.class, String.class)
-                        .apply(() -> (f, n) -> n instanceof Iterable<?> i ? f.toString().formatted(StreamSupport.stream(i.spliterator(), false).toArray()) : f.toString().formatted(n)),
+                        .apply(() -> (f, n) -> n instanceof Iterable<?> i ? f.toString().formatted(StreamSupport.stream(i.spliterator(), false).map(o -> ((THATObject) o).value).toArray()) : f.toString().formatted(n)),
                 Operable.of("+", Object.class, Object.class, String.class)
                         .apply(() -> (f, n) -> "" + f.toString() + n.toString()),
                 Operable.of("-", Object.class, Object.class, String.class)

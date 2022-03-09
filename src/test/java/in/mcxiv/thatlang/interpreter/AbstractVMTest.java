@@ -28,7 +28,7 @@ class AbstractVMTest {
                 program main->
                     pln(scan())
                 """;
-        JustRunTheThing(program, true);
+        JustRunTheThing(program, false);
         assertOutput("simple Test", builder);
     }
 
@@ -49,9 +49,31 @@ class AbstractVMTest {
                     pln(something)
                     
                     something = <%
-                        <!DOCTYPE yaml>
-                        #a comment in yaml
+                        <!DOCTYPE json>
+                        {
+                            "field1": 1289,
+                            "field2": {"value":[1987]}
+                        }
                     %>
+                    
+                    pln(something.field1)
+                    pln(something.field2.value[0])
+                    
+                    val something = <%
+                        <!DOCTYPE yaml>
+                        ---
+                        field1: 1289
+                        field2: {value: 1987}
+                        field 3:
+                          that thing:
+                            - Hello
+                            - World
+                        ...
+                    %>
+                    
+                    pln(something[0].field1)
+                    pln(something[0].field2.value)
+                    pln(something[0]["field 3"]["that thing"][1])
                     
                     // A comment
                     
@@ -81,8 +103,15 @@ class AbstractVMTest {
                 OMG
                 HEYA
                 noice
-                    lmao
-                """, builder);
+                   \s
+                                
+                1289
+                1987
+                1289
+                1987
+                World
+                                
+                lmao""", builder);
     }
 
     @Test
@@ -261,7 +290,8 @@ class AbstractVMTest {
     public static void main(String[] args) {
         AbstractVMTest test = new AbstractVMTest();
         test.setUp();
-        test.testUI();
+//        test.testUI();
+        test.testProgramsExecution();
     }
 
     @Test
@@ -289,6 +319,55 @@ class AbstractVMTest {
                     
                 function act(word):
                     prtln(word)
+                """;
+
+        JustRunTheThing(program, false);
+    }
+
+    @Test
+    @Disabled("This test was disabled as having parallel execution of prog2 interferes with the output of other tests.")
+    void testProgramsExecution() {
+        String program = """
+                program main:
+                    pln("Main program running")
+                    start prog1
+                    launch prog2
+                    launch prog2
+                    end with prog3
+                    pln("Main program ran")
+                    
+                program prog1 -> pln("Prog1 program ran")
+                program prog3 {
+                    pln("Prog3 program ran")
+                }
+                                
+                program prog2:
+                    for(val i=0;i<50;i=i+1):
+                        prt(i+" ")
+                        // sleep(1000/50)
+                    pln("ooof")
+                """;
+
+        JustRunTheThing(program, false);
+    }
+
+    @Test
+    void testContext() {
+        String program = """
+                context letter:
+                    val a = 1
+                    val b = 2
+                    val c = 3
+                    
+                program main:
+                    val letter = acquire letter
+                    pln("Heya")
+                    pln("letter.%s = %d" % ["a", letter.a])
+                    start prog1
+                    
+                program prog1:
+                    val letter = acquire letter
+                    pln("letter.b = %d" % letter.b)
                 """;
 
         JustRunTheThing(program, false);

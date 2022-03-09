@@ -20,7 +20,7 @@ public class ThatEnvironment extends AbstractEnvironment {
 
     final ArrayList<ProgramFileToken> programFiles;
     final ArrayList<ProgramToken> programs;
-    final LinkedList<Evaluator<StatementToken>, Class<?>> evaluators;
+//    final LinkedList<Evaluator<StatementToken>, Class<?>> evaluators;
     final ArrayList<FunctionEvaluator> functions;
 
     public ThatEnvironment(AbstractVM vm) {
@@ -31,7 +31,7 @@ public class ThatEnvironment extends AbstractEnvironment {
         super(args, vm);
         programFiles = new ArrayList<>();
         programs = new ArrayList<>();
-        evaluators = new LinkedList<>(StatementToken.STATEMENT_TYPES, this::evaluateStatement);
+//        evaluators = new LinkedList<>(StatementToken.STATEMENT_TYPES, this::evaluateStatement);
         functions = new ArrayList<>(List.of(
                 new PrintFunctions(this),
                 new InputFunctions(this),

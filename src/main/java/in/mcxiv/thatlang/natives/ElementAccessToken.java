@@ -3,30 +3,36 @@ package in.mcxiv.thatlang.natives;
 import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
-import in.mcxiv.thatlang.expression.*;
+import in.mcxiv.parser.generic.NameToken;
+import in.mcxiv.thatlang.expression.ExpressionsToken;
+import in.mcxiv.thatlang.expression.FunctionCallToken;
+import in.mcxiv.thatlang.expression.MappedArgumentsToken;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import thatlang.core.THATObject;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import static in.mcxiv.parser.power.PowerUtils.*;
-import static in.mcxiv.thatlang.expression.SimpleSafeNonRecursiveExpressionParser.safeExpression;
 
 public class ElementAccessToken extends ExpressionsToken {
 
-    ExpressionsToken field;
-    FunctionCallToken accessor;
+    NameToken field;
+    List<FunctionCallToken> accessor;
 
-    public ElementAccessToken(ExpressionsToken field, ExpressionsToken accessor) {
+    public ElementAccessToken(NameToken field, ExpressionsToken accessor) {
         this(null, field, accessor);
     }
 
-    public ElementAccessToken(Node parent, ExpressionsToken field, ExpressionsToken accessor) {
+    public ElementAccessToken(Node parent, NameToken field, ExpressionsToken accessor) {
+        this(parent, field, List.of(accessor));
+    }
+
+    public ElementAccessToken(Node parent, NameToken field, List<ExpressionsToken> accessors) {
         super(parent);
         this.field = field;
-        this.accessor = new FunctionCallToken("__splice__", new MappedArgumentsToken(new MappedArgumentsToken.MappingsToken[0], new ExpressionsToken[]{accessor}));
+        this.accessor = accessors.stream()
+                .map(et -> new FunctionCallToken("__splice__", new MappedArgumentsToken(new MappedArgumentsToken.MappingsToken[0], new ExpressionsToken[]{et})))
+                .toList();
     }
 
     @Override
@@ -36,14 +42,28 @@ public class ElementAccessToken extends ExpressionsToken {
 
     @Override
     public THATObject interpret(AbstractVM vm) {
-        return field.interpret(vm).seekFunction(accessor);
+        THATObject object = vm.getExecutionStack().peek().getB().seek(field.getValue());
+        assert object != null;
+        return reduce(object);
+    }
+
+    public THATObject reduce(THATObject object) {
+        for (var fct : accessor) object = object.seekFunction(fct);
+        return object;
+    }
+
+    public NameToken getField() {
+        return field;
     }
 
     public static class ElementAccessParser implements Parser<ElementAccessToken> {
 
         public static final Parser<ElementAccessToken> elementAccess = new ElementAccessParser();
 
-        private static final Parser<?> parser = compound(safeExpression, inline("["), inline(ExpressionsParser.expression), word("]"));
+        private static final Parser<?> parser = compound(
+                NameToken.NameParser.name,
+                repeatable(compound(inline("["), inline(ExpressionsParser.expression), word("]")))
+        );
 
         private ElementAccessParser() {
         }
@@ -52,10 +72,13 @@ public class ElementAccessToken extends ExpressionsToken {
         public ElementAccessToken __parse__(ParsableString string, Node parent) {
             Node node = parser.parse(string);
             if (node == null) return null;
+
             return new ElementAccessToken(
                     parent,
-                    (ExpressionsToken) node.get(0),
-                    (ExpressionsToken) node.get(2)
+                    (NameToken) node.get(0),
+                    node.get(1).getChildren()
+                            .stream().map(n -> ((ExpressionsToken) n.get(1)))
+                            .toList()
             );
         }
     }

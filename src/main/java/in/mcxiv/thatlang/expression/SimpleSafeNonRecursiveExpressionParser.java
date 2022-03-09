@@ -4,8 +4,10 @@ import in.mcxiv.parser.Node;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.generic.NumeralToken.NumeralParser;
 import in.mcxiv.parser.power.EitherParser;
+import in.mcxiv.thatlang.expression.ContextAcquireToken.ContextAcquireParser;
 import in.mcxiv.thatlang.expression.NumeralExpressionToken.NumeralExpressionParser;
 import in.mcxiv.thatlang.expression.QuantaExpressionToken.QuantaExpressionParser;
+import in.mcxiv.thatlang.natives.CollectionsToken;
 import in.mcxiv.thatlang.natives.ExternalCodeToken.ExternalCodeParser;
 import in.mcxiv.thatlang.natives.MultilineStringToken.MultilineStringParser;
 import in.mcxiv.thatlang.natives.StringToken.StringParser;
@@ -21,6 +23,8 @@ public class SimpleSafeNonRecursiveExpressionParser extends EitherParser {
                 StringParser.string,
                 NumeralExpressionParser.numericalExpr,
                 ParenthesisParser.parenthesisBlock,
+                ContextAcquireParser.contextAcquire,
+                CollectionsToken.CollectionType.collections, // Not really "non-recursive" but the compulsory [,{,l{ and such stops it from consuming itself.
                 QuantaExpressionParser.quantaExpression
         );
     }

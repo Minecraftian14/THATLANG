@@ -1,5 +1,6 @@
 package in.mcxiv.thatlang.natives;
 
+import in.mcxiv.interpreter.Interpretable;
 import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
@@ -24,22 +25,22 @@ public class CollectionsToken extends MultilineStringToken {
     public enum CollectionType {
         ARRAY_LIST("[", "]", ExpressionsParser.expression,
                 () -> new ArrayList<THATObject>(), (o, n, vm) -> ((ArrayList<THATObject>) o).get(((Number) ((THATObject) n).value).intValue()),
-                (o, n, vm) -> ((ArrayList<THATObject>) o).add(((ExpressionsToken) n).interpret(vm))),
+                (o, n, vm) -> ((ArrayList<THATObject>) o).add(((Interpretable<AbstractVM, THATObject>) n).interpret(vm))),
         LINKED_LIST("l[", "]", ExpressionsParser.expression,
                 () -> new LinkedList<THATObject>(), (o, n, vm) -> ((LinkedList<THATObject>) o).get(((Number) ((THATObject) n).value).intValue()),
-                (o, n, vm) -> ((LinkedList<THATObject>) o).add(((ExpressionsToken) n).interpret(vm))),
+                (o, n, vm) -> ((LinkedList<THATObject>) o).add(((Interpretable<AbstractVM, THATObject>) n).interpret(vm))),
         HASH_MAP("{", "}", compound(ExpressionsParser.expression, inline(":"), ExpressionsParser.expression),
                 () -> new HashMap<THATObject, THATObject>(), (o, n, vm) -> ((HashMap<THATObject, THATObject>) o).get(((THATObject) n)),
-                (o, n, vm) -> ((HashMap<THATObject, THATObject>) o).put(((ExpressionsToken) n.get(0)).interpret(vm), ((ExpressionsToken) n.get(2)).interpret(vm))),
+                (o, n, vm) -> ((HashMap<THATObject, THATObject>) o).put(((Interpretable<AbstractVM, THATObject>) n.get(0)).interpret(vm), ((Interpretable<AbstractVM, THATObject>) n.get(2)).interpret(vm))),
         HASH_TABLE("t{", "}", compound(ExpressionsParser.expression, inline(":"), ExpressionsParser.expression),
-                () -> new Hashtable<>(), (o, n, vm) -> ((Hashtable<THATObject, THATObject>) o).get(((THATObject) n)),
-                (o, n, vm) -> ((Hashtable<THATObject, THATObject>) o).put(((ExpressionsToken) n.get(0)).interpret(vm), ((ExpressionsToken) n.get(2)).interpret(vm))),
+                () -> new Hashtable<THATObject, THATObject>(), (o, n, vm) -> ((Hashtable<THATObject, THATObject>) o).get(((THATObject) n)),
+                (o, n, vm) -> ((Hashtable<THATObject, THATObject>) o).put(((Interpretable<AbstractVM, THATObject>) n.get(0)).interpret(vm), ((Interpretable<AbstractVM, THATObject>) n.get(2)).interpret(vm))),
         HASH_SET("{", "}", ExpressionsParser.expression,
                 () -> new HashSet<THATObject>(), (o, n, vm) -> THOSEObjects.createValue(((HashSet<THATObject>) o).contains(((THATObject) n))),
-                (o, n, vm) -> ((HashSet<THATObject>) o).add(((ExpressionsToken) n).interpret(vm))),
+                (o, n, vm) -> ((HashSet<THATObject>) o).add(((Interpretable<AbstractVM, THATObject>) n).interpret(vm))),
         STACK("|", "<", ExpressionsParser.expression,
                 () -> new Stack<THATObject>(), (o, n, vm) -> ((Stack<THATObject>) o).get(((Number) ((THATObject) n).value).intValue()),
-                (o, n, vm) -> ((Stack<THATObject>) o).push(((ExpressionsToken) n).interpret(vm)));
+                (o, n, vm) -> ((Stack<THATObject>) o).push(((Interpretable<AbstractVM, THATObject>) n).interpret(vm)));
 
         public static final Parser<?> collections = either(Arrays.stream(values()).map(collectionType -> collectionType.parser).toArray(Parser[]::new));
 
@@ -70,6 +71,22 @@ public class CollectionsToken extends MultilineStringToken {
         public THATObject access(Object collection, Object key, AbstractVM vm) {
             return accessor.consume(collection, key, vm);
         }
+
+        public THATObject fromNodes(List<Node> values, AbstractVM vm) {
+            Object collection = creator.get();
+            THATObject object = THOSEObjects.createValue(collection);
+            addAll(collection, values, vm);
+            object.toStringFunction = o -> collectionToStringPort(this, o.value);
+            object.addFunction(new CollectionsToken.SpliceFunction(vm.executionEnvironment, collection, this));
+            if(collection instanceof Map __m) {
+                ((Map<THATObject, THATObject>) __m).forEach((k,v) -> {
+                    String redKey = k.value.toString().replaceAll("\s+", "");
+                    if(__m.containsKey(THOSEObjects.createValue(redKey)))
+                        object.putMember(redKey, v);
+                });
+            }
+            return object;
+        }
     }
 
     private final CollectionType type;
@@ -91,12 +108,13 @@ public class CollectionsToken extends MultilineStringToken {
 
     @Override
     public THATObject interpret(AbstractVM vm) {
-        Object collection = type.creator.get();
-        THATObject object = THOSEObjects.createValue(collection);
-        type.addAll(collection, getChildren(), vm);
-        object.toStringFunction = o -> collectionToStringPort(type, o.value);
-        object.addFunction(new SpliceFunction(vm.executionEnvironment, collection, type));
-        return object;
+//        Object collection = type.creator.get();
+//        THATObject object = THOSEObjects.createValue(collection);
+//        type.addAll(collection, getChildren(), vm);
+//        object.toStringFunction = o -> collectionToStringPort(type, o.value);
+//        object.addFunction(new SpliceFunction(vm.executionEnvironment, collection, type));
+//        return object;
+        return type.fromNodes(getChildren(), vm);
     }
 
     public static String collectionToStringPort(CollectionType type, Object collection) {
@@ -134,7 +152,7 @@ public class CollectionsToken extends MultilineStringToken {
         R consume(A o, B n, C vm);
     }
 
-    private static class SpliceFunction extends FunctionEvaluator {
+    public static class SpliceFunction extends FunctionEvaluator {
 
         final Object collection;
         final CollectionType type;

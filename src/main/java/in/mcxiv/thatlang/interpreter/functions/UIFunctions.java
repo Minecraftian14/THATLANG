@@ -51,7 +51,7 @@ public class UIFunctions extends FunctionEvaluator {
     }
 
     private THATObject resolveCanvas() {
-        var pair = environment.vm.executionStack.peek();
+        var pair = environment.vm.getExecutionStack().peek();
         assert pair.getA() != null;
         VariableScope scope = pair.getB();
 
@@ -98,7 +98,7 @@ public class UIFunctions extends FunctionEvaluator {
     }
 
     private RootCanvas findASuperiorRootCanvas() {
-        var stack = environment.vm.executionStack;
+        var stack = environment.vm.getExecutionStack();
         for (int i = stack.size() - 2; i >= 0; --i) {
             THATObject object = stack.get(i).getB().seek(ROOT_UI_CONTEXT);
             if (object != null) return (RootCanvas) object.value;
@@ -107,7 +107,7 @@ public class UIFunctions extends FunctionEvaluator {
     }
 
     private RootCanvas findARootCanvas() {
-        var stack = environment.vm.executionStack;
+        var stack = environment.vm.getExecutionStack();
         for (int i = stack.size() - 1; i >= 0; --i) {
             THATObject object = stack.get(i).getB().seek(ROOT_UI_CONTEXT);
             if (object != null) return (RootCanvas) object.value;
@@ -116,7 +116,7 @@ public class UIFunctions extends FunctionEvaluator {
     }
 
     private EasyCanvas getSuperiorCanvas() {
-        var stack = environment.vm.executionStack;
+        var stack = environment.vm.getExecutionStack();
         for (int i = stack.size() - 2; i >= 0; --i) {
             THATObject object = stack.get(i).getB().seek(UI_CONTEXT);
             if (object != null) return (EasyCanvas) object.value;

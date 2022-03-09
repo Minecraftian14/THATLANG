@@ -40,6 +40,7 @@ public class Try {
             try {
                 return dangerousSupplier.get();
             } catch (Exception e) {
+//                LogLevel.DEBUG.act(e::printStackTrace);
                 return returnTypeSupplier.get();
             }
         };

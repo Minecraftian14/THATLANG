@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public abstract class FunctionEvaluator implements Function<FunctionCallToken, THATObject> {
 
@@ -89,7 +88,7 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
                 pValues.add(object);
             }
 
-            var that = environment.vm.executionStack.peek();
+            var that = environment.vm.getExecutionStack().peek();
             var tScope = that.getB();
 
             // r-returnables
@@ -105,7 +104,7 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
                 tScope.addVariable(rValues[i]);
 
             VariableScope fScope;
-            environment.vm.executionStack.push(new Pair<>(null, fScope = new VariableScope()));
+            environment.vm.getExecutionStack().push(new Pair<>(null, fScope = new VariableScope()));
 
             fScope.addVariable(THOSEObjects.create("rt val", "that", that));
             for (int i = 0; i < numberOfParameters; i++)
@@ -115,7 +114,7 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
 
             token.getStatements().forEach(stmt -> stmt.interpret(environment.vm));
 
-            environment.vm.executionStack.pop();
+            environment.vm.getExecutionStack().pop();
 
             if (rValues.length > 1)
                 return rValues[0];

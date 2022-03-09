@@ -58,6 +58,10 @@ public final class THOSEObjects {
         return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, name, null);
     }
 
+//    public static THATObject createEmptyValue() {
+//        return createValue(null);
+//    }
+
     public static THATObject createVariable(Object value) {
         return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, null, value);
     }

@@ -17,7 +17,7 @@ public class NameToken extends StringValueNode {
 
     @Override
     public String toString() {
-        return "name = " + getValue();
+        return "\"NameToken\":\"" + getValue() + "\"";
     }
 
     public static class NameParser implements Parser<NameToken> {

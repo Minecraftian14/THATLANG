@@ -1,12 +1,10 @@
-package in.mcxiv.thatlang.statements;
+package in.mcxiv.thatlang.expression;
 
 import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.generic.NameToken;
 import in.mcxiv.parser.generic.ValueToken;
-import in.mcxiv.thatlang.expression.MemberCallToken;
-import in.mcxiv.thatlang.expression.QuantaExpressionToken;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.tryCatchSuite.Try;
 import in.mcxiv.utils.Cursors;
@@ -22,7 +20,7 @@ import static in.mcxiv.parser.power.PowerUtils.*;
 import static in.mcxiv.thatlang.expression.FunctionCallToken.FunctionCallParser.function;
 import static in.mcxiv.thatlang.expression.MemberCallToken.MemberCallParser.member;
 
-public class MultiAssignmentToken extends StatementToken {
+public class MultiAssignmentToken extends ExpressionsToken {
 
     QuantaExpressionToken field;
     String[] subFields;
@@ -79,7 +77,7 @@ public class MultiAssignmentToken extends StatementToken {
 
             var field = convert(node);
 
-            if (!Cursors.isSpace(string)) return null;
+            if (!Cursors.bound(string) || !Cursors.isSpace(string)) return null;
             Cursors.skipSpaces(string);
 
             ArrayList<String[][]> pairs = new ArrayList<>();

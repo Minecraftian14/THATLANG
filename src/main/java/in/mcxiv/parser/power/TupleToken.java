@@ -1,8 +1,8 @@
 package in.mcxiv.parser.power;
 
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
-import in.mcxiv.parser.Node;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -67,6 +67,11 @@ public class TupleToken<Item extends Node> extends Node {
                         .map(ch -> ((Item) ch))
                         .forEach(items::add);
             return (Parsable) new TupleToken<>(parent, items);
+        }
+
+        @SuppressWarnings("unchecked")
+        public Parsable cast(Node node) {
+            return (Parsable) node;
         }
     }
 

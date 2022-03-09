@@ -11,6 +11,12 @@ public interface SupplierProvider<ReturnType> {
         return Else(() -> null);
     }
 
+    default ReturnType ElseThrow() {
+        return Else(() -> {
+            throw new RuntimeException();
+        });
+    }
+
     static <ReturnType> Supplier<ReturnType> NULL() {
         return () -> null;
     }

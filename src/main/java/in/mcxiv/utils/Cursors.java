@@ -31,8 +31,12 @@ public class Cursors {
         return c == '.' || c == 'e' || c == '+' || c == '-';
     }
 
+    public static boolean isNumericSingletonEnding(ParsableString string) {
+        return "slfdxSLFDX".indexOf(getChar(string)) != -1;
+    }
+
     public static boolean isNumericEnding(ParsableString string) {
-        return isDigital(string) || "slfdx".indexOf(getChar(string)) != -1;
+        return isDigital(string) || isNumericSingletonEnding(string);
     }
 
     public static boolean isValueTokenCharacter(ParsableString string) {
