@@ -1,10 +1,11 @@
 package in.mcxiv.parser.power;
 
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
-import in.mcxiv.parser.Node;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 import static in.mcxiv.parser.power.PowerUtils.*;
 
@@ -34,14 +35,20 @@ public class TupleToken<Item extends Node> extends Node {
 
         final Parser<Item> itemParser;
         final Parser<Separator> separatorParser;
+        final Function<Parser<?>, Parser<?>> wrapper;
         private final Parser<Node> parser;
 
         public TupleParser(Parser<Item> itemParser, Parser<Separator> separatorParser) {
+            this(itemParser, separatorParser, PowerUtils::inline);
+        }
+
+        public TupleParser(Parser<Item> itemParser, Parser<Separator> separatorParser, Function<Parser<?>, Parser<?>> wrapper) {
             this.itemParser = itemParser;
             this.separatorParser = separatorParser;
+            this.wrapper = wrapper;
             parser = compound(
                     this.itemParser,
-                    optional(repeatable(compound(inline(separatorParser), itemParser)))
+                    optional(repeatable(compound(wrapper.apply(separatorParser), itemParser)))
             );
         }
 
@@ -60,6 +67,11 @@ public class TupleToken<Item extends Node> extends Node {
                         .map(ch -> ((Item) ch))
                         .forEach(items::add);
             return (Parsable) new TupleToken<>(parent, items);
+        }
+
+        @SuppressWarnings("unchecked")
+        public Parsable cast(Node node) {
+            return (Parsable) node;
         }
     }
 

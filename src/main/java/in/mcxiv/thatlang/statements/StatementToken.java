@@ -1,9 +1,12 @@
 package in.mcxiv.thatlang.statements;
 
+import in.mcxiv.interpreter.Interpretable;
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.power.EitherParser;
-import in.mcxiv.parser.Node;
+import in.mcxiv.thatlang.comments.CommentToken;
+import in.mcxiv.thatlang.comments.CommentToken.CommentParser;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.statements.AssignmentToken.AssignmentParser;
 import in.mcxiv.thatlang.statements.ElseIfStatementToken.ElseIfStatementParser;
@@ -11,8 +14,8 @@ import in.mcxiv.thatlang.statements.ElseStatementToken.ElseStatementParser;
 import in.mcxiv.thatlang.statements.ForEachToken.ForEachParser;
 import in.mcxiv.thatlang.statements.ForStatementToken.ForStatementParser;
 import in.mcxiv.thatlang.statements.IfStatementToken.IfStatementParser;
-import in.mcxiv.thatlang.statements.MultiAssignmentToken.MultiAssignmentParser;
-import interpreter.Interpretable;
+import in.mcxiv.thatlang.statements.MultiAssignmentStatement.MultiAssignmentStatementParser;
+import in.mcxiv.thatlang.statements.ProgramActionStatement.ProgramActionParser;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
@@ -27,28 +30,33 @@ public class StatementToken extends Node implements Interpretable<AbstractVM, TH
     public static final ArrayList<Parser<?>> STATEMENT_PARSERS = new ArrayList<>(List.of(
             VariableDefinitionParser.variableDef,
             AssignmentParser.assignment,
-            MultiAssignmentParser.multiAssignment,
+            MultiAssignmentStatementParser.multiAssignment,
             ForStatementParser.forStatement,
             ForEachParser.forEachStatement,
             IfStatementParser.ifStatement,
             ElseIfStatementParser.elseIfStatement,
             ElseStatementParser.elseStatement,
             IfStatementParser.ifStatement,
+            ProgramActionParser.programAction,
             BinaryFunctionStatementToken.binaryFunctionStmt,
-            QuantaStatementParser.quantaStatement
+            QuantaStatementParser.quantaStatement,
+            CommentParser.comment
     ));
 
+/*
     public static final ArrayList<Class<?>> STATEMENT_TYPES = new ArrayList<>(List.of(
             VariableDefinitionToken.class,
             AssignmentToken.class,
-            MultiAssignmentToken.class,
+            MultiAssignmentStatement.class,
             ForStatementToken.class,
             ForEachToken.class,
             IfStatementToken.class,
             ElseIfStatementToken.class,
             ElseStatementToken.class,
-            QuantaStatement.class
+            QuantaStatement.class,
+            CommentToken.class
     ));
+*/
 
     private final boolean isCondensable;
     private final Class<?>[] condensability;

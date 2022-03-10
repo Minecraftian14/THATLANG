@@ -17,6 +17,15 @@ public final class THOSEObjects {
     private THOSEObjects() {
     }
 
+    public static void mutateValue(THATObject object, THATObject value) {
+        mutateValue(object, value.value);
+        object.toStringFunction = value.toStringFunction;
+        object.accessibleFunctions.removeAll(value.accessibleFunctions);
+        object.accessibleFunctions.addAll(value.accessibleFunctions);
+//      object.accessibleMember.removeAll(value.accessibleMember);
+        object.accessibleMember.putAll(value.accessibleMember);
+    }
+
     public static void mutateValue(THATObject object, Object value) {
         object.value = value;
 
@@ -49,8 +58,16 @@ public final class THOSEObjects {
         return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, name, null);
     }
 
+//    public static THATObject createEmptyValue() {
+//        return createValue(null);
+//    }
+
     public static THATObject createVariable(Object value) {
         return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, null, value);
+    }
+
+    public static THATObject createVariable(String name, Object value) {
+        return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, name, value);
     }
 
     private static final Pattern rgx_value = Pattern.compile("^([+-]?)(?:([_0-9]+)|([_0-9]*\\.[_0-9]*))([sdlfSDLF]?)$");

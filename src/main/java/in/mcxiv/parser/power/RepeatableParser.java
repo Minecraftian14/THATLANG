@@ -1,8 +1,8 @@
 package in.mcxiv.parser.power;
 
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
-import in.mcxiv.parser.Node;
 
 public class RepeatableParser implements Parser<Node> {
 
@@ -14,6 +14,10 @@ public class RepeatableParser implements Parser<Node> {
 
     @Override
     public Node __parse__(ParsableString string, Node parent) {
+        return repeatable(string, parent, parser);
+    }
+
+    public static Node repeatable(ParsableString string, Node parent, Parser<?> parser) {
         parent = new Node(parent);
 
         while (true) {
@@ -27,4 +31,5 @@ public class RepeatableParser implements Parser<Node> {
             }
         }
     }
+
 }

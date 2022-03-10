@@ -5,9 +5,10 @@ import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.generic.NameToken;
 import in.mcxiv.parser.generic.StringValueNode;
+import in.mcxiv.thatlang.expression.MappedArgumentsToken.MappedArgumentsParser;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.interpreter.FunctionEvaluator;
-import interpreter.Interpretable;
+import in.mcxiv.interpreter.Interpretable;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
@@ -17,13 +18,13 @@ import static in.mcxiv.parser.power.PowerUtils.*;
 
 public class FunctionCallToken extends StringValueNode implements Interpretable<AbstractVM, THATObject> {
 
-    ArgumentsToken arguments;
+    MappedArgumentsToken arguments;
 
-    public FunctionCallToken(String value, ArgumentsToken arguments) {
+    public FunctionCallToken(String value, MappedArgumentsToken arguments) {
         this(null, value, arguments);
     }
 
-    public FunctionCallToken(Node parent, String value, ArgumentsToken arguments) {
+    public FunctionCallToken(Node parent, String value, MappedArgumentsToken arguments) {
         super(parent, value);
         this.arguments = arguments;
         addChild(this.arguments);
@@ -34,7 +35,7 @@ public class FunctionCallToken extends StringValueNode implements Interpretable<
         return toExtendedString("function name", getValue(), "arguments", arguments);
     }
 
-    public ArgumentsToken getArguments() {
+    public MappedArgumentsToken getArguments() {
         return arguments;
     }
 
@@ -60,8 +61,8 @@ public class FunctionCallToken extends StringValueNode implements Interpretable<
         private static final Parser parser = compound(
                 NameToken.NameParser.name,
                 inline("("),
-                optional(inline(ArgumentsToken.arguments)),
-                inline(")")
+                optional(inline(MappedArgumentsParser.mappedArguments)),
+                word(")")
         );
 
         private FunctionCallParser() {
@@ -72,8 +73,8 @@ public class FunctionCallToken extends StringValueNode implements Interpretable<
             Node node = parser.parse(string);
             if (node == null) return null;
             String functionName = node.getExp(NameToken.class).getValue();
-            ArgumentsToken arguments = node.getExp(ArgumentsToken.class);
-            if (arguments == null) /*optional*/ arguments = new ArgumentsToken();
+            MappedArgumentsToken arguments = node.getExp(MappedArgumentsToken.class);
+            if (arguments == null) /*optional*/ arguments = new MappedArgumentsToken(new MappedArgumentsToken.MappingsToken[0], new ExpressionsToken[0]);
             return new FunctionCallToken(parent, functionName, arguments);
         }
     }

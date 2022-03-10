@@ -6,6 +6,7 @@ import in.mcxiv.thatlang.statements.StatementToken;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,6 +39,16 @@ public abstract class AbstractEnvironment {
                 getPrograms().remove(program);
             addProgram(program);
         }
+        for (FunctionEvaluator evaluator : new ArrayList<>(environment.getFunctionEvaluators())) {
+            List<FunctionEvaluator> list = getFunctionEvaluators();
+            list.remove(evaluator);
+            list.add(evaluator);
+        }
+//        for (var evaluator : environment.getStatementEvaluators()) {
+//            List<Evaluator<StatementToken>> list = getStatementEvaluators();
+//            list.remove(evaluator);
+//            list.add(evaluator);
+//        }
     }
 
     /**
@@ -51,6 +62,16 @@ public abstract class AbstractEnvironment {
         for (ProgramToken program : environment.getPrograms())
             if (!hasProgram(program))
                 addProgram(program);
+        for (FunctionEvaluator evaluator : environment.getFunctionEvaluators()) {
+            List<FunctionEvaluator> list = getFunctionEvaluators();
+            if (!list.contains(evaluator))
+                list.add(evaluator);
+        }
+//        for (var evaluator : environment.getStatementEvaluators()) {
+//            List<Evaluator<StatementToken>> list = getStatementEvaluators();
+//            if (!list.contains(evaluator))
+//                list.add(evaluator);
+//        }
     }
 
     public abstract List<ProgramFileToken> getProgramFiles();

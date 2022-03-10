@@ -1,10 +1,12 @@
 package in.mcxiv.thatlang.interpreter;
 
+import com.mcxiv.logger.tools.LogLevel;
 import in.mcxiv.TestSuite;
 import in.mcxiv.thatlang.ProgramFileToken;
 import in.mcxiv.tryCatchSuite.Try;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,10 +28,9 @@ class AbstractVMTest {
                 program main->
                     pln(scan())
                 """;
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("simple Test", builder);
     }
-
 
     @Test
     void testTheNewIndentTypeBlck() {
@@ -39,11 +40,78 @@ class AbstractVMTest {
                                 
                     pln(scan())
                     
+                    var something = ""
+                        OMG
+                        HEYA
+                        noice
+                    ""
+                    
+                    pln(something)
+                    
+                    something = <%
+                        <!DOCTYPE json>
+                        {
+                            "field1": 1289,
+                            "field2": {"value":[1987]}
+                        }
+                    %>
+                    
+                    pln(something.field1)
+                    pln(something.field2.value[0])
+                    
+                    val something = <%
+                        <!DOCTYPE yaml>
+                        ---
+                        field1: 1289
+                        field2: {value: 1987}
+                        field 3:
+                          that thing:
+                            - Hello
+                            - World
+                        ...
+                    %>
+                    
+                    pln(something[0].field1)
+                    pln(something[0].field2.value)
+                    pln(something[0]["field 3"]["that thing"][1])
+                    
+                    // A comment
+                    
+                    /* And a block comment
+                                */
+                    
+                    /**
+                     * And a box comment
+                     **/
+                    
+                    /============================#=====================\\
+                    |            MODEL           | Activation Function |
+                    |----------------------------|---------------------|
+                    | Regression                 | Linear Function     |
+                    | Binary Classification      | Sigmoid Function    |
+                    | Multiclass Classification  | Soft-Max Function   |
+                    | Multilabel Classification  | Sigmoid Function    |
+                    \\============================^=====================/
+                    
                     prtf("%s", "lmao")
                     
                 """;
-        JustRunTheThing(program);
-        assertOutput("simple Test\nlmao", builder);
+        JustRunTheThing(program, false);
+        assertOutput("""
+                simple Test
+                                
+                OMG
+                HEYA
+                noice
+                   \s
+                                
+                1289
+                1987
+                1289
+                1987
+                World
+                                
+                lmao""", builder);
     }
 
     @Test
@@ -60,7 +128,7 @@ class AbstractVMTest {
                 }
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("Hello\nTestVariablesAndInputs", builder);
     }
 
@@ -76,7 +144,7 @@ class AbstractVMTest {
                     pln ( a + b * (a ** b) - (a / b) * (a << b) +( a<<b)/a)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("18", builder);
     }
 
@@ -90,7 +158,7 @@ class AbstractVMTest {
                    
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("1.0", builder);
     }
 
@@ -117,7 +185,7 @@ class AbstractVMTest {
                     if(o equals "%")->pln(a%b)
                 }
                                                 """;
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("200", builder);
     }
 
@@ -128,21 +196,42 @@ class AbstractVMTest {
         //noinspection UnnecessaryStringEscape
         String program = """
                 program main:
-                    var val = scani()
-                    if val == 10 -> pln("YES")
-                    else if val == 11 -> pln("<'_'>")
+                    var smx = scani()
+                    if smx == 10 -> pln("YES")
+                    else if smx == 11 -> pln("<'_'>")
                     else -> pln("BRUH")
-                    val.sub = 10
-                    pln(val.sub)
-                    val.sub 10 11 12
-                    printf("%s %s %s\n", val.s, val.u, val.b)
+                    smx.sub = 10
+                    pln(smx.sub)
+                    smx .sub 10 11 12 .max 1 2 3
+                    printf("%s %s %s\n", smx.s, smx.u, smx.b)
+                    printf("%s %s %s\n", smx.m, smx.a, smx.x)
+                    
+                    smx = [1, 2, 3]
+                    printf("%-20s %-20s %-20s\n", smx, smx[0], smx.type)
+                    smx = l[1, 2, 3]
+                    printf("%-20s %-20s %-20s\n", smx, smx[1], smx.type)
+                    smx = {1, 2, 3}
+                    printf("%-20s %-20s %-20s\n", smx, smx[2], smx.type)
+                    smx = {"a":1, "b":2, "c":3}
+                    printf("%-20s %-20s %-20s\n", smx, smx["a"], smx.type)
+                    smx = t{a:1, b:2, c:3}
+                    printf("%-20s %-20s %-20s\n", smx, smx[b], smx.type)
+                    smx = |1, 2, 3<
+                    printf("%-20s %-20s %-20s\n", smx, smx[0], smx.type)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("""
                 <'_'>
                 10
                 10 11 12
+                1 2 3
+                [1, 2, 3]            1                    ArrayList          \s
+                l[1, 2, 3]           2                    LinkedList         \s
+                {1, 3, 2}            true                 HashSet            \s
+                {c=3, b=2, a=1}      1                    HashMap            \s
+                t{c=3, b=2, a=1}     2                    Hashtable          \s
+                |1, 2, 3<            1                    Stack              \s
                 """, builder);
 
     }
@@ -154,7 +243,7 @@ class AbstractVMTest {
                 fun act(word) -> printf(">> %s%n", word)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("hey", builder);
 
         program = """
@@ -164,7 +253,7 @@ class AbstractVMTest {
                 fun act(a, b) -> printf(">> %s %s%n", a, b)
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("Hello World", builder);
 
         program = """
@@ -174,7 +263,7 @@ class AbstractVMTest {
                 fun c act(a, b) -> c = a + b
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, false);
         assertOutput("HelloWorld", builder);
     }
 
@@ -183,7 +272,7 @@ class AbstractVMTest {
         String program = """
                                 
                 program main {
-                    act(19867, 23)
+                    act(numB=23, 19867)
                     pf("Q = %d, R = %d\n", quo, rem)
                 }
                     
@@ -194,10 +283,95 @@ class AbstractVMTest {
                                 
                 """;
 
-        JustRunTheThing(program);
+        JustRunTheThing(program, true);
         assertOutput("Q = 863, R = 19004", builder);
     }
 
+    public static void main(String[] args) {
+        AbstractVMTest test = new AbstractVMTest();
+        test.setUp();
+//        test.testUI();
+        test.testProgramsExecution();
+    }
+
+    @Test
+    @Disabled("We had to disable it because of the sleep(5000000)")
+    void testUI() {
+        LogLevel.DEBUG.activate();
+        String program = """
+                program main {
+                    val size = 500
+                    UI("Example", size, size)
+                    UI().box() .xy 0.1 0.1 .xy -0.1 -0.1
+                    for (var i = 0; i < size; i = i+50) :
+                        for (var j = 0; j < size; j = j+50) :
+                            var box = UI().box()
+                            box .xy i j .wh 0.1 0.1
+                            if ((i + j)/50) % 2 == 0 -> box .rgb 200 0 200
+                            or else                  -> box .rgb 200 200 0
+                            sleep(16)
+                    UI().oval() .xyxy 0.15 0.15 -0.15 -0.15 .rgb 100 0 100
+                    UI().poly(0,1,1,1,0.5,0.8) .xyxy 0.15 0.15 -0.15 -0.15 .rgb 0 0 0
+                    UI().button("Press Me!", act("oi?")) .xywh 0.4 0.4 0.2 0.1
+                    UI()
+                    sleep(5000000)
+                }
+                    
+                function act(word):
+                    prtln(word)
+                """;
+
+        JustRunTheThing(program, false);
+    }
+
+    @Test
+    @Disabled("This test was disabled as having parallel execution of prog2 interferes with the output of other tests.")
+    void testProgramsExecution() {
+        String program = """
+                program main:
+                    pln("Main program running")
+                    start prog1
+                    launch prog2
+                    launch prog2
+                    end with prog3
+                    pln("Main program ran")
+                    
+                program prog1 -> pln("Prog1 program ran")
+                program prog3 {
+                    pln("Prog3 program ran")
+                }
+                                
+                program prog2:
+                    for(val i=0;i<50;i=i+1):
+                        prt(i+" ")
+                        // sleep(1000/50)
+                    pln("ooof")
+                """;
+
+        JustRunTheThing(program, false);
+    }
+
+    @Test
+    void testContext() {
+        String program = """
+                context letter:
+                    val a = 1
+                    val b = 2
+                    val c = 3
+                    
+                program main:
+                    val letter = acquire letter
+                    pln("Heya")
+                    pln("letter.%s = %d" % ["a", letter.a])
+                    start prog1
+                    
+                program prog1:
+                    val letter = acquire letter
+                    pln("letter.b = %d" % letter.b)
+                """;
+
+        JustRunTheThing(program, false);
+    }
 
     private void assertOutput(String s, StringBuilder builder) {
         s = s.replaceAll("[\n\r]", "");
@@ -205,10 +379,10 @@ class AbstractVMTest {
         assertEquals(s, act.substring(act.length() - s.length()));
     }
 
-    private static void JustRunTheThing(String program) {
+    private static void JustRunTheThing(String program, boolean print) {
         ProgramFileToken file;
         assertNotNull((file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
-//        System.out.println(TestSuite.pj(file));
+        if (print) System.out.println(TestSuite.pj(file));
 
         AbstractVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
         vm.load(file);

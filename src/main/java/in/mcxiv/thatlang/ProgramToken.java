@@ -1,6 +1,6 @@
 package in.mcxiv.thatlang;
 
-import in.mcxiv.thatlang.interpreter.VariableScope;
+import in.mcxiv.interpreter.Interpretable;
 import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
@@ -9,9 +9,9 @@ import in.mcxiv.parser.power.CompoundParser;
 import in.mcxiv.parser.power.LooseInlineParser;
 import in.mcxiv.thatlang.blocks.BlockToken;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
+import in.mcxiv.thatlang.interpreter.VariableScope;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Pair;
-import interpreter.Interpretable;
 
 import java.util.List;
 import java.util.Objects;
@@ -68,9 +68,14 @@ public class ProgramToken extends Node implements Interpretable<AbstractVM, Prog
 
     @Override
     public ProgramToken interpret(AbstractVM vm) {
-        vm.executionStack.push(new Pair<>(this, new VariableScope()));
-        getStatements().forEach(token -> token.interpret(vm));
-        vm.executionStack.pop();
+        vm.getExecutionStack().push(new Pair<>(this, new VariableScope()));
+        try {
+            getStatements().forEach(token -> token.interpret(vm));
+        } catch (RuntimeException re) {
+            if (!re.getMessage().equals(AbstractVM.EXECUTION_STOPPED))
+                throw re;
+        }
+        vm.getExecutionStack().pop();
         return this;
     }
 
@@ -93,5 +98,4 @@ public class ProgramToken extends Node implements Interpretable<AbstractVM, Prog
             return new ProgramToken(parent, programName, nodes);
         }
     }
-
 }

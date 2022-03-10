@@ -31,7 +31,7 @@ class SingleStatementBlockToken extends BlockToken {
             if (Cursors.getCharAndNext(string) != '-') return null;
             if (Cursors.getCharAndNext(string) != '>') return null;
 
-            while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
+            while (Cursors.bound(string) && Cursors.isBlank(string)) string.moveCursor(1);
 
             StatementToken node = statement.parse(string);
             if (node == null) return null;
@@ -39,7 +39,7 @@ class SingleStatementBlockToken extends BlockToken {
             // We gotta see if there are any condensable statements ahead...
             if (node.isCondensable()) while (Cursors.bound(string)) {
                 int backup = string.getCursor();
-                while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
+                while (Cursors.bound(string) && Cursors.isBlank(string)) string.moveCursor(1);
                 StatementToken possibility = statement.parse(string);
                 if (node.isAccepted(possibility))
                     node.processCondensability(possibility);

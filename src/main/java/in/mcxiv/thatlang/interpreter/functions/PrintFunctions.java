@@ -56,18 +56,18 @@ public class PrintFunctions extends FunctionEvaluator {
                 list = fct.getArguments().getExpressions();
                 if (list.size() == 0) break;
 //              if (list.size() >= 2) break; 
-                environment.out.print(list.get(0).interpret(environment.vm).value);
+                environment.out.print(list.get(0).interpret(environment.vm).printSafe());
             }
             case PRINTLN, PRINTLN_S, PRINTLN_SS -> {
                 list = fct.getArguments().getExpressions();
                 if (list.size() == 0) break;
-                environment.out.println(list.get(0).interpret(environment.vm).value);
+                environment.out.println(list.get(0).interpret(environment.vm).printSafe());
             }
             case PRINTF, PRINTF_S, PRINTF_SS -> {
                 list = new ArrayList<>(fct.getArguments().getExpressions());
                 if (list.size() == 0) break;
                 String str = list.remove(0).interpret(environment.vm).v();
-                environment.out.printf(str, list.stream().map(et->et.interpret(environment.vm)).map(object -> object.value).toArray());
+                environment.out.printf(str, list.stream().map(et->et.interpret(environment.vm)).map(THATObject::printSafe).toArray());
             }
         }
 

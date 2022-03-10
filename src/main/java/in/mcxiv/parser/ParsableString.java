@@ -52,11 +52,19 @@ public class ParsableString implements CharSequence, Comparable<ParsableString> 
 
     @Override
     public CharSequence subSequence(int start, int end) {
-        return new ParsableString(Arrays.copyOfRange(chars, start, end));
+        return subSequenceS(start, end);
+    }
+
+    public String subSequenceS(int start, int end) {
+        return new String(chars, start, end);
     }
 
     public ParsableString subSequencePS(int start, int end) {
         return new ParsableString(Arrays.copyOfRange(chars, start, end));
+    }
+
+    public CharSequence splitAtCursor() {
+        return subSequence(cursor, length - cursor);
     }
 
     @Override
@@ -117,10 +125,10 @@ public class ParsableString implements CharSequence, Comparable<ParsableString> 
 
     public String toDescriptiveString() {
         return "ParsableString{" +
-                "chars.length=" + chars.length +
-                "value=" + toStringValue() +
-                ", length=" + length +
-                ", cursor=" + cursor +
-                '}';
+               "chars.length=" + chars.length +
+               "value=" + toStringValue() +
+               ", length=" + length +
+               ", cursor=" + cursor +
+               '}';
     }
 }

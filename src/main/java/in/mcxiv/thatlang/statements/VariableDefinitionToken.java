@@ -51,11 +51,11 @@ public class VariableDefinitionToken extends StatementToken {
 
     @Override
     public THATObject interpret(AbstractVM vm) {
-        THATObject lhs = expression.interpret(vm);
-        lhs.putObjectData(DATA_KEY_CONSTRUCTION_TYPE, type);
-        lhs.name = name;
-        vm.executionStack.peek().getB().addVariable(lhs);
-        return lhs;
+        THATObject rhs = expression.interpret(vm);
+        rhs.putObjectData(DATA_KEY_CONSTRUCTION_TYPE, type);
+        rhs.name = name;
+        vm.getExecutionStack().peek().getB().addVariable(rhs);
+        return rhs;
     }
 
     public static class VariableDefinitionParser implements Parser<VariableDefinitionToken> {

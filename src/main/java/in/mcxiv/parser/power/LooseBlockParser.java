@@ -1,8 +1,8 @@
 package in.mcxiv.parser.power;
 
-import in.mcxiv.parser.Parser;
-import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
 import in.mcxiv.utils.Cursors;
 
 public class LooseBlockParser implements Parser<Node> {
@@ -19,13 +19,18 @@ public class LooseBlockParser implements Parser<Node> {
 
     @Override
     public Node __parse__(ParsableString string, Node parent) {
-        while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
+        return block(string, parent, parser);
+    }
+
+    public static Node block(ParsableString string, Node parent, Parser<?> parser) {
+        while (Cursors.bound(string) && Cursors.isBlank(string)) string.moveCursor(1);
 
         Node value = parser.parse(string, parent);
         if (value == null) return null;
 
-        while (Cursors.bound(string) && Cursors.isWhite(string)) string.moveCursor(1);
+        while (Cursors.bound(string) && Cursors.isBlank(string)) string.moveCursor(1);
 
         return value;
     }
+
 }

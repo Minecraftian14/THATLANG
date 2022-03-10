@@ -1,8 +1,8 @@
 package in.mcxiv.parser.power;
 
-import in.mcxiv.parser.Parser;
-import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Node;
+import in.mcxiv.parser.ParsableString;
+import in.mcxiv.parser.Parser;
 import in.mcxiv.utils.Cursors;
 
 public class LooseInlineParser implements Parser<Node> {
@@ -19,7 +19,10 @@ public class LooseInlineParser implements Parser<Node> {
 
     @Override
     public Node __parse__(ParsableString string, Node parent) {
-//        if (!Cursors.isSpace(string) && Cursors.getChar(string) != chars[0]) return null;
+        return inline(string, parent, parser);
+    }
+
+    public static Node inline(ParsableString string, Node parent, Parser<?> parser) {
         while (Cursors.bound(string) && Cursors.isSpace(string)) string.moveCursor(1);
 
         Node value = parser.parse(string, parent);

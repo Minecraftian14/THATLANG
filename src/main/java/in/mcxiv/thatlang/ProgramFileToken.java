@@ -1,11 +1,12 @@
 package in.mcxiv.thatlang;
 
+import in.mcxiv.interpreter.Interpretable;
 import in.mcxiv.parser.Node;
 import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.power.LooseBlockParser;
+import in.mcxiv.thatlang.ContextToken.ContextParser;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
-import interpreter.Interpretable;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -17,20 +18,22 @@ public class ProgramFileToken extends Node implements Interpretable<AbstractVM, 
     String programFileName;
     ProgramToken[] programs;
     FunctionToken[] functions;
+    ContextToken[] contexts;
 
-    public ProgramFileToken(ProgramToken[] programs, FunctionToken[] functions) {
-        this("loadedFromMemory", null, programs, functions);
+    public ProgramFileToken(ProgramToken[] programs, FunctionToken[] functions, ContextToken[] contexts) {
+        this("loadedFromMemory", null, programs, functions, contexts);
     }
 
-    public ProgramFileToken(String programFileName, ProgramToken[] programs, FunctionToken[] functions) {
-        this(programFileName, null, programs, functions);
+    public ProgramFileToken(String programFileName, ProgramToken[] programs, FunctionToken[] functions, ContextToken[] contexts) {
+        this(programFileName, null, programs, functions, contexts);
     }
 
-    public ProgramFileToken(String programFileName, Node parent, ProgramToken[] programs, FunctionToken[] functions) {
+    public ProgramFileToken(String programFileName, Node parent, ProgramToken[] programs, FunctionToken[] functions, ContextToken[] contexts) {
         super(parent);
         this.programFileName = programFileName;
         this.programs = programs;
         this.functions = functions;
+        this.contexts = contexts;
     }
 
     public ProgramToken[] getPrograms() {
@@ -39,6 +42,10 @@ public class ProgramFileToken extends Node implements Interpretable<AbstractVM, 
 
     public FunctionToken[] getFunctions() {
         return functions;
+    }
+
+    public ContextToken[] getContexts() {
+        return contexts;
     }
 
     public void setProgramFileName(String programFileName) {
@@ -75,7 +82,7 @@ public class ProgramFileToken extends Node implements Interpretable<AbstractVM, 
 
     @Override
     public ProgramFileToken interpret(AbstractVM vm) {
-        getMain().interpret(vm);
+        vm.run(getMain());
         return this;
     }
 
@@ -84,7 +91,8 @@ public class ProgramFileToken extends Node implements Interpretable<AbstractVM, 
         private static final LooseBlockParser parser = block(
                 repeatable(block(either(
                         new ProgramToken.ProgramParser(),
-                        FunctionToken.function
+                        FunctionToken.function,
+                        ContextParser.context
                 )))
         );
 
@@ -94,17 +102,10 @@ public class ProgramFileToken extends Node implements Interpretable<AbstractVM, 
         public ProgramFileToken __parse__(ParsableString string, Node parent) {
             Node node = parser.parse(string);
 //          if (node == null) return null;
-            ProgramToken[] programTokens = node
-                    .getChildren()
-                    .stream()
-                    .filter(ch -> ch instanceof ProgramToken)
-                    .map(ch -> ((ProgramToken) ch)).toArray(ProgramToken[]::new);
-            FunctionToken[] functionTokens = node
-                    .getChildren()
-                    .stream()
-                    .filter(ch -> ch instanceof FunctionToken)
-                    .map(ch -> ((FunctionToken) ch)).toArray(FunctionToken[]::new);
-            return new ProgramFileToken(programTokens, functionTokens);
+            ProgramToken[] programTokens = node.getChildren(ProgramToken.class).toArray(ProgramToken[]::new);
+            FunctionToken[] functionTokens = node.getChildren(FunctionToken.class).toArray(FunctionToken[]::new);
+            ContextToken[] contextTokens = node.getChildren(ContextToken.class).toArray(ContextToken[]::new);
+            return new ProgramFileToken(programTokens, functionTokens, contextTokens);
         }
     }
 

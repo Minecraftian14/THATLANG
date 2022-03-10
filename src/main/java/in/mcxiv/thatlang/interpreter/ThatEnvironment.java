@@ -6,6 +6,7 @@ import in.mcxiv.thatlang.ProgramToken;
 import in.mcxiv.thatlang.interpreter.functions.InputFunctions;
 import in.mcxiv.thatlang.interpreter.functions.PrintFunctions;
 import in.mcxiv.thatlang.interpreter.functions.ProgramFunctions;
+import in.mcxiv.thatlang.interpreter.functions.UIFunctions;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.LinkedList;
 
@@ -19,7 +20,7 @@ public class ThatEnvironment extends AbstractEnvironment {
 
     final ArrayList<ProgramFileToken> programFiles;
     final ArrayList<ProgramToken> programs;
-    final LinkedList<Evaluator<StatementToken>, Class<?>> evaluators;
+//    final LinkedList<Evaluator<StatementToken>, Class<?>> evaluators;
     final ArrayList<FunctionEvaluator> functions;
 
     public ThatEnvironment(AbstractVM vm) {
@@ -30,11 +31,12 @@ public class ThatEnvironment extends AbstractEnvironment {
         super(args, vm);
         programFiles = new ArrayList<>();
         programs = new ArrayList<>();
-        evaluators = new LinkedList<>(StatementToken.STATEMENT_TYPES, this::evaluateStatement);
+//        evaluators = new LinkedList<>(StatementToken.STATEMENT_TYPES, this::evaluateStatement);
         functions = new ArrayList<>(List.of(
                 new PrintFunctions(this),
                 new InputFunctions(this),
-                new ProgramFunctions(this)
+                new ProgramFunctions(this),
+                new UIFunctions(this)
         ));
     }
 

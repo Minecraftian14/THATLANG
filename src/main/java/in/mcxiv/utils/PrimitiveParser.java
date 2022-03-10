@@ -60,4 +60,13 @@ public class PrimitiveParser<Type> {
         };
     }
 
+    public static int resolveNumber(Number number, int bounds) {
+        if (number instanceof Byte || number instanceof Short
+            || number instanceof Integer || number instanceof Long)
+            return number.intValue();
+        if (number instanceof Float || number instanceof Double)
+            return (int) (bounds * number.doubleValue());
+        throw new IllegalStateException();
+    }
+
 }

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class CompoundParserTest {
     @Test
     void test() {
-        NameToken.NameParser name_parser = new NameToken.NameParser();
+        NameToken.NameParser name_parser = NameToken.NameParser.name;
         SpacesToken.SpacesParser spaces_parser = new SpacesToken.SpacesParser();
         CompoundParser compound = compound(name_parser, spaces_parser, name_parser);
         assertNotNull(alsoPrtln(compound.parse(new ParsableString("46 89"))));

@@ -21,8 +21,13 @@ public class OptionalParser implements Parser<Node> {
 
     @Override
     public Node __parse__(ParsableString string, Node parent) {
+        return optional(string,parent,parser);
+    }
+
+    public static Node optional(ParsableString string, Node parent, Parser<?> parser) {
         Node element = parser.parse(string, parent);
         if(element == null) return new Node(parent);
         return element;
     }
+
 }

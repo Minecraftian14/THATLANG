@@ -2,10 +2,7 @@ package thatlang.core.util;
 
 import thatlang.THOSEUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 public final class Types {
 
@@ -33,7 +30,9 @@ public final class Types {
             ArrayList.class,
             LinkedList.class, // Any other list structs worth including?
             HashSet.class, // TODO RESEARCH: What are java.util.LinkedHashSet and java.util.TreeSet?
-            HashMap.class // TODO RESEARCH: What are java.util.Hashtable and java.util.WeakHashMap?
+            HashMap.class, // TODO RESEARCH: What are java.util.Hashtable and java.util.WeakHashMap?
+            Hashtable.class,
+            Stack.class
     };
 
     private Types() {
