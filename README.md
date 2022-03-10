@@ -36,7 +36,7 @@ Some specific aims and LFAS which directed the flavour of THATLANG:
         Some Statements
         Some Statements
       ```
-      ```
+      ```js
       Some Declaration {
          Some Statements
           Some Statements
@@ -46,7 +46,7 @@ Some specific aims and LFAS which directed the flavour of THATLANG:
       In fact, THATLANG also includes an experimental code block method which allows only one statement to exist within
       it, and the statement can be placed however you like, Ideally, if the statement is something like an if-else, they
       both will be included.
-      ```
+      ```js
       Some Declaration 1 ->
          Some Statement
       Some Declaration 2 ->
@@ -139,9 +139,28 @@ program.
 
 [//]: # (Include a few points about ghost scope, the temporary scope made by a function.)
 
+#### Functions
+
+
 ### Quick Start
 
 #### Program Files
+
+```yaml
+program prog_name:
+  pln("statement 1")
+  pln("statement 2")
+```
+```java
+program prog_name {
+  pln("statement 1")
+  pln("statement 2")
+}
+```
+```js
+program prog_name ->
+  pln("statement 1")
+```
 
 #### Programs
 
