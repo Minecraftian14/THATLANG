@@ -2,7 +2,15 @@
 
 ### That Programming Language.
 
+```yaml
+program main:
+  println("Hello World!")
+```
+
 #### Quick Links
+
+- [Depth](#Theoretical Lecture)
+- [Quick Start](#Quick Start)
 
 ### Theoretical Lecture
 
@@ -130,9 +138,6 @@ program.
 [//]: # (// TODO: Also implement private programs which are accessible only within a file.)
 
 [//]: # (Include a few points about ghost scope, the temporary scope made by a function.)
-
-Here, main: (block) defines a task called main, and print is a general purpose function to vomit characters on the print
-stream. Read more about < in the function block.
 
 ### Quick Start
 
