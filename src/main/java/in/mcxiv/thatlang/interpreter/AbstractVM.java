@@ -56,6 +56,11 @@ public abstract class AbstractVM extends BaseInterpreter<AbstractVM> {
         executor.shutdown();
     }
 
+    public void run(String programName) {
+        ProgramToken program = executionEnvironment.getPrograms().stream().filter(pt -> programName.equals(pt.getProgramName())).findFirst().orElseThrow(() -> new RuntimeException("No such program called %s defined".formatted(programName)));
+        run(program);
+    }
+
     public void run(ProgramToken program) {
         program.interpret(this);
         launchedPrograms.get().forEach(future -> Try.Run(future::get));
