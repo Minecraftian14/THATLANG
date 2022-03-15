@@ -84,7 +84,7 @@ public class ComponentBinder implements Drawable {
             THATObject y2o = object.getMember("y2");
             if (x2o != null && y2o != null)
                 if (x2o.value instanceof Number x2n && y2o.value instanceof Number y2n)
-                    return SolidConstraint.newInstance(SolidConstraint.UNSPECIFIED_XY, xn, yn, x2n, y2n);
+                    return SolidConstraint.newInstance(SolidConstraint.SOLID_XY, xn, yn, x2n, y2n);
         }
         return null;
     }
