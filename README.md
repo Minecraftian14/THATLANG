@@ -11,6 +11,7 @@ program main:
 
 - [Depth](#Theoretical Lecture)
 - [Quick Start](#Quick Start)
+- [THATLANG Pangram](#THATLANG Pangram)
 
 ### Theoretical Lecture
 
@@ -36,7 +37,7 @@ Some specific aims and LFAS which directed the flavour of THATLANG:
         Some Statements
         Some Statements
       ```
-      ```js
+      ```java
       Some Declaration {
          Some Statements
           Some Statements
@@ -89,6 +90,7 @@ Some specific aims and LFAS which directed the flavour of THATLANG:
       satisfied... Even though it's an interpreted language, it felt that creating an object to store more objects is
       probably not a good thing. That's where the concept of injections rose! The idea is, that when a function is
       called, it simply injects the required variables into the calling source.
+- Everything is an object.
 
 Now, let's proceed to learn the various parts of a THATLANG program.
 
@@ -133,6 +135,8 @@ because programs are not meant to return anything. However, it is possible to en
 by calling `exit()` or one can also start another program using `end with` program action to stop only the current
 program.
 
+The general syntax for a program is given [here](#QS Programs)
+
 [//]: # (// TODO: Implement sealed and permits, which defines which context is accessible by how many programs, and which program is allowed to be ran by which programs.)
 
 [//]: # (// TODO: Also implement private programs which are accessible only within a file.)
@@ -141,30 +145,111 @@ program.
 
 #### Functions
 
+A function defined in THATLANG is not really how a function acts in other languages. Rather, one might be confused
+between the functions from other languages and the programs in THATLANG... Anyway, let's keep all three separate topics,
+so far, I hope that one understands how diffrernt a function from other languages and a program in THATLANG are.
+
+Coming to `functions`, these are little packets of statements which have the duty of processing or creating some data.
+Regarding the body of the function, ie, where one write the logic, they are just same as programs. The only exception
+lies in their different declaration syntax and behaviour.
+
+A function doesn't necessarily have a scope of it's own, rather it creates an anonymous and temporary scope over the
+calling program called a `ghost scope`. Ideally, any actions performed which involves the scope owner will become a
+security issue, therefore, in general a function can never operate on the program which called it. This doesn't
+restricts to a large scale though. The programmer themselves can provide a context or some external language extension
+to allow functions know which program called them, especially, using the `that` reference, it's very easy to define name
+variables which the function can use. But it is, of course, not a recommended action. Moreover, it will only cause more
+issue whe the project is multithreaded. And in any case, if a program is mutated, or another program tries to behave
+like the original caller, it will create further hard to debug issues.
+
+Therefore, the only ways to interact with the caller program are the parameters, returnables and the `that` context.
+
+Regarding the `ghost scope`, it's almost completely similar to how scopes in programs are defined and behaves, except
+that we have a `that` reference stored in as a variable.
+
+###### Parameters
+
+This is probably the most familiar thing one can see after the code blocks. We just go forward and declare the name of
+the parameters one after another separated by a comma and having everything enclosed within parenthesis.
+
+One major difference here is that nothing is typed. More like we have these ghost types and the programmer can at most
+only bet, that the received object represents an int or string. This may seem like a major drawback of the language, but
+is actually a big feature! (though perspective matters, one may still call it a drawback) Let's cover Types and
+Variables in another sub topic. So... It's almost like python, except that types in python can be stated explicitly.
+
+Because everything is an object, the only way to programmatically differentiate it on the developer side is to count the
+number of arguments and map them one-to-ine accordingly.
+
+Another important thing to note is that almost all objects passed as arguments are mutable, ie, 
+
+###### Returnables
+
+###### Syntax information
+
+The verbose syntax for a function is
+
+Defining functions
+
+```antlrv4
+'function'|'func'|'fun' returnables? function_name '(' parameters? ')' block
+returnables: comma_separated(names)
+parameters : comma_separated(names)
+```
+
+Calling functions
+
+```antlrv4
+function_name '(' parameters? ')'
+parameters : comma_separated(parameter)
+parameter  : name | mapped_name
+mapped_name: name '=' expression
+```
+
+The general syntax for a function is given [here](#QS Functions)
 
 ### Quick Start
 
-#### Program Files
+#### QS Program Files
+
+#### QS Programs
 
 ```yaml
 program prog_name:
   pln("statement 1")
   pln("statement 2")
 ```
+
 ```java
-program prog_name {
-  pln("statement 1")
-  pln("statement 2")
-}
+program prog_name{
+        pln("statement 1")
+        pln("statement 2")
+        }
 ```
+
 ```js
 program prog_name ->
   pln("statement 1")
 ```
 
-#### Programs
+#### QS Functions
 
-A program can
+```js
+// A function named 'display': no parameters, no returnables
+function display() -> println("Hello World")
+
+// A function named 'display': with parameters
+function display(string, word) -> printf(string + "%n", word)
+
+// A function named 'display': with returnables
+function result, len display():
+    result = "Hello World"
+    len = result.length()
+
+// A function named 'display': with both parameters and returnables
+function result, len display(string, word):
+    result = (string + "%n") % word
+    len = result.length()
+```
 
 ### THATLANG Pangram
 
