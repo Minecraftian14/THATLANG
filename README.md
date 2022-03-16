@@ -11,8 +11,10 @@ program main:
 
 #### Quick Links
 
-- [Depth](#Theoretical Lecture)
-- [Quick Start](#Quick Start)
+- [Depth](https://github.com/Minecraftian14/THATLANG#theoretical-lecture)
+- [Quick Start](https://github.com/Minecraftian14/THATLANG#quick-start)
+- [Operators Support](https://github.com/Minecraftian14/THATLANG#operators-supported)
+- [Terminologies](https://github.com/Minecraftian14/THATLANG#terminologies)
 
 ### Theoretical Lecture
 
