@@ -11,6 +11,7 @@ import in.mcxiv.thatlang.expression.FunctionCallToken;
 import in.mcxiv.thatlang.interpreter.AbstractEnvironment;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.interpreter.FunctionEvaluator;
+import in.mcxiv.tryCatchSuite.Try;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
@@ -40,7 +41,10 @@ public class CollectionsToken extends MultilineStringToken {
                 (o, n, vm) -> ((HashSet<THATObject>) o).add(((Interpretable<AbstractVM, THATObject>) n).interpret(vm))),
         STACK("|", "<", ExpressionsParser.expression,
                 () -> new Stack<THATObject>(), (o, n, vm) -> ((Stack<THATObject>) o).get(((Number) ((THATObject) n).value).intValue()),
-                (o, n, vm) -> ((Stack<THATObject>) o).push(((Interpretable<AbstractVM, THATObject>) n).interpret(vm)));
+                (o, n, vm) -> ((Stack<THATObject>) o).push(((Interpretable<AbstractVM, THATObject>) n).interpret(vm))),
+        QUEUE("<", "<", ExpressionsParser.expression,
+                () -> new ArrayDeque<>(), (o, n, vm) -> Try.Throw(() -> new RuntimeException("Cant access values by position in ArrayDeque.")),
+                (o, n, vm) -> ((ArrayDeque<THATObject>) o).add(((Interpretable<AbstractVM, THATObject>) n).interpret(vm)));
 
         public static final Parser<?> collections = either(Arrays.stream(values()).map(collectionType -> collectionType.parser).toArray(Parser[]::new));
 

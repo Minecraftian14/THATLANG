@@ -53,7 +53,7 @@ public class JSONParserTest {
 
     public static final FunctionCallToken mockSpliceCall(int index) {
         return new FunctionCallToken("__splice__", new MappedArgumentsToken(new MappedArgumentsToken.MappingsToken[0], new ExpressionsToken[]{
-                new NumeralExpressionToken("" + index)
+                new NumeralExpressionToken(index)
         }));
     }
 }

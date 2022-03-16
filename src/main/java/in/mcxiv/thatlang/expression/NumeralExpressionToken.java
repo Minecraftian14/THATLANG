@@ -9,13 +9,13 @@ import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
 public class NumeralExpressionToken extends ExpressionsToken {
-    String value;
+    Number value;
 
-    public NumeralExpressionToken(String value) {
+    public NumeralExpressionToken(Number value) {
         this(null, value);
     }
 
-    public NumeralExpressionToken(Node parent, String value) {
+    public NumeralExpressionToken(Node parent, Number value) {
         super(parent);
         this.value = value;
     }
@@ -27,7 +27,7 @@ public class NumeralExpressionToken extends ExpressionsToken {
 
     @Override
     public THATObject interpret(AbstractVM vm) {
-        return THOSEObjects.createAfterReducing(value);
+        return THOSEObjects.createValue(value);
     }
 
     public static class NumeralExpressionParser implements Parser<NumeralExpressionToken> {
@@ -41,7 +41,7 @@ public class NumeralExpressionToken extends ExpressionsToken {
         public NumeralExpressionToken __parse__(ParsableString string, Node parent) {
             NumeralToken token = NumeralToken.NumeralParser.numeral.parse(string);
             if (token == null) return null;
-            return new NumeralExpressionToken(parent, token.getValue());
+            return new NumeralExpressionToken(parent, token.reduceToNumber());
         }
     }
 }

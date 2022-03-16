@@ -23,7 +23,7 @@ public final class ValueToken extends SimpleNestableToken {
     public THATObject interpret(AbstractVM vm) {
         Node tree = get(0);
         if (tree instanceof StringToken st) return THOSEObjects.createValue(st.getValue());
-        if (tree instanceof NumeralToken nt) return THOSEObjects.createAfterReducing(nt.getValue());
+        if (tree instanceof NumeralToken nt) return THOSEObjects.createValue(nt.reduceToNumber());
         if (tree instanceof ObjectToken ot) return ot.interpret(vm);
         if (tree instanceof ArrayToken at) return at.interpret(vm);
         if (tree instanceof StringValueNode svn)

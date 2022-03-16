@@ -3,6 +3,7 @@ package in.mcxiv.tryCatchSuite;
 import com.mcxiv.logger.tools.LogLevel;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static in.mcxiv.tryCatchSuite.SupplierProvider.NULL;
 
@@ -60,4 +61,7 @@ public class Try {
         };
     }
 
+    public static <T> T Throw(Supplier<RuntimeException> supplier) {
+        throw supplier.get();
+    }
 }
