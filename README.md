@@ -471,7 +471,7 @@ big project to create. Maybe, it will happen someday (but not any soon).
 
 Meanwhile, We would love to get suggestions or contributions in any kind of feature for THATLANG.  
 
-### THATLANG Pangram
+[//]: # (### THATLANG Pangram)
 
 ## Terminologies
 
