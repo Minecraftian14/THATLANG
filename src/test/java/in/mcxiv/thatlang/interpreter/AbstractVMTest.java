@@ -142,10 +142,14 @@ class AbstractVMTest {
                     var a = scani()
                     var b = scanf()
                     pln ( a + b * (a ** b) - (a / b) * (a << b) +( a<<b)/a)
+                    //  ( 2 + 3 * (2 ** 3) - (2 / 3) * (2 << 3) +( 2<<3)/2)
+                    //  ( 2 + 3 *    8     -    0    *    16    +   16  /2)
+                    //  ( 2 +      24      -         0          +    8    )
+                    //  (                       34                        )
                 """;
 
         JustRunTheThing(program, false);
-        assertOutput("18", builder);
+        assertOutput("34", builder);
     }
 
     @Test

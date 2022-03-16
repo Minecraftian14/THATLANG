@@ -11,52 +11,20 @@ public class THOSEOperatorsPrototype {
     public static final ArrayList<String> KNOWN_OPERATORS = new ArrayList<>();
 
     static {
-        ArrayList<String> list = new ArrayList<>();
-        list.add("**");
-        list.add("*");
-        list.add("%");
-        list.add("/");
-        list.add("+");
-        list.add("-");
-        list.add("<<");
-        list.add(">>");
-        list.add("<<<");
-        list.add(">>>");
-        list.add("<<<>>>");
-        list.add(">>><<<");
-        list.add("in");
-        list.add("is");
-        list.add("<=");
-        list.add("<>");
-        list.add("<");
-        list.add(">=");
-        list.add(">");
-        list.add("instance of");
-        list.add("==");
-        list.add("equals");
-        list.add("!=");
-        list.add("not equals");
-        list.add("&&");
-        list.add("^^");
-        list.add("||");
-        list.add("&");
-        list.add("^");
-        list.add("|");
-        list.add("and");
-        list.add("nand");
-        list.add("xand");
-        list.add("xnand");
-        list.add("or");
-        list.add("nor");
-        list.add("xor");
-        list.add("xnor");
-        KNOWN_OPERATORS.addAll(list);
+        LinkedHashSet<String> set = new LinkedHashSet<>();
+        IntegerOperation.WithANumberList.forEach(operable -> set.add(operable.getOperator()));
+        IntegerOperation.WithAnObjectList.forEach(operable -> set.add(operable.getOperator()));
+        DoubleOperation.WithANumberList.forEach(operable -> set.add(operable.getOperator()));
+        DoubleOperation.WithAnObjectList.forEach(operable -> set.add(operable.getOperator()));
+        ObjectOperation.WithAnObjectList.forEach(operable -> set.add(operable.getOperator()));
+        KNOWN_OPERATORS.addAll(set);
 //        map.put("=", (l, r) -> s(n(l) * n(r))); // assignment :eyes:
 //        operators.add("<op>="); any operator in place of op is acceptable :eyes:
     }
 
     public static THATObject operate(THATObject left, String op, THATObject right) {
-        return THOSEObjects.createValue(operateStep(left, op, right));
+        THATObject value = THOSEObjects.createValue(operateStep(left, op, right));
+        return value;
     }
 
     public static Object operateStep(THATObject left, String op, THATObject right) {
@@ -98,10 +66,10 @@ public class THOSEOperatorsPrototype {
                         .apply(() -> (f, n) -> f / n.intValue()),
                 Operable.of("*", Integer.class, Number.class, Integer.class)
                         .apply(() -> (f, n) -> f * n.intValue()),
-                Operable.of("+", Integer.class, Number.class, Integer.class)
-                        .apply(() -> (f, n) -> f + n.intValue()),
                 Operable.of("-", Integer.class, Number.class, Integer.class)
                         .apply(() -> (f, n) -> f - n.intValue()),
+                Operable.of("+", Integer.class, Number.class, Integer.class)
+                        .apply(() -> (f, n) -> f + n.intValue()),
                 Operable.of("<<", Integer.class, Number.class, Integer.class)
                         .apply(() -> (f, n) -> f << n.intValue()),
                 Operable.of(">>", Integer.class, Number.class, Integer.class)
@@ -182,10 +150,10 @@ public class THOSEOperatorsPrototype {
                         .apply(() -> (f, n) -> f / n.doubleValue()),
                 Operable.of("*", Double.class, Number.class, Double.class)
                         .apply(() -> (f, n) -> f * n.doubleValue()),
-                Operable.of("+", Double.class, Number.class, Double.class)
-                        .apply(() -> (f, n) -> f + n.doubleValue()),
                 Operable.of("-", Double.class, Number.class, Double.class)
                         .apply(() -> (f, n) -> f - n.doubleValue()),
+                Operable.of("+", Double.class, Number.class, Double.class)
+                        .apply(() -> (f, n) -> f + n.doubleValue()),
                 Operable.of("<<", Double.class, Number.class, Double.class)
                         .apply(() -> (f, n) -> Double.longBitsToDouble(Double.doubleToLongBits(f) << n.intValue())),
                 Operable.of(">>", Double.class, Number.class, Double.class)
