@@ -364,7 +364,6 @@ context MAT_Tutorial:
 context collectionsTutorial:
   // Create an ArrayList
   var arrayList = [1, 2, 3, 4]
-
   // Create a LinkedList
   var linkedList = l[1, 2, 3, 4]
   // Create a HashSet
@@ -404,11 +403,18 @@ Three types of values are recognised when given to a drawable object like box.
 - A Positive Integer
     - Here the value is assumed to be in quantity of the smallest quanta possible. For instance in case of position,
       it's one pixel, in case of color, it's one bit (the numbers 0 to 255).
+    - In case of position, it's calculated from top-left.
+    - In case of color, it's calculated from 0.
 - A Non-Negative Real Number
-    - Here the value is assumed to be in relative of the maximum possible. The maximum depends on the case, for instance
-      for position, it's the sixe of parent object, and in color, it's 255. A value of 0.0 means 0 and a value of 1.0
-      means the max. Following the pattern, o.5 means half the max.
+    - In this case the value is assumed to be in relative of the maximum possible. The maximum depends on the case, for
+      instance for position, it's the sixe of parent object, and in color, it's 255. A value of 0.0 means 0 and a value
+      of 1.0 means the max. Following the pattern, o.5 means half the max.
+    - In case of position, it's calculated from top-left.
+    - In case of color, it's calculated from 0.
 - A Negative Real Number
+    - This time the value is made positive and calculated just like a non-negative real number.
+    - In case of position, it's calculated from bottom-right.
+    - In case of color, it's calculated from 255.
 
 ```yaml
 program main {
@@ -448,6 +454,22 @@ function act():
 ```
 
 #### Operators supported
+
+THATLANG provides an enormous variety of operators, which even include words like `nand`, `xor`, `equals`, `not equals`
+and so on. It's hard to maintain the list here, so it's best to see the source code itself.
+
+```java:src/main/java/thatlang/core/THOSEOperatorsPrototype.java
+```
+
+Note, that the operators processing is still an experiment, so far, it just works. Actually, I want a better way to
+decide an operator based on the right and left operands. "Better" as in? With a total of 8 types of primitive variables,
+a few other operable variables like `BigInteger` and `String`, and other objects which may define a function for an
+operator for themselves, it's really hard and boring to write the same code for each kind of possible input.
+
+Maybe, some magic using annotation processor can make the source code more manageable and cleaner, but that's another
+big project to create. Maybe, it will happen someday (but not any soon).
+
+Meanwhile, We would love to get suggestions or contributions in any kind of feature for THATLANG.  
 
 ### THATLANG Pangram
 
