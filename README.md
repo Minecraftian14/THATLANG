@@ -458,8 +458,7 @@ function act():
 THATLANG provides an enormous variety of operators, which even include words like `nand`, `xor`, `equals`, `not equals`
 and so on. It's hard to maintain the list here, so it's best to see the source code itself.
 
-```java:src/main/java/thatlang/core/THOSEOperatorsPrototype.java
-```
+[THOSE Operators](src/main/java/thatlang/core/THOSEOperatorsPrototype.java)
 
 Note, that the operators processing is still an experiment, so far, it just works. Actually, I want a better way to
 decide an operator based on the right and left operands. "Better" as in? With a total of 8 types of primitive variables,
