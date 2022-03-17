@@ -1,0 +1,14 @@
+context global:
+  var name = "Hello"
+
+program init:
+  var ctx = acquire global
+  ctx.name = (ctx.name << 1) + "World!"
+
+program main:
+  issueVariables()
+  pln(name)
+
+function name issueVariables():
+  var ctx = acquire global
+  name = ctx.name

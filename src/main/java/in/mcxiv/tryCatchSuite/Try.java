@@ -4,6 +4,7 @@ import com.mcxiv.logger.tools.LogLevel;
 
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static in.mcxiv.tryCatchSuite.SupplierProvider.NULL;
 
@@ -64,4 +65,16 @@ public class Try {
     public static <T> T Throw(Supplier<RuntimeException> supplier) {
         throw supplier.get();
     }
+
+    public static <T, R> Stream<R> Map(Stream<T> stream, DangerousFunction<? super T, ? extends R> mapper) {
+        return stream.map(t -> {
+            try {
+                return mapper.apply(t);
+            } catch (Exception e) {
+                LogLevel.DEBUG.act(e::printStackTrace);
+            }
+            return null;
+        });
+    }
+
 }

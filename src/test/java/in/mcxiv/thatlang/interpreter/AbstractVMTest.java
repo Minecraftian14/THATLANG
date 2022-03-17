@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class AbstractVMTest {
+public class AbstractVMTest {
 
     static StringBuilder builder;
 
@@ -408,13 +408,35 @@ class AbstractVMTest {
         JustRunTheThing(program, false);
     }
 
-    private void assertOutput(String s, StringBuilder builder) {
+    @Test
+    void testTheRuntimeTestExample() {
+        String program = """
+               context global:
+                 var name = "Hello"
+               
+               program init:
+                 var ctx = acquire global
+                 ctx.name = (ctx.name << 1) + "World!"
+               
+               program main:
+                 issueVariables()
+                 pln(name)
+               
+               function name issueVariables():
+                 var ctx = acquire global
+                 name = ctx.name
+                """;
+
+        JustRunTheThing(program, false);
+    }
+
+    public static void assertOutput(String s, StringBuilder builder) {
         s = s.replaceAll("[\n\r]", "");
         String act = builder.toString().replaceAll("[\n\r]", "");
         assertEquals(s, act.substring(act.length() - s.length()));
     }
 
-    private static void JustRunTheThing(String program, boolean print) {
+    public static void JustRunTheThing(String program, boolean print) {
         ProgramFileToken file;
         assertNotNull((file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
         if (print) System.out.println(TestSuite.pj(file));

@@ -14,6 +14,7 @@ program main:
 - [Depth](https://github.com/Minecraftian14/THATLANG#theoretical-lecture)
 - [Quick Start](https://github.com/Minecraftian14/THATLANG#quick-start)
 - [Operators Support](https://github.com/Minecraftian14/THATLANG#operators-supported)
+- [Setup](https://github.com/Minecraftian14/THATLANG#setup)
 - [Terminologies](https://github.com/Minecraftian14/THATLANG#terminologies)
 
 ### Theoretical Lecture
@@ -473,6 +474,10 @@ big project to create. Maybe, it will happen someday (but not any soon).
 Meanwhile, We would love to get suggestions or contributions in any kind of feature for THATLANG.  
 
 [//]: # (### THATLANG Pangram)
+
+## Setup
+
+Create a file whose name starts with `that.` and provide its path as the argument to the main method in `in.mcxiv.thatlang.THATRuntime` with the programs as arguments.
 
 ## Terminologies
 

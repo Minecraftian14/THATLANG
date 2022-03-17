@@ -30,17 +30,21 @@ public class ContextToken extends Node implements Interpretable<AbstractVM, THAT
         return contextName;
     }
 
+    private THATObject variable = null;
+
     @Override
     public THATObject interpret(AbstractVM vm) {
+        if(variable != null) return variable;
         vm.getExecutionStack().push(new Pair<>(null, new VariableScope()));
         try {
             getChildren(StatementToken.class).forEach(token -> token.interpret(vm));
         } catch (RuntimeException re) {
-            if (!re.getMessage().equals(AbstractVM.EXECUTION_STOPPED))
+            if (!re.getMessage().equals(AbstractVM.EXECUTION_STOPPED)) {
                 throw re;
+            }
         }
         VariableScope scope = vm.getExecutionStack().pop().getB();
-        THATObject variable = THOSEObjects.createVariable(contextName, contextName);
+        variable = THOSEObjects.createVariable(contextName, contextName);
         scope.foreach(variable::putMember);
         return variable;
     }
