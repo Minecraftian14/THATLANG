@@ -384,7 +384,7 @@ context collectionsTutorial:
   println(arrayList[2])
 
   // One can provide arguments for formatting to a string literal using collections.
-  println("I like %s, I have like %d types of these." % ["Glitters", 7])
+  println("We like %s, we have like %d types of these." % ["Glitters", 7])
 
   // Adding/removing elements is still a work in progress, it will soon be supported.
 ```
@@ -463,7 +463,7 @@ and so on. It's hard to maintain the list here, so it's best to see the source c
 
 [THOSE Operators](src/main/java/thatlang/core/THOSEOperatorsPrototype.java)
 
-Note, that the operators processing is still an experiment, so far, it just works. Actually, I want a better way to
+Note, that the operators processing is still an experiment, so far, it just works. Actually, we want a better way to
 decide an operator based on the right and left operands. "Better" as in? With a total of 8 types of primitive variables,
 a few other operable variables like `BigInteger` and `String`, and other objects which may define a function for an
 operator for themselves, it's really hard and boring to write the same code for each kind of possible input.
