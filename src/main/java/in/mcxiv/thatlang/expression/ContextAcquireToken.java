@@ -31,6 +31,11 @@ public class ContextAcquireToken extends ExpressionsToken {
         throw new IllegalStateException("No context named %s defined!");
     }
 
+    @Override
+    public String toString() {
+        return "ContextAcquireToken:" + name;
+    }
+
     public static final class ContextAcquireParser implements Parser<ContextAcquireToken> {
 
         public static final Parser<ContextAcquireToken> contextAcquire = new ContextAcquireParser();

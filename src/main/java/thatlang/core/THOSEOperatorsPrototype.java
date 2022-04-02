@@ -16,6 +16,8 @@ public class THOSEOperatorsPrototype {
         IntegerOperation.WithAnObjectList.forEach(operable -> set.add(operable.getOperator()));
         DoubleOperation.WithANumberList.forEach(operable -> set.add(operable.getOperator()));
         DoubleOperation.WithAnObjectList.forEach(operable -> set.add(operable.getOperator()));
+        BooleanOperation.WithABooleanList.forEach(operable -> set.add(operable.getOperator()));
+        BooleanOperation.WithAnObjectList.forEach(operable -> set.add(operable.getOperator()));
         ObjectOperation.WithAnObjectList.forEach(operable -> set.add(operable.getOperator()));
         KNOWN_OPERATORS.addAll(set);
 //        map.put("=", (l, r) -> s(n(l) * n(r))); // assignment :eyes:

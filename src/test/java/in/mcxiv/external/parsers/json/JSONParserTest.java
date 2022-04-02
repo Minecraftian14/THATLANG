@@ -39,7 +39,7 @@ public class JSONParserTest {
         ProgramFileToken.ProgramFileParser.programFile.parse("""
                 program main-> pln("Hello World")
                 """);
-        AbstractVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
+        AbstractVM vm = Try.getAnd(ThatVM::new).elseRun(Assertions::fail);
         THATObject object = node.interpret(vm);
         assertEquals("some string value", alsoPrtln(object.getMember("field1").value));
         assertEquals(-123.56, alsoPrtln(object.getMember("field2").value));

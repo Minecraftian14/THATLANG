@@ -66,7 +66,7 @@ class YAMLParserTest {
         assertEquals("hello there monseuir!" /* */, alsoPrtln("rawLine______", document.getField("rawLine______").getValue()));
 
         ProgramFileToken.ProgramFileParser.programFile.parse("program main-> pln(\"Hello World\")");
-        AbstractVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
+        AbstractVM vm = Try.getAnd(ThatVM::new).elseRun(Assertions::fail);
         THATObject object = node.interpret(vm).seekFunction(JSONParserTest.mockSpliceCall(0));
         assertEquals("some string value" /*     */, alsoPrtln("aQuotedString", object.getMember("aQuotedString").value));
         assertEquals(-3.467E59 /*               */, alsoPrtln("aNumerical___", object.getMember("aNumerical___").value));

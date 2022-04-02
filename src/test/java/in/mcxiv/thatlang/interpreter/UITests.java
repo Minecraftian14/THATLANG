@@ -111,7 +111,7 @@ class UITests {
         assertNotNull((file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
         if (print) System.out.println(TestSuite.pj(file));
 
-        AbstractVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
+        AbstractVM vm = Try.getAnd(ThatVM::new).elseRun(Assertions::fail);
         vm.load(file);
         vm.run();
     }

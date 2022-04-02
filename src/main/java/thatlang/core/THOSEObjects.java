@@ -1,5 +1,6 @@
 package thatlang.core;
 
+import in.mcxiv.tryCatchSuite.Try;
 import in.mcxiv.utils.PrimitiveParser;
 import thatlang.core.util.Types;
 
@@ -93,6 +94,10 @@ public final class THOSEObjects {
                 default -> create(value);
             };
 
-        } else return create(value);
+        } else {
+            Boolean trilean = Try.getAnd(() -> PrimitiveParser.BOOLEAN.parser.apply(value)).elseNull();
+            if (trilean == null) return create(value);
+            else return create(trilean);
+        }
     }
 }

@@ -410,24 +410,31 @@ public class AbstractVMTest {
 
     @Test
     void testTheRuntimeTestExample() {
+        TestSuite.redefineInput("13");
+
         String program = """
-               context global:
-                 var name = "Hello"
-               
-               program init:
-                 var ctx = acquire global
-                 ctx.name = (ctx.name << 1) + "World!"
-               
-               program main:
-                 issueVariables()
-                 pln(name)
-               
-               function name issueVariables():
-                 var ctx = acquire global
-                 name = ctx.name
+                program main:
+                    pln("Please enter a number:")
+                    var number = scani()
+                    
+                    pln("You entered %d." % number)
+                               
+                    if isPrime(number) ->
+                        println("The given number is a prime number.")
+                    or else ->
+                        println("The given number is not a prime number.")
+                               
+                               
+                func isPrime isPrime(number):
+                    if number == 0 or number == 1:
+                        isPrime = false
+                    else:
+                        isPrime = true
+                        for (val i=2; isPrime and i<number; i=i+1):
+                            if number%i==0 -> isPrime=false;
                 """;
 
-        JustRunTheThing(program, false);
+        JustRunTheThing(program, true);
     }
 
     public static void assertOutput(String s, StringBuilder builder) {
@@ -441,7 +448,7 @@ public class AbstractVMTest {
         assertNotNull((file = ProgramFileToken.ProgramFileParser.programFile.parse(program)));
         if (print) System.out.println(TestSuite.pj(file));
 
-        AbstractVM vm = Try.GetAnd(ThatVM::new).Else(Assertions::fail);
+        AbstractVM vm = Try.getAnd(ThatVM::new).elseRun(Assertions::fail);
         vm.load(file);
         vm.run();
     }

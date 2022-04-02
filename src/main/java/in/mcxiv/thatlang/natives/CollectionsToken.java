@@ -43,7 +43,7 @@ public class CollectionsToken extends MultilineStringToken {
                 () -> new Stack<THATObject>(), (o, n, vm) -> ((Stack<THATObject>) o).get(((Number) ((THATObject) n).value).intValue()),
                 (o, n, vm) -> ((Stack<THATObject>) o).push(((Interpretable<AbstractVM, THATObject>) n).interpret(vm))),
         QUEUE("<", "<", ExpressionsParser.expression,
-                () -> new ArrayDeque<>(), (o, n, vm) -> Try.Throw(() -> new RuntimeException("Cant access values by position in ArrayDeque.")),
+                () -> new ArrayDeque<>(), (o, n, vm) -> Try.justThrow(() -> new RuntimeException("Cant access values by position in ArrayDeque.")),
                 (o, n, vm) -> ((ArrayDeque<THATObject>) o).add(((Interpretable<AbstractVM, THATObject>) n).interpret(vm)));
 
         public static final Parser<?> collections = either(Arrays.stream(values()).map(collectionType -> collectionType.parser).toArray(Parser[]::new));

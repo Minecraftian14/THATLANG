@@ -7,6 +7,7 @@ import in.mcxiv.thatlang.expression.ExpressionsToken;
 import in.mcxiv.thatlang.expression.ExpressionsToken.ExpressionsParser;
 import in.mcxiv.parser.Node;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
+import in.mcxiv.utils.Cursors;
 import in.mcxiv.utils.PrimitiveParser;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
@@ -84,7 +85,7 @@ public class IfStatementToken extends StatementToken {
 
     @Override
     public String toString() {
-        return toExtendedString("condition", condition, "statements", getChildren());
+        return toExtendedString("condition", condition, "statements", getChildren(), "else ifs", elseIfSts, "else", elseSt == null? "null" :elseSt);
     }
 
     public static class IfStatementParser implements Parser<IfStatementToken> {
@@ -108,6 +109,9 @@ public class IfStatementToken extends StatementToken {
 
         @Override
         public IfStatementToken __parse__(ParsableString string, Node parent) {
+            if(Cursors.matches(string, "if n == 0 || n == 1:")) {
+                System.out.println("Lol");
+            }
             Node node = parser.parse(string);
             if (node == null) return null;
             var con = node.getExp(ExpressionsToken.class);

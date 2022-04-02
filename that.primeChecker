@@ -1,0 +1,19 @@
+program main:
+    pln("Please enter a number:")
+    var number = scani()
+
+    pln("You entered %d." % number)
+
+    if isPrime(number) ->
+        println("The given number is a prime number.")
+    or else ->
+        println("The given number is not a prime number.")
+
+
+func isPrime isPrime(number):
+    if number == 0 or number == 1:
+        isPrime = false
+    else:
+        isPrime = true
+        for (val i=2; isPrime and i<number; i=i+1):
+            if number%i==0 -> isPrime=false;

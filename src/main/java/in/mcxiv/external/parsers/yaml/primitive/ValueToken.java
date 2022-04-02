@@ -32,7 +32,7 @@ public final class ValueToken extends SimpleNestableToken {
     public THATObject interpret(AbstractVM vm) {
         Node node = get(0);
         //noinspection unchecked
-        return Try.GetAnd(() -> ((Interpretable<AbstractVM, THATObject>) node).interpret(vm)).ElseThrow();
+        return Try.getAnd(() -> ((Interpretable<AbstractVM, THATObject>) node).interpret(vm)).elseThrow();
     }
 
     @Override

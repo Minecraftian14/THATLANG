@@ -1,0 +1,75 @@
+<!DOCTYPE THATLANG>
+
+// A Normal Comment - Visible nowhere
+
+/*
+You know it's a multiline comment! - a separate parsable.
+*/
+
+/**
+ * This multiline 
+ * comment will
+ * create a box
+ * around
+ **/
+
+// To create a table
+/============================#=====================\
+|            MODEL           | Activation Function |
+|----------------------------|---------------------|
+| Regression                 | Linear Function     |
+| Binary Classification      | Sigmoid Function    |
+| Multiclass Classification  | Soft-Max Function   |
+| Multilabel Classification  | Sigmoid Function    |
+\============================^=====================/
+
+<%
+<!DOCTYPE html>
+<!-- a comment in html -->
+%>
+
+<%
+<!DOCTYPE yaml>
+#a comment in yaml
+%>
+
+//** important comment
+
+//** MAKE FLEXIBLE TYPE A THING!!! WHICH ALLOWS GENERIC LIKE BEHAVIOUR AMONG FLOAT AND DOUBLE
+
+var aVariable = 679968 + "ooof"
+val aConstant = 286 + new File("D:")
+
+program main:
+	lul...lul...oof
+	that.accessVar(to live a new life) // accesses the last calling context! Here that is Execution environment.
+	var another = "josjcfiweihcgsezhjdvjcxsghdcvnhszdvcnhxsvdnzsgc"
+	
+	statement1; statement2; statement3
+	
+	// || operator on null, if getVik returns null, getNew will be called.
+	val vik = getVik() || getNew()
+	
+	val list = [a, b, c, d, e, f, g, h, i, j, k]
+	for all in list
+		print that // here that is element from list
+		
+	start secondProgram
+	
+program secondProgram
+	assertTrue that.name is "main"
+	
+// automatically evaluates the the required inputs, that are, I and R.
+// If V is called (as if it's a local variable) it will be similar to calling a function V(I, R) where
+// the values of I and R will be taken from the current context (i.e. they got to be defined before hand)
+//    example:
+//       I = 9 
+//       R = 9 
+//       pln(V)
+// Or, it can be stored as a variable (so that it wont be calculated everytime one calls it)
+//    example:
+//       I = 9 
+//       R = 9 
+//       calculate V
+//       pln(V)
+function V = I * R

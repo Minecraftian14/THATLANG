@@ -34,7 +34,7 @@ public class Clazzonic {
                 .filter(method -> Modifier.isPublic(method.getModifiers()))
                 .filter(method -> method.getName().startsWith("get"))
                 .map(method -> new Pair<>(method.getName().substring(3), method))
-                .map(pair -> new Pair<>(pair.getA(), Try.GetAnd(() -> pair.getB().invoke(object)).Else(() -> null)))
+                .map(pair -> new Pair<>(pair.getA(), Try.getAnd(() -> pair.getB().invoke(object)).elseNull()))
                 .forEach(consumer);
     }
 }

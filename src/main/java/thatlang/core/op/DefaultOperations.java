@@ -20,7 +20,7 @@ public class DefaultOperations {
         System.out.println(CollectionOfAllTheFreakingDOs.class.getFields().length);
         for (Field field : CollectionOfAllTheFreakingDOs.class.getFields()) {
             if (field.getName().length() == 3) {
-                Object o = Try.GetAnd(() -> field.get(null)).ElseNull();
+                Object o = Try.getAnd(() -> field.get(null)).elseNull();
                 if (o == null) {
                     System.out.println("Null ?");
                     continue;

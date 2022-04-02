@@ -114,7 +114,7 @@ public class MultiAssignmentToken extends ExpressionsToken {
         private QuantaExpressionToken convert(Node field) {
             ArrayList<Node> list = new ArrayList<>();
             list.add(field.get(0));
-            IntStream.range(0, Try.GetAnd(() -> field.get(1).get(0).noOfChildren() / 2).Else(() -> 0))
+            IntStream.range(0, Try.getAnd(() -> field.get(1).get(0).noOfChildren() / 2).elseGet(() -> 0))
                     .map(i -> 2 * i + 1)
                     .mapToObj(index -> field.get(1).get(0).get(index))
                     .forEach(list::add);

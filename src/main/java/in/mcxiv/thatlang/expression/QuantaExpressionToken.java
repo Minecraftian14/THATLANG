@@ -115,7 +115,7 @@ public class QuantaExpressionToken extends ExpressionsToken implements Iterable<
 //            IntStream.range(0, Try.GetAnd(() -> node.get(1).get(0).noOfChildren() / 2).Else(() -> 0))
 //                    .map(i -> 2 * i + 1)
 //                    .mapToObj(index -> node.get(1).get(0).get(index))
-            IntStream.range(0, Try.GetAnd(() -> node.get(1).noOfChildren()).Else(() -> 0))
+            IntStream.range(0, Try.getAnd(() -> node.get(1).noOfChildren()).elseGet(() -> 0))
                     .mapToObj(index -> node.get(1).get(index).get(1))
                     .forEach(list::add);
             return new QuantaExpressionToken(parent, list.toArray(new Node[0]));

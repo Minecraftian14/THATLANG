@@ -16,7 +16,8 @@ import in.mcxiv.utils.Cursors;
 
 import java.util.List;
 
-import static in.mcxiv.parser.power.PowerUtils.*;
+import static in.mcxiv.parser.power.PowerUtils.either;
+import static in.mcxiv.parser.power.PowerUtils.word;
 
 public class FunctionToken extends StringValueNode {
 
@@ -48,7 +49,7 @@ public class FunctionToken extends StringValueNode {
 
     @Override
     public String toString() {
-        return toExtendedString("returnArgNames",returnArgNames, "parameterNames", parameterNames, getChildren());
+        return toExtendedString("returnArgNames", returnArgNames, "parameterNames", parameterNames, "statements", getStatements());
     }
 
     public static final Parser<FunctionToken> function = new Parser<>() {

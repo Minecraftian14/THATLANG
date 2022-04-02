@@ -116,7 +116,7 @@ public abstract class FunctionEvaluator implements Function<FunctionCallToken, T
 
             environment.vm.getExecutionStack().pop();
 
-            if (rValues.length > 1)
+            if (rValues.length >= 1)
                 return rValues[0];
             return THOSEObjects.NULL;
         }

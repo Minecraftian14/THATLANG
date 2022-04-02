@@ -28,7 +28,7 @@ public class PrimitiveParser<Type> {
     }
 
     public Type parse(String string) {
-        return Try.GetAnd(() -> parser.apply(string)).Else(() -> def);
+        return Try.getAnd(() -> parser.apply(string)).elseGet(() -> def);
     }
 
     public Type parse(Object object) {
@@ -51,7 +51,7 @@ public class PrimitiveParser<Type> {
     }
 
     private static boolean parseBoolean(String s) {
-        Double d = Try.GetAnd(() -> Double.parseDouble(s)).ElseNull();
+        Double d = Try.getAnd(() -> Double.parseDouble(s)).elseNull();
         if (d != null) return d == 0d;
         return switch (s.toLowerCase()) {
             case "on", "true", "high" -> true;

@@ -63,7 +63,7 @@ public abstract class AbstractVM extends BaseInterpreter<AbstractVM> {
 
     public void run(ProgramToken program) {
         program.interpret(this);
-        launchedPrograms.get().forEach(future -> Try.Run(future::get));
+        launchedPrograms.get().forEach(future -> Try.run(future::get));
     }
 
     public void __STOP_THIS__() {

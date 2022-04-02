@@ -56,11 +56,11 @@ public class Executor {
      * for example __JustRunAFreakingCommandPlease("java", "-version");
      */
     private static String __JustRunAFreakingCommandPlease(String... args) {
-        return Try.Opt(() -> new ProcessBuilder(args).start())
+        return Try.opt(() -> new ProcessBuilder(args).start())
                 .map(Process::getInputStream)
                 .map(Scanner::new)
                 .map(scanner -> CompletableFuture.supplyAsync(scanner::nextLine))
-                .map(cf -> Try.Get(() -> cf.get(10000, TimeUnit.MILLISECONDS)))
+                .map(cf -> Try.get(() -> cf.get(10000, TimeUnit.MILLISECONDS)))
                 .orElse("null");
     }
 
@@ -86,7 +86,7 @@ public class Executor {
     private static File createFile() {
         String taskName = getNewTaskName();
         File taskFile = new File(DirUtils.formPath(JAVA_TEMP_DIR, APP_NAME, LOG_HEAD, taskName + ".java"));
-        Try.Run(taskFile::createNewFile);
+        Try.run(taskFile::createNewFile);
         LogLevel.DEBUG.act(() -> prt("TASK FILE WRITTEN AT", taskFile));
         return taskFile;
     }

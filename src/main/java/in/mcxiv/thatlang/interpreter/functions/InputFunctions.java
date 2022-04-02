@@ -37,7 +37,7 @@ public class InputFunctions extends FunctionEvaluator {
 
     @Override
     public THATObject apply(FunctionCallToken fct) {
-        String s = Try.If(scanner::hasNextLine).Then(scanner::nextLine).Else(() -> "").toString();
+        String s = Try.thatIf(scanner::hasNextLine).thenGet(scanner::nextLine).elseGet(() -> "").toString();
         THATObject variable = THOSEObjects.createValue(switch (fct.getValue()) {
             case SCAN_LINE -> s;
             case SCAN_INT -> PrimitiveParser.INT.parse(s);
