@@ -2,6 +2,8 @@ package thatlang.core;
 
 import in.mcxiv.thatlang.expression.FunctionCallToken;
 import in.mcxiv.thatlang.interpreter.FunctionEvaluator;
+import in.mcxiv.thatlang.interpreter.VariableScope;
+import in.mcxiv.utils.Pair;
 import thatlang.core.util.Types;
 
 import java.util.ArrayList;
@@ -37,6 +39,10 @@ public class THATObject {
     }
 
     public THATObject getMember(String memberName) {
+        if (value instanceof Pair<?, ?> && ((Pair<?, ?>) value).getB() instanceof VariableScope) {
+            var val = ((VariableScope) ((Pair<?, ?>) value).getB()).seek(memberName);
+            if (val != null) return val;
+        }
         return switch (memberName) {
             case "type" -> THOSEObjects.createValue(primaryInference.getSimpleName());
             default -> accessibleMember.get(memberName);
@@ -109,5 +115,9 @@ public class THATObject {
         if (Types.isPrimitiveType(primaryInference)) return value;
         if (Types.isNativeType(primaryInference)) return toStringFunction.apply(this);
         throw new IllegalStateException("Hmmm... Then what kind of a type is " + primaryInference + "??");
+    }
+
+    public Object getValue() {
+        return value;
     }
 }

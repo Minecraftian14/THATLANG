@@ -24,7 +24,7 @@ class UITests {
 
     public static void main(String[] args) {
         UITests.setUp();
-        new UITests().test2();
+        new UITests().test1();
     }
 
     @Test

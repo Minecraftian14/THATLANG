@@ -55,6 +55,7 @@ public final class THOSEObjects {
         return create(DATA_VALUE_CONSTRUCTION_TYPE_VALUE, null, value);
     }
 
+
     public static THATObject createEmptyVariable(String name) {
         return create(DATA_VALUE_CONSTRUCTION_TYPE_VARIABLE, name, null);
     }

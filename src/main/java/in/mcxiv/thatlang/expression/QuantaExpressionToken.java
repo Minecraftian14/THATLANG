@@ -5,13 +5,16 @@ import in.mcxiv.parser.ParsableString;
 import in.mcxiv.parser.Parser;
 import in.mcxiv.parser.power.EitherParser;
 import in.mcxiv.thatlang.interpreter.AbstractVM;
+import in.mcxiv.thatlang.interpreter.VariableScope;
 import in.mcxiv.thatlang.natives.ElementAccessToken;
 import in.mcxiv.tryCatchSuite.Try;
+import in.mcxiv.utils.Pair;
 import thatlang.core.THATObject;
 import thatlang.core.THOSEObjects;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static in.mcxiv.parser.power.PowerUtils.*;

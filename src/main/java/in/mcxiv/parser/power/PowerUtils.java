@@ -1,6 +1,8 @@
 package in.mcxiv.parser.power;
 
+import in.mcxiv.parser.Node;
 import in.mcxiv.parser.Parser;
+import in.mcxiv.utils.Cursors;
 
 import java.util.List;
 
@@ -32,6 +34,17 @@ public class PowerUtils {
 
     public static LooseInlineParser inline(String word) {
         return new LooseInlineParser(word);
+    }
+
+    public static Parser<?> atLeastOneSpace(Parser<?> parser) {
+        return (Parser<Node>) (string, parent) -> {
+//            if (Cursors.bound(string) && !Cursors.isSpace(string)) return null;
+            while (Cursors.bound(string) && Cursors.isSpace(string)) string.moveCursor(1);
+            Node node = parser.parse(string, parent);
+            if (node != null && Cursors.bound(string) && !Cursors.isSpace(string)) return null;
+            while (Cursors.bound(string) && Cursors.isSpace(string)) string.moveCursor(1);
+            return node;
+        };
     }
 
     public static RepeatableParser repeatable(Parser<?> parser) {

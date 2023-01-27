@@ -12,6 +12,7 @@ import in.mcxiv.thatlang.interpreter.AbstractVM;
 import in.mcxiv.thatlang.interpreter.VariableScope;
 import in.mcxiv.thatlang.statements.StatementToken;
 import in.mcxiv.utils.Pair;
+import thatlang.core.THOSEObjects;
 
 import java.util.List;
 import java.util.Objects;
@@ -68,7 +69,9 @@ public class ProgramToken extends Node implements Interpretable<AbstractVM, Prog
 
     @Override
     public ProgramToken interpret(AbstractVM vm) {
+        Pair<ProgramToken, VariableScope> parent = vm.getExecutionStack().empty() ? null : vm.getExecutionStack().peek();
         vm.getExecutionStack().push(new Pair<>(this, new VariableScope()));
+        vm.getExecutionStack().peek().getB().addVariable(THOSEObjects.createVariable("that", parent));
         try {
             getStatements().forEach(token -> token.interpret(vm));
         } catch (RuntimeException re) {

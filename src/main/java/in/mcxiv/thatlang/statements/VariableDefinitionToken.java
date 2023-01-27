@@ -61,7 +61,7 @@ public class VariableDefinitionToken extends StatementToken {
     public static class VariableDefinitionParser implements Parser<VariableDefinitionToken> {
 
         private static final Parser<?> parser = compound(
-                either(word("var"), new WordParser("val")),
+                atLeastOneSpace(either(word("var"), word("val"))),
                 new LooseInlineParser(NameToken.NameParser.name),
                 new LooseInlineParser(new EitherParser(new WordParser("="), new WordParser("<<"))),
                 ExpressionsToken.ExpressionsParser.expression

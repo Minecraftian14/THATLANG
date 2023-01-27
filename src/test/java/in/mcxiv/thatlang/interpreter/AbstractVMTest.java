@@ -432,9 +432,25 @@ public class AbstractVMTest {
                         isPrime = true
                         for (val i=2; isPrime and i<number; i=i+1):
                             if number%i==0 -> isPrime=false;
-                """;
+                                """;
 
         JustRunTheThing(program, true);
+    }
+
+    @Test
+    void testThatObject() {
+        String program = """
+                program main:
+                    var value = "Hello World"
+                    start other
+                    pln(value)
+                program other:
+                    pln(that.value)
+                    that.value = "Bye Bye"
+                """;
+
+        JustRunTheThing(program, false);
+        assertOutput("Hello World\nBye Bye", builder);
     }
 
     public static void assertOutput(String s, StringBuilder builder) {
